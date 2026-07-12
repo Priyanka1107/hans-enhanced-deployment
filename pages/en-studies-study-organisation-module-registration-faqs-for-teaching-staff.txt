@@ -1,0 +1,22 @@
+FAQs for teaching staff
+Table of contents
+Which login and password do I use for the LSF?
+Please use the login data that you received from the Information Technology Centre (HRZ). Employees of HTW Berlin usually have an account, part-time employees can obtain a login by request to the faculty.
+How is the online module registration system used?
+The online registration is used to allocate places for modules. Students submit their module registration requests and places are automatically allocated according to available capacities. During the registration phase all students and teaching staff can check the current status online.
+How are places allocated and how am I involved?
+The allocation procedure is explained undermodule registration. Please note the information from your faculty regarding organisational issues.
+Can the number of places for my modules still be changed?
+The number of places is determined by the applicable curriculum guidelines, the available room capacity and the current level of demand. Under "Anmeldezahlen" (registration numbers) in the LSF, you can see the maximum number of students that can be admitted for each module. If you have questions about changing the number of places, please contact yourfaculty.
+How are module registrations related to examination registrations?
+The module registrations also determine who can register with you to take the examination. All students are informed that they have to successfully register for and complete a module in order to register for the examination.
+Can I contact students that have registered with me by email?
+Yes. You can send an email to all of the students on an online registration list without having to know their email addresses. However, this requires students to actually read the emails that are sent to their HTW email address. You should therefore inform your students if you wish to use this facility.
+Can I send attachments via the LSF email function?
+No, that is not possible. The LSF is used as the campus management system, i.e. for organising academic processes. Teaching is supported by eLearning platforms and by additional faculty systems (e.g. publicly accessible lecture catalogues, web server). Your faculty will be pleased to inform you about the available facilities.
+Themen
+Information for
+About HTW Berlin
+Popular pages
+Portals
+Service

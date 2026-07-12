@@ -1,0 +1,18 @@
+[Unit]
+Description=HANS Headless API (Apptainer)
+After=hans-pg.service
+Requires=hans-pg.service
+
+[Service]
+Type=simple
+User=%i
+WorkingDirectory=%h/Hans_DB
+EnvironmentFile=%h/Hans_DB/.env
+ExecStart=%h/Hans_DB/scripts/app_api_start.sif.sh
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

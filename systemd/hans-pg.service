@@ -1,0 +1,14 @@
+[Unit]
+Description=HANS PostgreSQL (Apptainer Instance)
+After=default.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=%i
+WorkingDirectory=%h/Hans_DB
+ExecStart=%h/Hans_DB/scripts/pg_start.sif.sh
+ExecStop=%h/Hans_DB/scripts/pg_stop.sif.sh
+
+[Install]
+WantedBy=default.target

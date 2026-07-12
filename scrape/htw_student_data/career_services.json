@@ -1,0 +1,79 @@
+[
+  {
+    "url": "https://www.htw-berlin.de/en/organisational-units/central-offices/centre-for-student-advisory-career-services/",
+    "title": "Centre for Student Advisory & Career Services",
+    "main_content": "Centre for Student Advisory & Career Services As a student advisory service and career service, we inform, advise, support and empower prospective and current students throughout the entire academic process, from choosing a degree programme and answering individual questions about the organisation of studies to subsequent career transition. We also provide support in sensitive circumstances and are there to help students overcome study-related difficulties. General Student Advisory Service Information & counselling for prospective students Career Services Counselling, workshops & practical insights for career orientation & career entry Psychological counselling Support with small and larger-scale crises during your studies Barrier-Free Education Support around studying with a disability",
+    "contacts": [],
+    "dates_deadlines": [],
+    "requirements": [],
+    "procedures": [],
+    "links": [
+      {
+        "url": "https://www.htw-berlin.de/en/organisational-units/central-offices/centre-for-student-advisory-career-services/general-student-advisory-service/",
+        "text": "General Student Advisory Service"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/organisational-units/central-offices/centre-for-student-advisory-career-services/general-student-advisory-service/",
+        "text": "Information & counselling for prospective students"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/organisational-units/central-offices/centre-for-student-advisory-career-services/barrier-free-education/",
+        "text": "Support around studying with a disability"
+      }
+    ],
+    "faqs": [],
+    "relevance_score": 40,
+    "last_updated": "2025-08-18T16:24:05.555968",
+    "content_hash": "0ec1928b9da27df19a9d3eb0e118d6be",
+    "last_cleaned": "2025-08-18T16:54:55.887511"
+  },
+  {
+    "url": "https://www.htw-berlin.de/en/organisational-units/central-offices/centre-for-student-advisory-career-services/general-student-advisory-service/",
+    "title": "General Student Advisory Service",
+    "main_content": "General Student Advisory Service Dear applicants, please do not ask when you get an answer regaring your application and refrain from inquiring about your application status. Please be patient - we know it's hard! If you have other questions or problems regarding your application or enrolment please contact the Student Service Centre . Please give our colleagues about 2 weeks to reply. The General Student Advisory Service does not have access to your data. Thank you! FAQ Application and application status on hochschulstart.de (in German) Admission or refusal Enrolment and Health insurance (Health insurance is mandatory for students in Germany. A health insurance has to report your insurance status . Hence, it's not something you can report to HTW Berlin.) Personal consultations (no appointment necessary) We don't make appointments. We have open consultation hours instead. Treskowallee campus , building A Please use the entrance A9 (or A7 - lift) in the courtyard during the non-teaching period. Thursdays: 2 p.m. - 5 p.m. (room 151) Wilhelminenhof campus , building B Tuesdays: 2 p.m. - 5 p.m. (room 004) Wednesdays: 10 a.m. - 12 p.m. (room 004) Please check our German website version for changes regarding our availability. Telephone consultations We answer brief questions and are available for longer consultation sessions on (030) 5019-2254 : Mondays and Fridays: 11 a.m. - 1 p.m. Wednesdays: 2 p.m. - 4 p.m. On Wednesdays and Fridays, questions can also be answered in English. Please check our German website version for changes regarding our availability. If the answering machine comes on during our office hours, it means that we are already engaged in a consultation session. Please try again later on. Email Email address : studienberatung@htw-berlin.de Please provide your telephone number in case of any queries. HTW students use their HTW email address. Your email will be processed in a ticket system. As a result, please note the information on data protection . Video consultations Our video consultations take place by appointment. Please contact us in advance stating your specific request by emailing studienberatung@htw-berlin.de . We will then send you an email with the time slot and the access data.",
+    "contacts": [
+      {
+        "type": "email",
+        "value": "studienberatung@htw-berlin.de"
+      },
+      {
+        "type": "email",
+        "value": "studienberatung@htw-berlin.de"
+      },
+      {
+        "type": "phone",
+        "value": "(030) 5019-2254"
+      }
+    ],
+    "dates_deadlines": [],
+    "requirements": [],
+    "procedures": [],
+    "links": [
+      {
+        "url": "https://www.htw-berlin.de/en/organisational-units/central-administrative-departments/student-services/student-service-centre/?no_cache=1",
+        "text": "Student Service Centre"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/studies/applications/admission-or-refusal/",
+        "text": "Admission or refusal"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/studies/study-orientation/",
+        "text": "Study Orientation"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/studies/organising-your-studies/financing-your-studies/",
+        "text": "Student Financing"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/prospective-students/",
+        "text": "Homepage for Prospective Students"
+      }
+    ],
+    "faqs": [],
+    "relevance_score": 16,
+    "last_updated": "2025-08-18T16:24:06.783060",
+    "content_hash": "e2aafb44accc2b688603c23ad1f0c984",
+    "last_cleaned": "2025-08-18T16:54:55.887553"
+  }
+]

@@ -1,0 +1,17 @@
+Certificates
+Table of contents
+Printing certificates from the LSF
+You can print out certificates yourself in theLSF campus management systemunder the menu item "Bescheinigungen" (certificates), e.g.
+verified enrolment certificates in German and English
+verified module certificates in German and English
+certificate of extension of the standard study period due to COVID19 restrictions in German and English
+Verified certificates
+The certificates that you print out from the LSF campus management system always include a verification symbol. This symbol allows every institution (family allowance/child benefit office, German state student grant and loan agency (BAföG) etc.) to check that
+the certificate was issued by HTW Berlin and
+the information is accurate.
+Themen
+Information for
+About HTW Berlin
+Popular pages
+Portals
+Service

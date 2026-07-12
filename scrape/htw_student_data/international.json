@@ -1,0 +1,360 @@
+[
+  {
+    "url": "https://www.htw-berlin.de/en/international/",
+    "title": "International",
+    "main_content": "International Partner universities Cooperation with (non-)European universities Advice & Service Contact the International Office, Student Services, etc. Ukraine crisis Support and information Pathways Abroad Studying abroad Study exchange at a partner university abroad Internships abroad How to finance an internship in Europe or overseas? Pathways to HTW Berlin Student Exchange Programmes at HTW Berlin Semester abroad for Incomings International Degree-Seeking Students Advice for international full-time students Intercultural Exchange International Summer Schools Special courses at HTW Berlin and its partner universities Virtual Exchange in International Teaching Exchange and Learning Projects with International Partner Universities",
+    "contacts": [],
+    "dates_deadlines": [],
+    "requirements": [],
+    "procedures": [],
+    "links": [
+      {
+        "url": "https://www.htw-berlin.de/en/international/beratung-service/",
+        "text": "Contact the International Office, Student Services, etc."
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/international/pathways-abroad/studying-abroad/",
+        "text": "Studying abroad"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/international/pathways-abroad/studying-abroad/",
+        "text": "Study exchange at a partner university abroad"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/international/wege-an-die-htw-berlin/student-exchange-programmes-at-htw-berlin/",
+        "text": "Student Exchange Programmes at HTW Berlin"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/international/wege-an-die-htw-berlin/student-exchange-programmes-at-htw-berlin/",
+        "text": "Semester abroad for Incomings"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/international/wege-an-die-htw-berlin/international-degree-seeking-students/",
+        "text": "International Degree-Seeking Students"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/international/wege-an-die-htw-berlin/international-degree-seeking-students/",
+        "text": "Advice for international full-time students"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/international/intercultural-exchange/international-summer-schools/",
+        "text": "Special courses at HTW Berlin and its partner universities"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/international/internationale-lehre/virtual-exchange-in-international-teaching/",
+        "text": "Exchange and Learning Projects with International Partner Universities"
+      }
+    ],
+    "faqs": [],
+    "relevance_score": 60,
+    "last_updated": "2025-08-18T16:22:24.642394",
+    "content_hash": "170b43e5989d06a6e7d61ab72ad11cdc",
+    "last_cleaned": "2025-08-18T16:54:55.888959"
+  },
+  {
+    "url": "https://www.htw-berlin.de/en/international/wege-an-die-htw-berlin/international-degree-seeking-students/",
+    "title": "International Degree-Seeking Students",
+    "main_content": "International Degree-Seeking Students Guidance and service For international students completing an entire study programme at HTW Berlin, the International Office offers special guidance and services. Advice is available on the following aspects: Financing and funding Living in Berlin and Germany Organising studies Legal matters for international students Personal problems and hardship",
+    "contacts": [],
+    "dates_deadlines": [],
+    "requirements": [],
+    "procedures": [],
+    "links": [
+      {
+        "url": "https://www.htw-berlin.de/en/organisational-units/central-administrative-departments/student-services/student-service-centre/?no_cache=1",
+        "text": "www.htw-berlin.de/en/organisational-units/central-administrative-departments/student-services/studen"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/studies/applications/application-via-uni-assist/",
+        "text": "applying for a study programme at HTW Berlin with foreign certificates"
+      }
+    ],
+    "faqs": [],
+    "relevance_score": 32,
+    "last_updated": "2025-08-18T16:22:46.950761",
+    "content_hash": "9c75709b36ff70e9b3c9ab950e2fbed0",
+    "last_cleaned": "2025-08-18T16:54:55.888966"
+  },
+  {
+    "url": "https://www.htw-berlin.de/en/international/internationale-lehre/virtual-exchange-in-international-teaching/",
+    "title": "Virtual Exchange in International Teaching",
+    "main_content": "Virtual Exchange in International Teaching HTW Berlin supports teachers and students wishing to organise virtual exchange and virtual learning projects in cooperation with international partner institutions. The term \"Virtual Exchange\" comprises a range of different formats, where international students collaborate in a virtual setting and with the help of digital tools on specific assignments. Examples of such formats include Virtual Global Classroom, Collaborative Online International Learning (COIL) , and Blended Intensive Programmes (BIP) . Objectives of Virtual Exchange to establish new formats of digital learning and teaching, to expand those already at hand, and to strengthen international networks to improve the possibilities for non-mobile students to participate in international exchange and to promote intercultural sensitivities among all participants further development of digital and methodological skills in online learning in an international context sustainable establishment of our academic strategy „Internationalisation at Home“ and advancement of our local education program Click here to find more information about COIL and BIP: Collaborative Online International Learning (COIL) Blended Intensive Programmes (BIP)",
+    "contacts": [
+      {
+        "type": "email",
+        "value": "sarah.marx@htw-berlin.de"
+      },
+      {
+        "type": "phone",
+        "value": "+49 30 5019-2765"
+      }
+    ],
+    "dates_deadlines": [],
+    "requirements": [],
+    "procedures": [],
+    "links": [
+      {
+        "url": "https://www.htw-berlin.de/en/international/internationale-lehre/virtual-exchange-in-international-teaching/blended-intensive-programmes-bip/",
+        "text": "Blended Intensive Programmes (BIP)"
+      }
+    ],
+    "faqs": [],
+    "relevance_score": 52,
+    "last_updated": "2025-08-18T16:22:48.162803",
+    "content_hash": "7c2dac8b6a4a369b4988dc6be408b6cb",
+    "last_cleaned": "2025-08-18T16:54:55.888996"
+  },
+  {
+    "url": "https://www.htw-berlin.de/en/international/beratung-service/",
+    "title": "Advice & Service",
+    "main_content": "Advice & Service International Office Contact point for international affairs Student Services Services for applicants and students Foreign Languages Centre Courses during studies and holiday intensive courses in eight languages Centre for Student Advisory & Career Services Support from the start of studies to career entry University Library Literature search, lending, research and publication of (electronic) media Information Technology Centre Operation, development and support of IT solutions and IT infrastructure",
+    "contacts": [],
+    "dates_deadlines": [],
+    "requirements": [],
+    "procedures": [],
+    "links": [
+      {
+        "url": "https://www.htw-berlin.de/en/organisational-units/central-administrative-departments/student-services/?no_cache=1",
+        "text": "Student Services"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/organisational-units/central-administrative-departments/student-services/?no_cache=1",
+        "text": "Services for applicants and students"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/studies/foreign-languages-centre/",
+        "text": "Courses during studies and holiday intensive courses in eight languages"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/organisational-units/central-offices/centre-for-student-advisory-career-services/",
+        "text": "Centre for Student Advisory & Career Services"
+      }
+    ],
+    "faqs": [],
+    "relevance_score": 30,
+    "last_updated": "2025-08-18T16:22:53.177163",
+    "content_hash": "aaa2cb8e2820c224e76802b8a7e7dec5",
+    "last_cleaned": "2025-08-18T16:54:55.889002"
+  },
+  {
+    "url": "https://www.htw-berlin.de/en/international/pathways-abroad/studying-abroad/",
+    "title": "Studying abroad",
+    "main_content": "Studying abroad Spending time abroad at one of our 170 partner universities is a great way to offers a new study experience and is a great way to get to know to foreign culture, its people and everyday life. Experience abroad will also expand your horizon and help you to create a strong individual profile. We will gladly advise you on the many options for studying abroad and provide support with the organisation. You can read all the information about studying abroad in this presentation , as well as in our guide . ATTENTION: We will be on summer vacation from July 25, 2025, to August 18, 2025. The consultation will be canceled during this time. Please contact us at the following email address outgoing-students@htw-berlin.de ... or use one of our consultation service: Monday: 1:00 p.m. - 3:00 p.m (by phone) Wednesday: 09:00 a.m. - 12:00 p.m. (by phone or in person at the Treskowallee Campus, Building A, Room 112) Thursday: 1:00 p.m. - 4:00 p.m. (on campus Wilhelminenhof, building B, room 004) For telephone advice on Monday & Wednesday you can reach us via phone: +49 30 5019 - 2607 No prior appointment is required.",
+    "contacts": [
+      {
+        "type": "email",
+        "value": "outgoing-students@htw-berlin.de"
+      },
+      {
+        "type": "email",
+        "value": "outgoing-students@htw-berlin.de"
+      },
+      {
+        "type": "email",
+        "value": "outgoing-students@htw-berlin.deoffice"
+      },
+      {
+        "type": "phone",
+        "value": "030 5019 2607"
+      },
+      {
+        "type": "office_hours",
+        "value": "Monday: 1:00 p.m. - 3:00"
+      },
+      {
+        "type": "office_hours",
+        "value": "Wednesday: 09:00 a.m. - 12:00"
+      }
+    ],
+    "dates_deadlines": [
+      "July 25, 2025",
+      "August 18, 2025"
+    ],
+    "requirements": [],
+    "procedures": [],
+    "links": [],
+    "faqs": [],
+    "relevance_score": 24,
+    "last_updated": "2025-08-18T16:22:54.403164",
+    "content_hash": "515c72035f19ed6444551bf76d4ee9cd",
+    "last_cleaned": "2025-08-18T16:54:55.889030"
+  },
+  {
+    "url": "https://www.htw-berlin.de/en/international/intercultural-exchange/international-summer-schools/",
+    "title": "International Summer Schools",
+    "main_content": "Data Science in Sustainable Finance and Economics Summer School 2025 in Berlin",
+    "contacts": [],
+    "dates_deadlines": [],
+    "requirements": [],
+    "procedures": [],
+    "links": [],
+    "faqs": [],
+    "relevance_score": 10,
+    "last_updated": "2025-08-18T16:23:01.717982",
+    "content_hash": "e3b2cc593ff564e7b2c9360e7b0247c1",
+    "last_cleaned": "2025-08-18T16:54:55.889033"
+  },
+  {
+    "url": "https://www.htw-berlin.de/en/international/incomings/refugees/studying-at-htw-berlin/",
+    "title": "Refugees: Pathways into studying",
+    "main_content": "Refugees: Pathways into studying Table of contents Study selection and study funding Refugees can obtain information from the Student Services Centre about study opportunities, admission requirements and the application process the Students' Union (AStA) about financing their studies. Self-assessment fore refugees The self-assessment for study orientation for refugees provides you with Basic information about the requirements for studying Insights into daily student life Tips for successfully studying Video interviews with students The online self-assessment does not provide personalised answers about whether you will receive admission for a study programme or which specific conditions you do not yet fulfil. If you have questions about applications and admission, please contact the Student Service Centre of HTW Berlin . Applying for admission as a guest listener HTW Berlin invites refugees to attend courses as guest listeners ( Gasthörer ). Download the Application for admission as a guest listener [PDF]. Complete the form as required, ensuring that is clearly legible, and then take it to the teacher of the module for signature and written permission. Submit the fully completed form which has been signed by the teacher to the Students Management . After you have received confirmation of your admission as a guest listener, submit this immediately to the teacher of the module you wish to attend. As a guest listener at HTW Berlin, you can obtain a certificate of participation for guest listeners and guest students for the modules for which you are registered. You can then gain accreditation for the modules you participated in and any examinations, e.g. in order to apply for a study place. Applying for a study place If you have a higher education entrance qualification from abroad, your application for a programme of study will be pre-checked by uni-assist . Please submit all necessary application documents by the following dates: for summer semester by 31 December for winter semester by 30 June Address HTW Berlin c/o uni-assist e.V. D-11507 Berlin uni-assist will assess whether your foreign certificates meet the standards of the Standing Conference of the Ministers of Education and Cultural Affairs (Central Office for Foreign Education / Zentralstelle für ausländisches Bildungswesen – ZaB) and are sufficient for admission to higher education in Germany. In some cases a school-leaving certificate granting admission to higher education in the applicant’s country of origin is sufficient to apply directly for a programme of study in Germany. However, it is often the case that additional qualifications must be demonstrated, e.g. proof of successfully completed academic years. If you are unable to provide all of your certificates from your country of origin, uni-assist will forward your application to HTW Berlin after you have proven your refugee status with a copy of your residence permit. HTW Berlin will then decide whether your application can be considered. If the pre-check performed by uni-assist determines that your foreign education certificates do not give you direct entitlement to study at HTW Berlin, you can apply for a preparatory course called a Studienkolleg (indirect entitlement to study). Participants of the HTW Integra Programme only can claim a reimbursement for application expenses. Residence permits If you are applying for a programme of study or as a guest listener, please submit one of the following documents: Copy of your certificate of registration as an asylum seeker ( Bescheinigung über die Meldung als Asylsuchender — BÜMA ) or Copy of your temporary residence permit ( Aufenthaltsgestattung ) in accordance with Section 55 AsylVfG in conjunction with Section 63 AsylVfG or Copy of your residence title granted on the basis of international law, humanitarian or political grounds as defined in sections 22 to 26 of the German Residence Act ( AufenthG ) or Copy of a refugee travel document, based on Article 28 of the Geneva Convention or Copy of temporary suspension of deportation ( Duldung ) as defined in Section 60a of the German Residence Act ( AufenthG ). Central Library Guest students can register as external users at the library: https://bibliothek.htw-berlin.de/en/about-us/how-to-use-the-library/",
+    "contacts": [],
+    "dates_deadlines": [],
+    "requirements": [],
+    "procedures": [],
+    "links": [
+      {
+        "url": "https://www.htw-berlin.de/en/organisational-units/central-administrative-departments/student-services/student-service-centre/?no_cache=1",
+        "text": "Student Services Centre"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/organisational-units/central-administrative-departments/student-services/student-service-centre/?no_cache=1",
+        "text": "Student Service Centre of HTW Berlin"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/organisational-units/central-administrative-departments/student-services/student-management/",
+        "text": "Students Management"
+      }
+    ],
+    "faqs": [],
+    "relevance_score": 130,
+    "last_updated": "2025-08-18T16:23:15.275680",
+    "content_hash": "8d6ba038fb5e4bfef0436a8686d88213",
+    "last_cleaned": "2025-08-18T16:54:55.889097"
+  },
+  {
+    "url": "https://www.htw-berlin.de/en/international/pathways-to-htw-berlin/htw-foundation/",
+    "title": "HTW Foundation: Preparation for your Studies in Germany",
+    "main_content": "HTW Foundation: Preparation for your Studies in Germany Are you from abroad and seeking to study in Germany? But you do not yet meet all the admission requirements ? The fee-based HTW Foundation Courses offer the ideal linguistic, methodological, and intercultural preparation for a Bachelor’s or Master’s degree in Germany - personal guidance and support included. HTW Foundation at a glance PreDSH: Preparation for Studies and DSH-Exam From German B2 level HTW Foundation: Application Form Submission of application documents HTW Foundation: Advantages Advantages of the programme HTW Foundation: Arrival in Berlin FAQ on visa, residence, etc.",
+    "contacts": [],
+    "dates_deadlines": [],
+    "requirements": [],
+    "procedures": [],
+    "links": [
+      {
+        "url": "https://www.htw-berlin.de/en/studies/applications/admission-requirements/",
+        "text": "admission requirements"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/studies/degree-programmes/?no_cache=1",
+        "text": "Bachelor’s or Master’s degree"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/international/pathways-to-htw-berlin/htw-foundation/predsh-preparation-for-studies-and-dsh-exam/",
+        "text": "PreDSH: Preparation for Studies and DSH-Exam"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/international/pathways-to-htw-berlin/htw-foundation/htw-foundation-advantages/",
+        "text": "Advantages of the programme"
+      }
+    ],
+    "faqs": [],
+    "relevance_score": 30,
+    "last_updated": "2025-08-18T16:24:19.332597",
+    "content_hash": "209e8335f648512da86905ce0317e169",
+    "last_cleaned": "2025-08-18T16:54:55.889109"
+  },
+  {
+    "url": "https://www.htw-berlin.de/en/international/wege-an-die-htw-berlin/",
+    "title": "Pathways to HTW Berlin",
+    "main_content": "Pathways to HTW Berlin Student Exchange Programmes at HTW Berlin Semester abroad for Incomings International Degree-Seeking Students Advice for international full-time students HTW Foundation Study preparation for international applicants Studienkolleg (university preparatory course) Requirements and application Refugees: Pathways into studying Application and formalities",
+    "contacts": [],
+    "dates_deadlines": [],
+    "requirements": [],
+    "procedures": [],
+    "links": [
+      {
+        "url": "https://www.htw-berlin.de/en/international/wege-an-die-htw-berlin/student-exchange-programmes-at-htw-berlin/",
+        "text": "Student Exchange Programmes at HTW Berlin"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/international/wege-an-die-htw-berlin/student-exchange-programmes-at-htw-berlin/",
+        "text": "Semester abroad for Incomings"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/international/wege-an-die-htw-berlin/international-degree-seeking-students/",
+        "text": "International Degree-Seeking Students"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/international/wege-an-die-htw-berlin/international-degree-seeking-students/",
+        "text": "Advice for international full-time students"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/international/pathways-to-htw-berlin/htw-foundation/",
+        "text": "Study preparation for international applicants"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/studies/applications/special-cases/studienkolleg-university-preparatory-course/",
+        "text": "Studienkolleg (university preparatory course)"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/international/pathways-to-htw-berlin/refugees-pathways-into-studying/",
+        "text": "Refugees: Pathways into studying"
+      }
+    ],
+    "faqs": [],
+    "relevance_score": 36,
+    "last_updated": "2025-08-18T16:24:20.546658",
+    "content_hash": "2ec01cc323458ab25682f089e9997be8",
+    "last_cleaned": "2025-08-18T16:54:55.889114"
+  },
+  {
+    "url": "https://www.htw-berlin.de/en/international/pathways-to-htw-berlin/htw-foundation/htw-foundation-advantages/",
+    "title": "HTW Foundation: Advantages",
+    "main_content": "HTW Foundation: Advantages Advantages of attending HTW Berlin as you start your university career Renommee : With 14,000 students, HTW Berlin is the largest University of Applied Sciences in Berlin, whose quality of education is confirmed in r ankings regularly and where international students can choose the suitable study programme from more than 75 degree programmes in the fields of technology, information technology, business, law, culture, and design. Internationality : HTW Berlin offers a lively international learning environment with over 3,000 international students from around 120 nations and around 150 partner universities abroad. Practice-orientation : Teaching at HTW Berlin is practice-oriented and learning groups are small. This facilitates academic success, intensifies contact between students and with lecturers and actively prepares students for their careers. Counselling and support : The comprehensive range of services at HTW Berlin supports international students in all relevant areas: Career planning, learning strategies, psychological counselling, subject-based supplementary courses, etc. Leisure time : University sports, student initiatives and the cultural and leisure activities in and around Berlin offer something for everyone's taste. The HTW Foundation Programme gives prospective students a structured, in-depth introduction to studying in Germany and specifically at HTW Berlin. Advantages of attending HTW Foundation as you prepare for your studies Enrolling in the fee-based HTW Foundation Programme offers you: the ideal professional, linguistic and intercultural preparation for studying in Germany as well as access to the academic job market personal support and counselling as you settle down and study in Germany German language skills and university-level study skills Request online consultation Request more information",
+    "contacts": [
+      {
+        "type": "email",
+        "value": "florian.pueschel@htw-berlin.de"
+      },
+      {
+        "type": "phone",
+        "value": "+49 30 5019-2862"
+      }
+    ],
+    "dates_deadlines": [
+      "15.08.22"
+    ],
+    "requirements": [],
+    "procedures": [],
+    "links": [
+      {
+        "url": "https://www.htw-berlin.de/en/studies/degree-programmes/?no_cache=1",
+        "text": "75 degree programmes"
+      }
+    ],
+    "faqs": [],
+    "relevance_score": 76,
+    "last_updated": "2025-08-18T16:24:29.148403",
+    "content_hash": "206497f2af9c78241184c692e72e14a8",
+    "last_cleaned": "2025-08-18T16:54:55.889134"
+  },
+  {
+    "url": "https://www.htw-berlin.de/en/international/pathways-to-htw-berlin/refugees-pathways-into-studying/",
+    "title": "Refugees: Pathways into studying",
+    "main_content": "Refugees: Pathways into studying Table of contents Study selection and study funding Refugees can obtain information from the Student Services Centre about study opportunities, admission requirements and the application process the Students' Union (AStA) about financing their studies. Self-assessment fore refugees The self-assessment for study orientation for refugees provides you with Basic information about the requirements for studying Insights into daily student life Tips for successfully studying Video interviews with students The online self-assessment does not provide personalised answers about whether you will receive admission for a study programme or which specific conditions you do not yet fulfil. If you have questions about applications and admission, please contact the Student Service Centre of HTW Berlin . Applying for admission as a guest listener HTW Berlin invites refugees to attend courses as guest listeners ( Gasthörer ). Download the Application for admission as a guest listener [PDF]. Complete the form as required, ensuring that is clearly legible, and then take it to the teacher of the module for signature and written permission. Submit the fully completed form which has been signed by the teacher to the Students Management . After you have received confirmation of your admission as a guest listener, submit this immediately to the teacher of the module you wish to attend. As a guest listener at HTW Berlin, you can obtain a certificate of participation for guest listeners and guest students for the modules for which you are registered. You can then gain accreditation for the modules you participated in and any examinations, e.g. in order to apply for a study place. Applying for a study place If you have a higher education entrance qualification from abroad, your application for a programme of study will be pre-checked by uni-assist . Please submit all necessary application documents by the following dates: for summer semester by 31 December for winter semester by 30 June Address HTW Berlin c/o uni-assist e.V. D-11507 Berlin uni-assist will assess whether your foreign certificates meet the standards of the Standing Conference of the Ministers of Education and Cultural Affairs (Central Office for Foreign Education / Zentralstelle für ausländisches Bildungswesen – ZaB) and are sufficient for admission to higher education in Germany. In some cases a school-leaving certificate granting admission to higher education in the applicant’s country of origin is sufficient to apply directly for a programme of study in Germany. However, it is often the case that additional qualifications must be demonstrated, e.g. proof of successfully completed academic years. If you are unable to provide all of your certificates from your country of origin, uni-assist will forward your application to HTW Berlin after you have proven your refugee status with a copy of your residence permit. HTW Berlin will then decide whether your application can be considered. If the pre-check performed by uni-assist determines that your foreign education certificates do not give you direct entitlement to study at HTW Berlin, you can apply for a preparatory course called a Studienkolleg (indirect entitlement to study). Participants of the HTW Integra Programme only can claim a reimbursement for application expenses. Residence permits If you are applying for a programme of study or as a guest listener, please submit one of the following documents: Copy of your certificate of registration as an asylum seeker ( Bescheinigung über die Meldung als Asylsuchender — BÜMA ) or Copy of your temporary residence permit ( Aufenthaltsgestattung ) in accordance with Section 55 AsylVfG in conjunction with Section 63 AsylVfG or Copy of your residence title granted on the basis of international law, humanitarian or political grounds as defined in sections 22 to 26 of the German Residence Act ( AufenthG ) or Copy of a refugee travel document, based on Article 28 of the Geneva Convention or Copy of temporary suspension of deportation ( Duldung ) as defined in Section 60a of the German Residence Act ( AufenthG ). Central Library Guest students can register as external users at the library: https://bibliothek.htw-berlin.de/en/about-us/how-to-use-the-library/",
+    "contacts": [],
+    "dates_deadlines": [],
+    "requirements": [],
+    "procedures": [],
+    "links": [
+      {
+        "url": "https://www.htw-berlin.de/en/organisational-units/central-administrative-departments/student-services/student-service-centre/?no_cache=1",
+        "text": "Student Services Centre"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/organisational-units/central-administrative-departments/student-services/student-service-centre/?no_cache=1",
+        "text": "Student Service Centre of HTW Berlin"
+      },
+      {
+        "url": "https://www.htw-berlin.de/en/organisational-units/central-administrative-departments/student-services/student-management/",
+        "text": "Students Management"
+      }
+    ],
+    "faqs": [],
+    "relevance_score": 130,
+    "last_updated": "2025-08-18T16:24:31.633503",
+    "content_hash": "8d6ba038fb5e4bfef0436a8686d88213",
+    "last_cleaned": "2025-08-18T16:54:55.889196"
+  }
+]

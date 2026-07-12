@@ -1,0 +1,10 @@
+# HANS Scapy Migration Requirements
+
+# Core dependencies
+sentence-transformers>=2.2.0
+psycopg[binary]>=3.1.0
+pyyaml>=6.0
+numpy>=1.24.0
+
+# Optional but recommended
+torch>=2.0.0  # For GPU acceleration (can use CPU without)

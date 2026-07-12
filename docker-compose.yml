@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: hans-enhanced-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: hans_enhanced
+      POSTGRES_USER: hans_enhanced
+      POSTGRES_PASSWORD: hans_enhanced_dev
+
+    ports:
+      - "5434:5432"
+
+    volumes:
+      - hans_enhanced_postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U hans_enhanced -d hans_enhanced"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  hans_enhanced_postgres_data:

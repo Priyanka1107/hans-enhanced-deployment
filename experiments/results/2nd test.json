@@ -1,0 +1,102 @@
+[
+  {
+    "query": "What is the application deadline for Master's programs?",
+    "response": {
+      "answer": "I'm sorry, I encountered an error processing your query. Please try again later.",
+      "sources": [],
+      "confidence_pct": 0,
+      "metadata": null
+    },
+    "timestamp": "2025-11-20T15:43:35.608810"
+  },
+  {
+    "query": "How much is the semester fee at HTW Berlin?",
+    "response": {
+      "answer": "I'm sorry, I encountered an error processing your query. Please try again later.",
+      "sources": [],
+      "confidence_pct": 0,
+      "metadata": null
+    },
+    "timestamp": "2025-11-20T15:43:35.681409"
+  },
+  {
+    "query": "What are the English language requirements?",
+    "response": {
+      "answer": "I'm sorry, I encountered an error processing your query. Please try again later.",
+      "sources": [],
+      "confidence_pct": 0,
+      "metadata": null
+    },
+    "timestamp": "2025-11-20T15:43:36.089774"
+  },
+  {
+    "query": "How do I apply for a Master's degree?",
+    "response": {
+      "answer": "I'm sorry, I encountered an error processing your query. Please try again later.",
+      "sources": [],
+      "confidence_pct": 0,
+      "metadata": null
+    },
+    "timestamp": "2025-11-20T15:43:36.123608"
+  },
+  {
+    "query": "Is there financial aid or BAföG for students?",
+    "response": {
+      "answer": "I'm sorry, I encountered an error processing your query. Please try again later.",
+      "sources": [],
+      "confidence_pct": 0,
+      "metadata": null
+    },
+    "timestamp": "2025-11-20T15:43:36.149403"
+  },
+  {
+    "query": "What documents do I need to submit with my application?",
+    "response": {
+      "answer": "I'm sorry, I encountered an error processing your query. Please try again later.",
+      "sources": [],
+      "confidence_pct": 0,
+      "metadata": null
+    },
+    "timestamp": "2025-11-20T15:43:36.175370"
+  },
+  {
+    "query": "Are there any entrance exams for Master's programs?",
+    "response": {
+      "answer": "I'm sorry, I encountered an error processing your query. Please try again later.",
+      "sources": [],
+      "confidence_pct": 0,
+      "metadata": null
+    },
+    "timestamp": "2025-11-20T15:43:36.200925"
+  },
+  {
+    "query": "Can I study part-time at HTW Berlin?",
+    "response": {
+      "answer": "I'm sorry, I encountered an error processing your query. Please try again later.",
+      "sources": [],
+      "confidence_pct": 0,
+      "metadata": null
+    },
+    "timestamp": "2025-11-20T15:43:36.227386"
+  },
+  {
+    "query": "What are the admission requirements for international students?",
+    "response": {
+      "answer": "I'm sorry, I encountered an error processing your query. Please try again later.",
+      "sources": [],
+      "confidence_pct": 0,
+      "metadata": null
+    },
+    "timestamp": "2025-11-20T15:43:36.458722"
+  },
+  {
+    "query": "How long does it take to process my application?",
+    "response": {
+      "answer": "I'm sorry, I encountered an error processing your query. Please try again later.",
+      "sources": [],
+      "confidence_pct": 0,
+      "metadata": null
+    },
+    "timestamp": "2025-11-20T15:43:36.685177"
+  }
+]

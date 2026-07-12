@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+CONTAINER_NAME="hans-pg"
+IMAGE="pgvector/pgvector:pg16"
+
+echo "🐘 Starting local PostgreSQL + pgvector for HANS experiments..."
+
+# Check if container exists
+if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
+    # Container exists - check if it's running
+    if docker ps --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
+        echo "✅ Container '${CONTAINER_NAME}' is already running"
+        echo "📍 Connection: postgresql://postgres:postgres@localhost:5432/hans"
+        exit 0
+    else
+        # Container exists but is stopped - start it
+        echo "▶️  Starting existing container '${CONTAINER_NAME}'..."
+        docker start "${CONTAINER_NAME}"
+        echo "✅ Container started successfully"
+        echo "📍 Connection: postgresql://postgres:postgres@localhost:5432/hans"
+        exit 0
+    fi
+fi
+
+# Container doesn't exist - create it
+echo "🏗️  Creating new PostgreSQL container '${CONTAINER_NAME}'..."
+
+docker run --name "${CONTAINER_NAME}" \
+    -e POSTGRES_PASSWORD=postgres \
+    -e POSTGRES_DB=hans \
+    -p 5432:5432 \
+    -v hans_pgdata:/var/lib/postgresql/data \
+    -d "${IMAGE}"
+
+# Wait a moment for Postgres to initialize
+echo "⏳ Waiting for PostgreSQL to initialize..."
+sleep 3
+
+# Verify it's running
+if docker ps --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
+    echo "✅ PostgreSQL container created and running"
+    echo "📍 Connection: postgresql://postgres:postgres@localhost:5432/hans"
+    echo ""
+    echo "Next step: Initialize the database with:"
+    echo "  export \$(grep -v '^#' .env.local | xargs)"
+    echo "  bash scripts/init_local_db.sh"
+else
+    echo "❌ Failed to start container"
+    exit 1
+fi

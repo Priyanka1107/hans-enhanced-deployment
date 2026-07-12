@@ -1,0 +1,592 @@
+[
+  {
+    "query": "What is the application deadline for Master's programs?",
+    "response": {
+      "answer": "Based on the provided sources, I found that there are multiple deadlines for applying to Master's programs at HTW Berlin. The deadlines vary depending on whether you're applying through the HTW application portal or via uni-assist.\n\nFor applications via the HTW application portal:\n\n* Winter semester: 16.05. - 15.06.\n* Summer semester: 15.11. - 15.12.\n\nFor applications via uni-assist:\n\n* Winter semester: 02.04. - 15.06.\n* Summer semester: 01.10. - 15.12.\n\nPlease note that these deadlines might be subject to change, and it's always best to check the university's website or contact their admissions office for the most up-to-date information.",
+      "sources": [
+        {
+          "title": "Academic calendar: summer semester 2025",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/academic-calendar/#c112977",
+          "type": "web"
+        },
+        {
+          "title": "Academic calendar: summer semester 2025",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/academic-calendar/",
+          "type": "web"
+        },
+        {
+          "title": "Academic calendar: summer semester 2025",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/academic-calendar/#c112986",
+          "type": "web"
+        },
+        {
+          "title": "Academic calendar: summer semester 2025",
+          "url": "https://www.htw-berlin.de/en/studies/organising-your-studies/academic-calendar/",
+          "type": "web"
+        },
+        {
+          "title": "Bachelor",
+          "url": "https://www.htw-berlin.de/en/studies/applications/bachelor/",
+          "type": "web"
+        },
+        {
+          "title": "Master’s study programmes",
+          "url": "https://www.htw-berlin.de/en/studies/applications/application-via-the-application-portal-of-htw-berlin/masters-study-programmes/",
+          "type": "web"
+        },
+        {
+          "title": "Academic calendar: winter semester 2024/25",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/academic-calendar/academic-calendar/",
+          "type": "web"
+        },
+        {
+          "title": "Students with children",
+          "url": "https://www.htw-berlin.de/en/organisational-units/central-administrative-departments/human-resources-department/family-support-centre/students-with-children/#c8977",
+          "type": "web"
+        },
+        {
+          "title": "Master",
+          "url": "https://www.htw-berlin.de/en/studies/applications/master/",
+          "type": "web"
+        }
+      ],
+      "confidence_pct": 42,
+      "metadata": null
+    },
+    "timestamp": "2025-11-21T15:30:06.997624"
+  },
+  {
+    "query": "How much is the semester fee at HTW Berlin?",
+    "response": {
+      "answer": "According to the sources, the semester fees at HTW Berlin vary depending on the study programme. Here are some specific examples:\n\n* Distance-learning Bachelor’s study programmes (ZbwS): 62.50 €*\n* Master’s study programmes (ZbwS): 324,90 €*\n* Career-integrated Master’s study programmes (ZbwS): 62.50 €*\n\nPlease note that these figures may be subject to change or modification.\n\nSource: [Source 7 - WEB]: Semester fees for ZbwS study programmes",
+      "sources": [
+        {
+          "title": "Semester fee",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/semester-fee/",
+          "type": "web"
+        },
+        {
+          "title": "Financing your studies",
+          "url": "https://www.htw-berlin.de/en/studies/organising-your-studies/financing-your-studies/",
+          "type": "web"
+        },
+        {
+          "title": "FAQ Studies & Application",
+          "url": "https://www.htw-berlin.de/en/studies/faq-studies-application/",
+          "type": "web"
+        },
+        {
+          "title": "FAQ Studies & Application",
+          "url": "https://www.htw-berlin.de/en/prospective-students/links/faq-fuer-studieninteressierte/",
+          "type": "web"
+        },
+        {
+          "title": "Accepting your study place",
+          "url": "https://www.htw-berlin.de/en/studies/applications/admission-or-refusal/accepting-your-study-place/",
+          "type": "web"
+        },
+        {
+          "title": "Certificates",
+          "url": "https://www.htw-berlin.de/en/organisational-units/central-administrative-departments/student-services/student-service-centre/certificates/",
+          "type": "web"
+        },
+        {
+          "title": "Semester fees for ZbwS study programmes",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/semester-fee/semester-fees-for-zbws-study-programmes/",
+          "type": "web"
+        },
+        {
+          "title": "Student Exchange Programmes at HTW Berlin",
+          "url": "https://www.htw-berlin.de/en/international/wege-an-die-htw-berlin/student-exchange-programmes-at-htw-berlin/",
+          "type": "web"
+        },
+        {
+          "title": "Certificates",
+          "url": "https://www.htw-berlin.de/en/organisational-units/central-administrative-departments/student-services/student-service-centre/certificates/",
+          "type": "web"
+        },
+        {
+          "title": "Withdrawing from your study place",
+          "url": "https://www.htw-berlin.de/en/studies/applications/admission-or-refusal/withdrawing-from-your-study-place/",
+          "type": "web"
+        }
+      ],
+      "confidence_pct": 33,
+      "metadata": null
+    },
+    "timestamp": "2025-11-21T15:30:10.363097"
+  },
+  {
+    "query": "What are the English language requirements?",
+    "response": {
+      "answer": "According to the provided context, specifically [Source 1 - WEB] and [Source 2 - WEB], the English language requirements are as follows:\n\n* For students from India, China, and Vietnam, a German language course certificate/beginners' level B2 is required, even if you wish to subsequently apply for a study programme conducted entirely in English.\n* Additionally, a language certificate in English at A2 level is also required.\n\nFor other students, the language requirements are not specified. However, it's important to note that German is the primary language of instruction used in the Studienkolleg (university preparatory course) for the W-course, as mentioned in [Source 7 - WEB] and [Source 8 - WEB].",
+      "sources": [
+        {
+          "title": "Proof of English proficiency",
+          "url": "https://www.htw-berlin.de/en/studies/applications/application-via-uni-assist/proof-of-english-proficiency/",
+          "type": "web"
+        },
+        {
+          "title": "Proof of English proficiency",
+          "url": "https://www.htw-berlin.de/en/studies/applications/application-via-uni-assist/proof-of-english-proficiency/",
+          "type": "web"
+        },
+        {
+          "title": "Admission requirements",
+          "url": "https://www.htw-berlin.de/en/studies/applications/admission-requirements/",
+          "type": "web"
+        },
+        {
+          "title": "Required documents",
+          "url": "https://www.htw-berlin.de/en/studies/applications/special-cases/changing-study-programme-or-university/required-documents/",
+          "type": "web"
+        },
+        {
+          "title": "Master’s study programmes",
+          "url": "https://www.htw-berlin.de/en/studies/applications/application-via-the-application-portal-of-htw-berlin/masters-study-programmes/",
+          "type": "web"
+        },
+        {
+          "title": "Studienkolleg (university preparatory course)",
+          "url": "https://www.htw-berlin.de/en/studies/applications/special-cases/studienkolleg-university-preparatory-course/",
+          "type": "web"
+        },
+        {
+          "title": "Studienkolleg (university preparatory course)",
+          "url": "https://www.htw-berlin.de/en/studies/applications/special-cases/studienkolleg-university-preparatory-course/",
+          "type": "web"
+        },
+        {
+          "title": "Special rules",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/module-registration/special-rules/#c24836",
+          "type": "web"
+        },
+        {
+          "title": "Special rules",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/module-registration/special-rules/#c24835",
+          "type": "web"
+        },
+        {
+          "title": "Special rules",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/module-registration/special-rules/",
+          "type": "web"
+        }
+      ],
+      "confidence_pct": 41,
+      "metadata": null
+    },
+    "timestamp": "2025-11-21T15:30:28.769192"
+  },
+  {
+    "query": "How do I apply for a Master's degree?",
+    "response": {
+      "answer": "According to the provided sources, you can apply for a Master's degree in the following way:\n\n1. Check if your desired programme has any specific requirements or restrictions. For example, some programmes may require an aptitude test (Source 9) or have limited spots available (Source 7).\n2. If you are applying for a restricted programme (e.g., Maschinenbau), apply via uni-assist (Source 8).\n3. If your desired programme does not require an aptitude test, follow the standard application process:\n\t* Apply directly to HTW Berlin if you have a German higher education entry qualification.\n\t* Apply via uni-assist if you obtained your first academic degree abroad.\n4. Fill out the online application form, and upload the required documents (e.g., degree certificate and transcript of records) as specified in the application process.\n5. Check the specific requirements for your programme, such as any additional tests or assessments that may be necessary.\n\nPlease note that it is essential to follow the correct application procedure and deadlines for your desired programme.",
+      "sources": [
+        {
+          "title": "Master’s study programmes",
+          "url": "https://www.htw-berlin.de/en/studies/applications/application-via-the-application-portal-of-htw-berlin/masters-study-programmes/",
+          "type": "web"
+        },
+        {
+          "title": "Master’s study programmes",
+          "url": "https://www.htw-berlin.de/en/studies/applications/application-via-the-application-portal-of-htw-berlin/masters-study-programmes/",
+          "type": "web"
+        },
+        {
+          "title": "Master",
+          "url": "https://www.htw-berlin.de/en/studies/applications/master/",
+          "type": "web"
+        },
+        {
+          "title": "Admission requirements",
+          "url": "https://www.htw-berlin.de/en/studies/applications/admission-requirements/",
+          "type": "web"
+        },
+        {
+          "title": "Final thesis",
+          "url": "https://www.htw-berlin.de/en/studies/organising-your-studies/examinations-internships/final-thesis/",
+          "type": "web"
+        },
+        {
+          "title": "Final thesis",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/examinations-internships/final-thesis/",
+          "type": "web"
+        },
+        {
+          "title": "Second degree programme",
+          "url": "https://www.htw-berlin.de/en/studies/applications/special-cases/second-degree-programme/",
+          "type": "web"
+        },
+        {
+          "title": "Mandatory aptitude test",
+          "url": "https://www.htw-berlin.de/en/studies/applications/admission-requirements/mandatory-aptitude-test/",
+          "type": "web"
+        },
+        {
+          "title": "Registering for examinations",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/examinations-internships/registering-for-examinations/",
+          "type": "web"
+        }
+      ],
+      "confidence_pct": 42,
+      "metadata": null
+    },
+    "timestamp": "2025-11-21T15:30:31.419938"
+  },
+  {
+    "query": "Is there financial aid or BAföG for students?",
+    "response": {
+      "answer": "According to the sources, yes, there is financial aid and BAföG available for students.\n\nSource 8 mentions that students with children are entitled to a semester ticket subsidy from the study body of HTW Berlin. Additionally, the canteen meals for children are provided at no cost if the child eats together with one studying parent in the canteens of Studierendenwerk Berlin.\n\nSource 9 states that students who receive the German state student grant or loan (BAföG) must inform the relevant authority (the Amt für Ausbildungsförderung) immediately about their de-registration.\n\nIt is likely that there are other forms of financial aid and BAföG available to students at HTW Berlin, but these specific mentions provide some examples.",
+      "sources": [
+        {
+          "title": "Part-time study",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/re-registration/part-time-study/",
+          "type": "web"
+        },
+        {
+          "title": "Part-time study",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/re-registration/part-time-study/",
+          "type": "web"
+        },
+        {
+          "title": "Financing your studies",
+          "url": "https://www.htw-berlin.de/en/studies/organising-your-studies/financing-your-studies/",
+          "type": "web"
+        },
+        {
+          "title": "External leave",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/re-registration/external-leave/",
+          "type": "web"
+        },
+        {
+          "title": "FAQ Studies & Application",
+          "url": "https://www.htw-berlin.de/en/studies/faq-studies-application/",
+          "type": "web"
+        },
+        {
+          "title": "FAQ Studies & Application",
+          "url": "https://www.htw-berlin.de/en/prospective-students/links/faq-fuer-studieninteressierte/",
+          "type": "web"
+        },
+        {
+          "title": "Grades & module certificates",
+          "url": "https://www.htw-berlin.de/en/studies/organising-your-studies/examinations-internships/grades-module-certificates/",
+          "type": "web"
+        },
+        {
+          "title": "Students with children",
+          "url": "https://www.htw-berlin.de/en/organisational-units/central-administrative-departments/human-resources-department/family-support-centre/students-with-children/#c8977",
+          "type": "web"
+        },
+        {
+          "title": "De-registration",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/re-registration/de-registration/#c24741",
+          "type": "web"
+        },
+        {
+          "title": "De-registration",
+          "url": "https://www.htw-berlin.de/en/studies/organising-your-studies/enrolment-re-registration/de-registration/",
+          "type": "web"
+        }
+      ],
+      "confidence_pct": 42,
+      "metadata": null
+    },
+    "timestamp": "2025-11-21T15:30:54.821198"
+  },
+  {
+    "query": "What documents do I need to submit with my application?",
+    "response": {
+      "answer": "According to the sources, the following documents may be required when submitting an application:\n\n1. Final thesis (for Master's study programmes)\n2. Proof of academic degree (for Bachelor's and Master's study programmes)\n3. Completed Bachelor's diploma (for Master's study programmes with 210 ECTS requirement)\n4. Additional selection criteria documents (varies by study programme)\n5. Documents related to additional studies completed outside of your study programme at HTW Berlin (e.g., proof of relevant vocational training or subject-specific professional experience after your Bachelor's degree)\n\nPlease note that the specific requirements may vary depending on the study programme and academic regulations. It is recommended to check with the Admissions Office or Student Service Centre for any additional documentation required for your application.",
+      "sources": [
+        {
+          "title": "Bachelor’s study programmes",
+          "url": "https://www.htw-berlin.de/en/studies/applications/application-via-the-application-portal-of-htw-berlin/bachelors-study-programmes/",
+          "type": "web"
+        },
+        {
+          "title": "Required documents",
+          "url": "https://www.htw-berlin.de/en/studies/applications/special-cases/changing-study-programme-or-university/required-documents/",
+          "type": "web"
+        },
+        {
+          "title": "Application via uni-assist",
+          "url": "https://www.htw-berlin.de/en/studies/applications/application-via-uni-assist/",
+          "type": "web"
+        },
+        {
+          "title": "Required documents",
+          "url": "https://www.htw-berlin.de/en/studies/applications/special-cases/changing-study-programme-or-university/required-documents/",
+          "type": "web"
+        },
+        {
+          "title": "Refugees: Pathways into studying",
+          "url": "https://www.htw-berlin.de/en/international/pathways-to-htw-berlin/refugees-pathways-into-studying/",
+          "type": "web"
+        },
+        {
+          "title": "Refugees: Pathways into studying",
+          "url": "https://www.htw-berlin.de/en/international/incomings/refugees/studying-at-htw-berlin/",
+          "type": "web"
+        },
+        {
+          "title": "Final thesis",
+          "url": "https://www.htw-berlin.de/en/studies/organising-your-studies/examinations-internships/final-thesis/",
+          "type": "web"
+        },
+        {
+          "title": "Final thesis",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/examinations-internships/final-thesis/",
+          "type": "web"
+        },
+        {
+          "title": "Master’s study programmes",
+          "url": "https://www.htw-berlin.de/en/studies/applications/application-via-the-application-portal-of-htw-berlin/masters-study-programmes/",
+          "type": "web"
+        },
+        {
+          "title": "Enrolment",
+          "url": "https://www.htw-berlin.de/en/studies/applications/enrolment/",
+          "type": "web"
+        }
+      ],
+      "confidence_pct": 43,
+      "metadata": null
+    },
+    "timestamp": "2025-11-21T15:30:57.240924"
+  },
+  {
+    "query": "Are there any entrance exams for Master's programs?",
+    "response": {
+      "answer": "According to the information available on the HTW Berlin website, some design and cultural studies Master's programs require an aptitude test (Source 10). This is indicated in the \"Mandatory aptitude test\" section.\n\nSo, to answer your question: yes, there are entrance exams for certain Master's programs at HTW Berlin. However, it's essential to check the specific requirements for each program you're interested in applying to, as not all programs may require an aptitude test.",
+      "sources": [
+        {
+          "title": "Registering for examinations",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/examinations-internships/registering-for-examinations/",
+          "type": "web"
+        },
+        {
+          "title": "Registering for examinations",
+          "url": "https://www.htw-berlin.de/en/studies/organising-your-studies/examinations-internships/registering-for-examinations/",
+          "type": "web"
+        },
+        {
+          "title": "Admission requirements",
+          "url": "https://www.htw-berlin.de/en/studies/applications/admission-requirements/",
+          "type": "web"
+        },
+        {
+          "title": "Master’s study programmes",
+          "url": "https://www.htw-berlin.de/en/studies/applications/application-via-the-application-portal-of-htw-berlin/masters-study-programmes/",
+          "type": "web"
+        },
+        {
+          "title": "Division of Continuing Education",
+          "url": "https://www.htw-berlin.de/en/organisational-units/division-of-continuing-education/",
+          "type": "web"
+        },
+        {
+          "title": "Academic calendar: summer semester 2025",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/academic-calendar/#c112977",
+          "type": "web"
+        },
+        {
+          "title": "Academic calendar: summer semester 2025",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/academic-calendar/#c112986",
+          "type": "web"
+        },
+        {
+          "title": "Academic calendar: summer semester 2025",
+          "url": "https://www.htw-berlin.de/en/studies/organising-your-studies/academic-calendar/",
+          "type": "web"
+        },
+        {
+          "title": "Academic calendar: summer semester 2025",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/academic-calendar/",
+          "type": "web"
+        },
+        {
+          "title": "Mandatory aptitude test",
+          "url": "https://www.htw-berlin.de/en/studies/applications/admission-requirements/mandatory-aptitude-test/",
+          "type": "web"
+        }
+      ],
+      "confidence_pct": 44,
+      "metadata": null
+    },
+    "timestamp": "2025-11-21T15:31:06.398473"
+  },
+  {
+    "query": "Can I study part-time at HTW Berlin?",
+    "response": {
+      "answer": "According to the sources, it seems that HTW Berlin offers part-time studies in some degree programs.\n\nSource 5: \"Hans\" - AI assistant for Student Services and degree programmes at HTW Berlin says:\n\n\"If you are interested in studying part-time, please note that not all degree programs are available as part-time studies. However, we do offer some part-time Bachelor's degree programs.\"\n\nSource 6: Application periods page mentions:\n\n\"You would like to apply for a degree programme without admission restrictions, a degree programme with an aptitude test, a part-time Bachelor's degree programme or a German-language continuing education Master's degree programme.\"\n\nSo, it appears that HTW Berlin does offer part-time studies in certain degree programs. However, it's always best to check the specific requirements and availability for each program.\n\nLet me know if you have any other questions!",
+      "sources": [
+        {
+          "title": "Part-time study",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/re-registration/part-time-study/",
+          "type": "web"
+        },
+        {
+          "title": "FAQ Studies & Application",
+          "url": "https://www.htw-berlin.de/en/prospective-students/links/faq-fuer-studieninteressierte/",
+          "type": "web"
+        },
+        {
+          "title": "FAQ Studies & Application",
+          "url": "https://www.htw-berlin.de/en/studies/faq-studies-application/",
+          "type": "web"
+        },
+        {
+          "title": "Part-time study",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/re-registration/part-time-study/",
+          "type": "web"
+        },
+        {
+          "title": "Division of Continuing Education",
+          "url": "https://www.htw-berlin.de/en/organisational-units/division-of-continuing-education/",
+          "type": "web"
+        },
+        {
+          "title": "Semester fee",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/semester-fee/",
+          "type": "web"
+        },
+        {
+          "title": "Prospective students",
+          "url": "https://www.htw-berlin.de/en/prospective-students/",
+          "type": "web"
+        },
+        {
+          "title": "Application periods",
+          "url": "https://www.htw-berlin.de/en/studies/applications/application-periods/",
+          "type": "web"
+        },
+        {
+          "title": "Refugees: Pathways into studying",
+          "url": "https://www.htw-berlin.de/en/international/incomings/refugees/studying-at-htw-berlin/",
+          "type": "web"
+        },
+        {
+          "title": "Refugees: Pathways into studying",
+          "url": "https://www.htw-berlin.de/en/international/pathways-to-htw-berlin/refugees-pathways-into-studying/",
+          "type": "web"
+        }
+      ],
+      "confidence_pct": 34,
+      "metadata": null
+    },
+    "timestamp": "2025-11-21T15:31:17.053259"
+  },
+  {
+    "query": "What are the admission requirements for international students?",
+    "response": {
+      "answer": "According to the information provided on HTW Berlin's website, the admission requirements for international students are as follows:\n\n* If you have a higher education entrance qualification from abroad, your application will be pre-checked by uni-assist.\n* Please submit all necessary application documents by the following dates:\n\t+ For summer semester: 31 December\n\t+ For winter semester: 30 June\n* uni-assist will assess whether your foreign certificates meet the standards of the Standing Conference of the Ministers of Education and Cultural Affairs (Central Office for Foreign Education / Zentralstelle für ausländisches Bildungswesen – ZaB) and are sufficient for admission to higher education in Germany.\n* If you are unable to provide all of your certificates from your country of origin, uni-assist will forward your application to HTW Berlin after you have proven your refugee status with a copy of your residence permit.\n* HTW Berlin will then decide whether your application can be considered.\n* If the pre-check performed by uni-assist determines that your foreign education certificates do not give you direct entitlement to study at HTW Berlin, you can apply for a preparatory course called a Studienkolleg (indirect entitlement to study).\n\nIt's also important to note that international students may need to provide additional documentation, such as proof of German language proficiency, and may be required to take a language proficiency test (e.g. DSH exam).",
+      "sources": [
+        {
+          "title": "Proof of English proficiency",
+          "url": "https://www.htw-berlin.de/en/studies/applications/application-via-uni-assist/proof-of-english-proficiency/",
+          "type": "web"
+        },
+        {
+          "title": "Admission requirements",
+          "url": "https://www.htw-berlin.de/en/studies/applications/admission-requirements/",
+          "type": "web"
+        },
+        {
+          "title": "Proof of English proficiency",
+          "url": "https://www.htw-berlin.de/en/studies/applications/application-via-uni-assist/proof-of-english-proficiency/",
+          "type": "web"
+        },
+        {
+          "title": "Master’s study programmes",
+          "url": "https://www.htw-berlin.de/en/studies/applications/application-via-the-application-portal-of-htw-berlin/masters-study-programmes/",
+          "type": "web"
+        },
+        {
+          "title": "Studienkolleg (university preparatory course)",
+          "url": "https://www.htw-berlin.de/en/studies/applications/special-cases/studienkolleg-university-preparatory-course/",
+          "type": "web"
+        },
+        {
+          "title": "Refugees: Pathways into studying",
+          "url": "https://www.htw-berlin.de/en/international/incomings/refugees/studying-at-htw-berlin/",
+          "type": "web"
+        },
+        {
+          "title": "Refugees: Pathways into studying",
+          "url": "https://www.htw-berlin.de/en/international/pathways-to-htw-berlin/refugees-pathways-into-studying/",
+          "type": "web"
+        },
+        {
+          "title": "Required documents",
+          "url": "https://www.htw-berlin.de/en/studies/applications/special-cases/changing-study-programme-or-university/required-documents/",
+          "type": "web"
+        },
+        {
+          "title": "Advice & Service",
+          "url": "https://www.htw-berlin.de/en/international/beratung-service/",
+          "type": "web"
+        },
+        {
+          "title": "Application via uni-assist",
+          "url": "https://www.htw-berlin.de/en/studies/applications/application-via-uni-assist/",
+          "type": "web"
+        }
+      ],
+      "confidence_pct": 42,
+      "metadata": null
+    },
+    "timestamp": "2025-11-21T15:31:27.995955"
+  },
+  {
+    "query": "How long does it take to process my application?",
+    "response": {
+      "answer": "According to the information provided, the processing time for your application is not specified. However, it is mentioned that you can track the status of your application on hochschulstart.de (in German) and that the General Student Advisory Service will provide answers to brief questions and be available for longer consultation sessions on (030) 5019-2254: Mondays and Fridays: 11 a.m. - 1 p.m., Wednesdays: 2 p.m. - 4 p.m.\n\nPlease note that this information is based on the provided sources, which are:\n\nSource 8: General Student Advisory Service\nSource 5: Part-time study\n\nIf you have any further questions or concerns about your application, please feel free to ask, and I'll do my best to help you.",
+      "sources": [
+        {
+          "title": "Admission or refusal",
+          "url": "https://www.htw-berlin.de/en/studies/applications/admission-or-refusal/",
+          "type": "web"
+        },
+        {
+          "title": "Application via uni-assist",
+          "url": "https://www.htw-berlin.de/en/studies/applications/application-via-uni-assist/",
+          "type": "web"
+        },
+        {
+          "title": "FAQs for students",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/module-registration/faqs-for-students/",
+          "type": "web"
+        },
+        {
+          "title": "Final thesis",
+          "url": "https://www.htw-berlin.de/en/studies/organising-your-studies/examinations-internships/final-thesis/",
+          "type": "web"
+        },
+        {
+          "title": "Final thesis",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/examinations-internships/final-thesis/",
+          "type": "web"
+        },
+        {
+          "title": "General Student Advisory Service",
+          "url": "https://www.htw-berlin.de/en/organisational-units/central-offices/centre-for-student-advisory-career-services/general-student-advisory-service/",
+          "type": "web"
+        },
+        {
+          "title": "Part-time study",
+          "url": "https://www.htw-berlin.de/en/studies/study-organisation/re-registration/part-time-study/",
+          "type": "web"
+        },
+        {
+          "title": "Students with children",
+          "url": "https://www.htw-berlin.de/en/organisational-units/central-administrative-departments/human-resources-department/family-support-centre/students-with-children/#c8977",
+          "type": "web"
+        }
+      ],
+      "confidence_pct": 46,
+      "metadata": null
+    },
+    "timestamp": "2025-11-21T15:31:37.830567"
+  }
+]

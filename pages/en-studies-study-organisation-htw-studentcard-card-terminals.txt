@@ -1,0 +1,25 @@
+Card terminals
+Table of contents
+There are two different types of card terminals for managing your HTW StudentCard:
+Card issuing terminals
+Use the QR code to obtain your StudentCard from one of the card issuing terminals. You need to use a card issuing terminal for the following purposes:
+Your first StudentCard:If you are a new student, you will find your personal QR code in the“LSF” campus management systemunder the menu item: “QR-Code StudentCard”. Log in to the LSF system via your centralHTW account. You will receive the login details for this in a welcome email which will be sent to your private email address.Note:The LSF system does not use the same login details which you used for your online application.
+To issue areplacement cardbecause it has been lost or if the card is defective (please get a new QR code from theStudent Service Centre).
+Location:
+Treskowallee campus, building A, in front of room 149 (2 terminals)
+Wilhelminenhof campus, building F, entrance F1 (2 terminals)
+Card validation terminals
+You must use the card validation terminals every semesterto update your current student status and the VBB (public transport) details on the back of the StudentCard. You do not need a new StudentCard. The old information will be removed by the terminal and overwritten with the current details. As soon as you have successfully re-registered for the new semester, you can then validate your card before the start of the new semester. The old and new semester will then be printed on the back of the card.
+Locations:
+Treskowallee campus, building A, in front of room 147 (2 terminals)
+Treskowallee campus, building D, canteen (Mensa) foyer
+Wilhelminenhof campus, building F, entrance F1 (2 terminals)
+Wilhelminenhof campus, building G, first floor (2 terminals, front of the lifts)
+Current status of the terminals
+The page can be accessed within the HTW Berlin network or with the help of a VPN connection. Here you can check whether the devices are currently available.
+Themen
+Information for
+About HTW Berlin
+Popular pages
+Portals
+Service

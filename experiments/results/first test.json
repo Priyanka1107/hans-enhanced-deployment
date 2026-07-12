@@ -1,0 +1,82 @@
+[
+  {
+    "query": "What is the application deadline for Master's programs?",
+    "response": {
+      "error": "422 Client Error: Unprocessable Entity for url: http://localhost:8080/ask",
+      "query": "What is the application deadline for Master's programs?"
+    },
+    "timestamp": "2025-11-20T15:38:06.202546"
+  },
+  {
+    "query": "How much is the semester fee at HTW Berlin?",
+    "response": {
+      "error": "422 Client Error: Unprocessable Entity for url: http://localhost:8080/ask",
+      "query": "How much is the semester fee at HTW Berlin?"
+    },
+    "timestamp": "2025-11-20T15:38:06.205184"
+  },
+  {
+    "query": "What are the English language requirements?",
+    "response": {
+      "error": "422 Client Error: Unprocessable Entity for url: http://localhost:8080/ask",
+      "query": "What are the English language requirements?"
+    },
+    "timestamp": "2025-11-20T15:38:06.207826"
+  },
+  {
+    "query": "How do I apply for a Master's degree?",
+    "response": {
+      "error": "422 Client Error: Unprocessable Entity for url: http://localhost:8080/ask",
+      "query": "How do I apply for a Master's degree?"
+    },
+    "timestamp": "2025-11-20T15:38:06.211696"
+  },
+  {
+    "query": "Is there financial aid or BAföG for students?",
+    "response": {
+      "error": "422 Client Error: Unprocessable Entity for url: http://localhost:8080/ask",
+      "query": "Is there financial aid or BAföG for students?"
+    },
+    "timestamp": "2025-11-20T15:38:06.213543"
+  },
+  {
+    "query": "What documents do I need to submit with my application?",
+    "response": {
+      "error": "422 Client Error: Unprocessable Entity for url: http://localhost:8080/ask",
+      "query": "What documents do I need to submit with my application?"
+    },
+    "timestamp": "2025-11-20T15:38:06.215987"
+  },
+  {
+    "query": "Are there any entrance exams for Master's programs?",
+    "response": {
+      "error": "422 Client Error: Unprocessable Entity for url: http://localhost:8080/ask",
+      "query": "Are there any entrance exams for Master's programs?"
+    },
+    "timestamp": "2025-11-20T15:38:06.218037"
+  },
+  {
+    "query": "Can I study part-time at HTW Berlin?",
+    "response": {
+      "error": "422 Client Error: Unprocessable Entity for url: http://localhost:8080/ask",
+      "query": "Can I study part-time at HTW Berlin?"
+    },
+    "timestamp": "2025-11-20T15:38:06.221223"
+  },
+  {
+    "query": "What are the admission requirements for international students?",
+    "response": {
+      "error": "422 Client Error: Unprocessable Entity for url: http://localhost:8080/ask",
+      "query": "What are the admission requirements for international students?"
+    },
+    "timestamp": "2025-11-20T15:38:06.223248"
+  },
+  {
+    "query": "How long does it take to process my application?",
+    "response": {
+      "error": "422 Client Error: Unprocessable Entity for url: http://localhost:8080/ask",
+      "query": "How long does it take to process my application?"
+    },
+    "timestamp": "2025-11-20T15:38:06.225329"
+  }
+]

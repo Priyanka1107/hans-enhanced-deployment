@@ -1,0 +1,44 @@
+Elective courses
+Table of contents
+←back to course choice
+System Engineering [1.4 - SE Systems Engineering (6194130)]
+ECTS: 5
+Students gain knowledge and abilities in basic methods and tasks of system engineering. They are able to understand and analyse the taught data sets and methods and are able to sort them and put them inot perspective.Students learn about:- methods and techniques of system analysis- system definition and structure- proces of problem solving, management and optimisationStudents are able to analyse and describe systems and design target models.
+System Automation [2.4 - AUTO Automatisierung von Systemen (6194180)]
+ECTS: 5
+CNC, Rapid Prototyping, Automatic measuring and testing device, automatic storage, virtual environments
+Management of Application Development [B3.4 Modellierung von Anwendungssystemen (6122210) + B3.4 Modellierung von Anwendungssystemen (6122212)]
+ECTS: 6
+Students have the ability to successfully solve realistic, if necessary interdisciplinary tasks from the field of application development management in a team. They gain practical project experience in application-oriented projects, if necessary, with the involvement of practical partners. You have knowledge of the current scientific status in research-oriented projects.
+Project Management for Application System Development [P3-MASYS: Projekt Management der Anwendungssystementwicklung (6130201)]
+ECTS: 5
+Students have the ability to successfully solve realistic, possibly interdisciplinary tasks from the field of application development management in a team. They gain practical project experience in application-orientated projects, possibly with the involvement of practice partners. You will have knowledge of the current state of the art in research-orientated projects.
+M11 Seminar (9234191)
+ECTS: 5
+This  course is designed to explore the applications of deep learning  algorithms in finance, leveraging large datasets and computational  power. The course provides hands-on experience by implementing  state-of-the-art deep learning algorithms to solve complex financial  problems. The grade for the course is based on three assignements:  paper, code submission in R or Python, and a presentation. Key topics  include various neural network models like Feedforward, Bayesian,  Recurrent, GANs, LSTM, CNN, and techniques in reinforcement learning,  applied to areas such as financial trading, portfolio analysis, and risk  management.
+WT3: Didactics of Media (9200451)
+ECTS: 5
+B2B and Online Marketing (W3-B2BOM: Management von B2B Geschäftsbeziehungen und Online-Marketing (6130151)
+ECTS: 5
+Main topics:- Online marketing and opinion formation on the Internet, Fake News.- Online marketing and fairness of AI systems- Auditing of AI systems, e.g. with regard to fairness.The course takes place as a research seminar. You are expected to read  the provided English-language scientific publications and be able to  discuss them.
+You are expected to read  the provided English-language scientific publications regularly and to  be able to discuss them. The examination performance consists of  semester-long submissions/short presentations and a term paper.
+Business Administration Applications [M1.1 Betriebswirtschaftliche Anwendungen 1 (6134111) + Betriebswirtschaftliche Anwendungen (6134112)]
+ECTS: 5
+Students have the ability to analyse and model complex, integrated  business processes. They are able to realise integrated industry- and  company-specific business processes with complex business application  systems. To this end, they acquire business management and  methodological knowledge as well as practical skills for selecting and  customising standard software. Students also acquire the ability to  evaluate current trends as well as legal, technological and economic  framework conditions on the basis of scientific literature and their own  practical experience. They are able to present their solutions and  assessments both in writing and orally on a scientific basis.
+Interdisciplinary Additional Courses ("AWE")
+ECTS: 2
+Every Semester students are able to choose 1-2 AWE from a great range of general courses in order to complement their regular curriculum courses. You will be able to see the full range of optional courses during thecourse registration period. As not all topics are published yet at the time of the application, please simply select "AWE - General Course" on the learning agreement and then apply for your specific General Course(s) before the semester starts. Please note that "AWE" have limited places, acceptance is not guaranteed.
+Current list of AWE for the winter semester 2024/25:
+AWE: Modern Mythology: Technology and Cultural Business Design
+AWE: The economic of world peace (00313592)
+AWE: The economic of world peace (00313592)
+Language Classes
+ECTS 4:
+Our language department offers a wide range of courses - from General German classes, focusing on the basics of grammar and conversation, to more advanced German courses with specializations in the fields of Design, Business and Technology. Based on your German level determined in the intensive course at the beginning of the semester, you may enroll in a German language class during the semester.
+You may also choose other foreign language classes. For more information, please checkhere.
+Themen
+Information for
+About HTW Berlin
+Popular pages
+Portals
+Service

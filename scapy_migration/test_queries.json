@@ -1,0 +1,102 @@
+[
+  {
+    "query": "What is the application deadline for winter semester?",
+    "expected_object_types": ["application_process", "deadline_rule", "degree_program"]
+  },
+  {
+    "query": "How much is the semester fee at HTW Berlin?",
+    "expected_object_types": ["fees_funding_rule"]
+  },
+  {
+    "query": "What English language tests are accepted for Master's programs?",
+    "expected_object_types": ["language_proof_rule", "degree_program"]
+  },
+  {
+    "query": "How do I apply for student housing accommodation?",
+    "expected_object_types": ["application_process", "special_category"]
+  },
+  {
+    "query": "What support is available for students with disabilities?",
+    "expected_object_types": ["accessibility_support"]
+  },
+  {
+    "query": "What are the admission requirements for Bachelor programs?",
+    "expected_object_types": ["degree_program", "application_route_rule"]
+  },
+  {
+    "query": "How do I enroll after receiving my acceptance letter?",
+    "expected_object_types": ["application_process"]
+  },
+  {
+    "query": "What is the TOEFL score required for International Business?",
+    "expected_object_types": ["language_proof_rule", "degree_program"]
+  },
+  {
+    "query": "Can I get financial aid or scholarships?",
+    "expected_object_types": ["fees_funding_rule"]
+  },
+  {
+    "query": "What documents do I need to submit with my application?",
+    "expected_object_types": ["application_process", "application_route_rule"]
+  },
+  {
+    "query": "How do I apply through uni-assist?",
+    "expected_object_types": ["application_process", "application_route_rule"]
+  },
+  {
+    "query": "What is the DSH exam and how do I register?",
+    "expected_object_types": ["language_proof_rule"]
+  },
+  {
+    "query": "When does the winter semester start?",
+    "expected_object_types": ["deadline_rule", "special_category"]
+  },
+  {
+    "query": "What Bachelor's programs are taught in English?",
+    "expected_object_types": ["degree_program", "overview_navigation"]
+  },
+  {
+    "query": "How do I register for courses and modules?",
+    "expected_object_types": ["application_process", "curriculum_page"]
+  },
+  {
+    "query": "What are the requirements for exchange students?",
+    "expected_object_types": ["application_route_rule", "degree_program"]
+  },
+  {
+    "query": "Do I need health insurance to study at HTW Berlin?",
+    "expected_object_types": ["application_route_rule", "application_process"]
+  },
+  {
+    "query": "How can I contact the international office?",
+    "expected_object_types": ["application_process", "faq_support"]
+  },
+  {
+    "query": "What is the deadline for re-registration?",
+    "expected_object_types": ["deadline_rule", "application_process"]
+  },
+  {
+    "query": "Are there any fees for late enrollment?",
+    "expected_object_types": ["fees_funding_rule"]
+  },
+  {
+    "query": "How do I prove my German language proficiency?",
+    "expected_object_types": ["language_proof_rule"]
+  },
+  {
+    "query": "What is the Information Technology Bachelor program about?",
+    "expected_object_types": ["degree_program", "curriculum_page"]
+  },
+  {
+    "query": "Can I study part-time at HTW Berlin?",
+    "expected_object_types": ["special_category", "application_route_rule"]
+  },
+  {
+    "query": "What support services are available for families with children?",
+    "expected_object_types": ["family_support", "accessibility_support"]
+  },
+  {
+    "query": "How do I apply for a leave of absence?",
+    "expected_object_types": ["application_process", "application_route_rule"]
+  }
+]

@@ -1,0 +1,42 @@
+# Docker ignore file for HANS
+# Exclude files not needed in Docker context
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Environment
+.env
+.venv
+env/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Legacy files (keep on host for comparison)
+web_pages_embeddings.pkl
+embeddings_cache.pkl
+
+# Large data files (mounted as volumes instead)
+*.pkl
+*.json
+*.xlsx
+
+# Git
+.git/
+.gitignore

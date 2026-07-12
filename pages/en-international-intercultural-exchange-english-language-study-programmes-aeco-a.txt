@@ -1,0 +1,67 @@
+Core Courses in Winter and Summer Semester
+Table of contents
+Human Resource Management
+ECTS 5:
+Task: Discussion of leadership, corporate culture, communication and collaboration and the implications on hybrid workplace concepts
+Final result: Developing a workplace design that fits needs and requirements of HRM
+Content:
+Researching, discussing and reflecting mega trend New Work
+Theoretical underpinning of changing needs in the context of leadership, organizational culture, communication and collaboration
+Research insights and best practices in the field of hybrid working environments
+Defining and analysing challenges with focus on specific target groups (problem space)
+Developing and reasoning approaches and chances (solution space)
+Presenting of findings of a research based workplace concept
+Project Management
+ECTS 5:
+Task: Management and resource planning of construction project
+Final result: BIM based project planning of construction project in order to realize the chosen usage scenario
+Contents:
+Define the scope of the project and manage risks- Planning for refurbishment
+Accordingly identify the required tasks and resources
+Assign resources to tasks, estimate the costs and define how to monitor and control the project
+According to the task definitions, identify how the method of Building Infromation Modelling can support your case study
+According to this identification, develop a Building Information Model (BIMs) in order to support different BIM use cases, like visualisation/documenation of the case study (reconstruction process)
+Submit the Final Project Group Work Report, including Project Plan, Building Information Model
+Cost & Controlling in Facility Management & Construction
+ECTS 5:
+Task: Definition of development concept and calculation of project costs
+Final result: Definition of usage scenario; benchmarking of costs calculation as well as alternative investment strategies
+Contents:
+Analysis of the site and objectives of the company à usage scenarios
+Benchmarking of project costs/earnings (e.g. necessary construction works, equipment, HR etc.)
+Calculation of project costs, development of investment strategy based on investment calculation
+Evaluation of results based on the giving objectives
+Submission of calculations, report and presentation slides
+Business Process Management
+ECTS 5:
+Task: Design of standard business process supported by business applications
+Final result: An optimized standard business process to be used for regular operations with support of IT systems (CAFM / ERP)
+Contents:
+Analyse given information and define information needs
+Develop a process draft based on Brainstorming methods
+Develop a target process design considering optimization potentials
+Align IT support to process and responsibilities to process design (RASCI)
+Create ARIS models according to your solution (BPMN process, organigram, process & information map)
+Prepare final report explaining optimized process, including process models and screenshots of IT support
+Interdisciplinary Additional Courses ("AWE")
+ECTS: 2
+Every Semester students are able to choose 1-2 AWE from a great range of general courses in order to complement their regular curriculum courses. You will be able to see the full range of optional courses during thecourse registration period. As not all topics are published yet at the time of the application, please simply select "AWE - General Course" on the learning agreement and then apply for your specific General Course(s) before the semester starts. Please note that "AWE" have limited places, acceptance is not guaranteed.
+Some examples of General Courses taught in English from previous semesters are:
+Making Music with the Synthesizer
+International Standardization
+Design Thinking and Human Values
+Becoming a Global Graduate
+Introduction to Japanese Culture
+Additionally around 70-80 varying General Courses are offered in German (B2 German recommended) every semester, such as:
+Wissenschaftliches Schreiben und Präsentationstechniken
+Rhetorik
+Blockchain-Workshop
+Energiespeichersysteme
+Soft Skills im Dienstleistungsmanagement
+Rendering-Seminar (Automobildesign)
+Themen
+Information for
+About HTW Berlin
+Popular pages
+Portals
+Service

@@ -1,0 +1,90 @@
+Bootstrap: docker
+From: python:3.11-slim
+
+%labels
+    Author HTW Berlin
+    Version 1.0.0
+    Description HANS - HTW Berlin Student Services Assistant
+
+%help
+    HANS - HTW Berlin Student Services Assistant
+    
+    This container provides a database-backed RAG system with:
+    - PostgreSQL + pgvector for vector storage
+    - BAAI/bge-base-en-v1.5 embeddings (CPU-only)
+    - Remote Ollama llama3:8b generation
+    - FastAPI web service for staff access
+    
+    Usage:
+      apptainer run --app ingest hans.sif --force
+      apptainer run --app console hans.sif
+      apptainer run --app api hans.sif
+      apptainer run --app gui hans.sif
+
+%post
+    # Set proxy environment for package installations
+    export HTTP_PROXY="${HTTP_PROXY:-}"
+    export HTTPS_PROXY="${HTTPS_PROXY:-}"
+    export NO_PROXY="${NO_PROXY:-}"
+    
+    # Update system and install dependencies
+    apt-get update && apt-get install -y \
+        git \
+        build-essential \
+        libpq-dev \
+        curl \
+        ca-certificates \
+        && rm -rf /var/lib/apt/lists/*
+    
+    # Create application directory
+    mkdir -p /opt/hans
+    
+    # Copy repository contents
+    cp -r . /opt/hans/
+    
+    # Set working directory
+    cd /opt/hans
+    
+    # Install Python dependencies with proxy support
+    pip install --upgrade pip
+    pip install -r requirements.txt
+    
+    # Ensure scripts are executable
+    chmod +x /opt/hans/scripts/*.py
+    chmod +x /opt/hans/*.py
+
+%environment
+    # Preserve proxy settings for runtime
+    export HTTP_PROXY="${HTTP_PROXY:-}"
+    export HTTPS_PROXY="${HTTPS_PROXY:-}"
+    export NO_PROXY="${NO_PROXY:-}"
+    
+    # Python path
+    export PYTHONPATH="/opt/hans:$PYTHONPATH"
+    
+    # Working directory
+    export HANS_HOME="/opt/hans"
+
+%runscript
+    echo "HANS - HTW Berlin Student Services Assistant"
+    echo "Use --app <name> to run specific applications:"
+    echo "  ingest  - Build content database"
+    echo "  console - Console interface"
+    echo "  api     - HTTP API server"
+    echo "  gui     - GUI interface (X11 required)"
+
+%apprun ingest
+    cd /opt/hans
+    exec python /opt/hans/scripts/build_content_db.py "$@"
+
+%apprun console
+    cd /opt/hans
+    exec python /opt/hans/launch_assistant_db.py
+
+%apprun api
+    cd /opt/hans
+    exec python /opt/hans/api_server.py
+
+%apprun gui
+    cd /opt/hans
+    exec python /opt/hans/htw_assistant_gui_db.py

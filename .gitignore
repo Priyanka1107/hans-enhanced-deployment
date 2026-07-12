@@ -1,0 +1,25 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+.env
+runtime_data/
+logs/
+*.log
+
+checkpoints/
+backups/
+
+*.tar
+*.zip
+
+requirements-installed.txt
+
+# Local database/data artifacts
+postgres-data/
+data/postgres/
+
+# Optional IDE files
+.vscode/
+.idea/
