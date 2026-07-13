@@ -1,7 +1,7 @@
 schema_version: 1
 
 database:
-  url: "postgresql://hans_enhanced:change_me@127.0.0.1:5434/hans_enhanced"
+  url: "postgresql://hans_enhanced:hans_enhanced_dev@127.0.0.1:5434/hans_enhanced"
 
 paths:
   web_json_dir: "scrape/htw_student_data"
@@ -34,12 +34,13 @@ retrieval:
 runtime:
   ollama_base_url: "https://f2ki-h100-1.f2.htw-berlin.de:11435"
   ollama_model: "qwen3:32b"
-  ollama_timeout: 300
+  ollama_timeout: 420
 
   # Keep false only during development if HTW currently uses a
   # certificate that cannot yet be verified.
   # Production should use true with the correct HTW CA certificate.
   verify_ssl: true
+  some_existing_setting: existing_value
 
 email_assistant:
   enabled: true
