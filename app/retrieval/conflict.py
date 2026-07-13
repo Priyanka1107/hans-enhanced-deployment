@@ -47,8 +47,23 @@ def detect_and_resolve_conflicts(
 
     for document in documents:
         category = str(
-            document.get("category") or "uncategorized"
-        )
+            document.get("category")
+            or document.get("metadata", {}).get("topic_id")
+            or ""
+        ).strip()
+
+        # Documents without a real category must not all be grouped together.
+        # Give each uncategorised document its own group.
+        if not category:
+            unique_part = str(
+                document.get("source_url")
+                or document.get("url")
+                or document.get("id")
+                or document.get("object_id")
+                or id(document)
+            )
+
+            category = f"uncategorized::{unique_part}"
         by_category.setdefault(category, []).append(document)
 
     conflicts: List[Dict[str, Any]] = []
