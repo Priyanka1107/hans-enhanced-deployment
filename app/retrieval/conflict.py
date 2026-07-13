@@ -1,84 +1,165 @@
-# app/conflict.py
 from __future__ import annotations
+
 from datetime import datetime
-from typing import Dict, List, Tuple, Any
+from typing import Any, Dict, List, Tuple
 
-from app.config import config
+from app.settings import settings
 
-def _parse_dt(s: str) -> datetime:
-    # Accept ISO strings; fall back to "very old" if missing/bad
+
+def _parse_dt(value: str) -> datetime:
+    """
+    Parse an ISO datetime value.
+
+    Missing or invalid values are treated as very old so that newer,
+    better-maintained sources are preferred.
+    """
     try:
-        return datetime.fromisoformat(s.replace("Z", "+00:00"))
-    except Exception:
+        return datetime.fromisoformat(
+            str(value or "").replace("Z", "+00:00")
+        )
+    except (TypeError, ValueError):
         return datetime(1970, 1, 1)
 
-def detect_and_resolve_conflicts(documents: List[Dict[str, Any]]) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+
+def detect_and_resolve_conflicts(
+    documents: List[Dict[str, Any]],
+) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
     """
-    Input: reranked docs (list of dicts with keys like:
-        id, title, content, source_url, category, object_type, last_updated,
-        is_canonical (bool), priority (int)
-    Output:
-        final_docs (same structure, may add conflict_alternatives)
-        conflicts (list of conflict descriptions)
+    Detect potential freshness conflicts and select the strongest source.
+
+    Expected document fields may include:
+    - id
+    - title
+    - content
+    - source_url
+    - category
+    - object_type
+    - last_updated
+    - is_canonical
+    - priority
+
+    Returns:
+    - final_documents
+    - conflicts
     """
 
-    # Group by category (or fallback group if missing)
-    by_cat: Dict[str, List[Dict[str, Any]]] = {}
-    for d in documents:
-        cat = d.get("category") or "uncategorized"
-        by_cat.setdefault(cat, []).append(d)
+    by_category: Dict[str, List[Dict[str, Any]]] = {}
+
+    for document in documents:
+        category = str(
+            document.get("category") or "uncategorized"
+        )
+        by_category.setdefault(category, []).append(document)
 
     conflicts: List[Dict[str, Any]] = []
-    chosen: List[Dict[str, Any]] = []
-    leftovers: List[Dict[str, Any]] = []
+    chosen_documents: List[Dict[str, Any]] = []
+    remaining_documents: List[Dict[str, Any]] = []
 
-    for cat, docs in by_cat.items():
-        if len(docs) == 1:
-            leftovers.append(docs[0])
+    for category, category_documents in by_category.items():
+        if len(category_documents) == 1:
+            remaining_documents.append(category_documents[0])
             continue
 
-        # Detect potential "freshness conflict"
-        dts = [_parse_dt(x.get("last_updated", "")) for x in docs]
-        gap_days = (max(dts) - min(dts)).days if dts else 0
+        dates = [
+            _parse_dt(
+                str(document.get("last_updated") or "")
+            )
+            for document in category_documents
+        ]
 
-        # Only call it a conflict if the gap is large (default 180 days used in your doc examples)
+        gap_days = (
+            (max(dates) - min(dates)).days
+            if dates
+            else 0
+        )
+
         if gap_days > 180:
-            conflicts.append({
-                "type": "timestamp_conflict",
-                "category": cat,
-                "doc_ids": [x.get("id") for x in docs],
-                "gap_days": gap_days,
-                "oldest": min(dts).isoformat(),
-                "newest": max(dts).isoformat(),
-                "message": f"Multiple sources in '{cat}' differ in recency by {gap_days} days; using canonical/newest rule."
-            })
+            conflicts.append(
+                {
+                    "type": "timestamp_conflict",
+                    "category": category,
+                    "doc_ids": [
+                        document.get("id")
+                        for document in category_documents
+                    ],
+                    "gap_days": gap_days,
+                    "oldest": min(dates).isoformat(),
+                    "newest": max(dates).isoformat(),
+                    "message": (
+                        f"Multiple sources in '{category}' differ "
+                        f"in recency by {gap_days} days; using "
+                        "canonical, freshness and priority rules."
+                    ),
+                }
+            )
 
-            # Resolve: pick best doc
-            def score(x: Dict[str, Any]):
+            def score(
+                document: Dict[str, Any],
+            ) -> tuple[bool, datetime, int, int]:
                 return (
-                    bool(x.get("is_canonical", False)),
-                    _parse_dt(x.get("last_updated", "")),
-                    config.OBJECT_TYPE_PRIORITY.get(x.get("object_type", ""), 0),
-                    int(x.get("priority", 0))
+                    bool(
+                        document.get(
+                            "is_canonical",
+                            False,
+                        )
+                    ),
+                    _parse_dt(
+                        str(
+                            document.get(
+                                "last_updated",
+                                "",
+                            )
+                        )
+                    ),
+                    settings.object_type_priority.get(
+                        str(
+                            document.get(
+                                "object_type",
+                                "",
+                            )
+                        ),
+                        0,
+                    ),
+                    int(
+                        document.get(
+                            "priority",
+                            0,
+                        )
+                        or 0
+                    ),
                 )
 
-            best = max(docs, key=score)
-            best = dict(best)  # copy
-            best["conflict_alternatives"] = [
-                {
-                    "id": x.get("id"),
-                    "title": x.get("title"),
-                    "last_updated": x.get("last_updated"),
-                    "object_type": x.get("object_type"),
-                    "reason": "lower_priority"
-                }
-                for x in docs if x.get("id") != best.get("id")
-            ]
-            chosen.append(best)
-        else:
-            # No meaningful conflict → keep docs as-is
-            leftovers.extend(docs)
+            best_document = max(
+                category_documents,
+                key=score,
+            )
 
-    # Return chosen conflict-resolved docs first, then others (already reranked)
-    final_docs = chosen + leftovers
-    return final_docs, conflicts
+            best_document = dict(best_document)
+
+            best_document["conflict_alternatives"] = [
+                {
+                    "id": alternative.get("id"),
+                    "title": alternative.get("title"),
+                    "last_updated": alternative.get(
+                        "last_updated"
+                    ),
+                    "object_type": alternative.get(
+                        "object_type"
+                    ),
+                    "reason": "lower_priority",
+                }
+                for alternative in category_documents
+                if alternative.get("id")
+                != best_document.get("id")
+            ]
+
+            chosen_documents.append(best_document)
+
+        else:
+            remaining_documents.extend(category_documents)
+
+    final_documents = (
+        chosen_documents + remaining_documents
+    )
+
+    return final_documents, conflicts

@@ -74,6 +74,8 @@ class EmailAssistantService:
         if not email_text or not email_text.strip():
             raise ValueError("email_text must not be empty")
 
+        email_text = email_text.strip()
+
         if len(email_text) > settings.max_email_characters:
             raise ValueError(
                 "Email exceeds the maximum permitted length"
@@ -91,6 +93,10 @@ class EmailAssistantService:
             else None
         )
 
+        # -------------------------------------------------------------
+        # Follow-up classification
+        # -------------------------------------------------------------
+
         followup_start = time.perf_counter()
 
         followup_type = classify_followup_email(
@@ -102,17 +108,25 @@ class EmailAssistantService:
             time.perf_counter() - followup_start
         )
 
+        # Complaints or requests to clarify a disputed previous answer
+        # are routed directly to staff rather than answered automatically.
         if followup_type == "clarification_or_complaint":
             draft = build_followup_flag_message(email_text)
+            draft = append_disclaimer_to_draft(draft)
+
+            timing["total"] = (
+                time.perf_counter() - overall_start
+            )
 
             return {
                 "is_followup": True,
                 "followup_type": followup_type,
                 "flagged_for_human": True,
                 "thread_id": thread_key,
+                "email_id": email_id,
                 "email_context": {},
                 "detected_topics": [],
-                "staff_draft": append_disclaimer_to_draft(draft),
+                "staff_draft": draft,
                 "citations": [],
                 "sources": [],
                 "validation": {
@@ -120,22 +134,29 @@ class EmailAssistantService:
                     "citations_valid": False,
                     "has_hallucinations": False,
                     "confidence": 0.0,
-                    "failure_type": "followup_requires_human_review",
+                    "failure_type": (
+                        "followup_requires_human_review"
+                    ),
                 },
                 "quality": {
                     "quality_score": 0,
                     "quality_label": "review",
                     "review_required": True,
                     "review_reason": (
-                        "Clarification or complaint requires direct staff review"
+                        "Clarification or complaint requires "
+                        "direct staff review"
                     ),
                     "citation_count": 0,
+                    "citations": [],
                 },
-                "timing": {
-                    **timing,
-                    "total": time.perf_counter() - overall_start,
-                },
+                "conflicts": [],
+                "timing": timing,
+                "automatic_send": False,
             }
+
+        # -------------------------------------------------------------
+        # Programme matching and context enrichment
+        # -------------------------------------------------------------
 
         programme_start = time.perf_counter()
 
@@ -153,9 +174,18 @@ class EmailAssistantService:
             time.perf_counter() - programme_start
         )
 
+        # -------------------------------------------------------------
+        # Context extraction and multi-topic detection
+        # -------------------------------------------------------------
+
         context_start = time.perf_counter()
 
         email_context = extract_email_context(enriched_email)
+
+        # Preserve request metadata for later draft formatting and n8n.
+        email_context["original_subject"] = subject or ""
+        email_context["student_email"] = student_email or ""
+        email_context["requested_language"] = language or ""
 
         matched_programme = (
             programme_match.get("program_name")
@@ -165,6 +195,7 @@ class EmailAssistantService:
 
         if matched_programme:
             email_context["target_program"] = matched_programme
+            email_context["target_programme"] = matched_programme
             email_context["matched_programme"] = matched_programme
 
         matched_url = programme_match.get("url") or ""
@@ -197,13 +228,19 @@ class EmailAssistantService:
             time.perf_counter() - context_start
         )
 
+        # -------------------------------------------------------------
+        # Topic-specific retrieval
+        # -------------------------------------------------------------
+
         retrieval_start = time.perf_counter()
 
         all_documents: List[Dict[str, Any]] = []
         topic_results: List[Dict[str, Any]] = []
 
         for topic in topics:
-            topic_id = str(topic.get("topic_id", ""))
+            topic_id = str(
+                topic.get("topic_id") or ""
+            ).strip()
 
             base_query = (
                 topic.get("base_query")
@@ -217,36 +254,55 @@ class EmailAssistantService:
                 email_context,
             )
 
-            retrieved = retrieve_for_topic(
+            retrieved_documents = retrieve_for_topic(
                 connection=self.connection,
                 query=evidence_query,
                 top_k=max(top_k, 5),
             )
 
+            # The actual function signature is:
+            # get_official_programme_docs(context, topic_id, limit=3)
             official_documents = get_official_programme_docs(
-                context=email_context,
-                topic_id=topic_id,
-                max_docs=3,
+                email_context,
+                topic_id,
+                3,
             )
 
-            combined = official_documents + retrieved
+            # Programme-specific official evidence is deliberately placed
+            # before generic vector-retrieval results.
+            combined_documents = (
+                official_documents + retrieved_documents
+            )
 
-            filtered = filter_docs_for_programme(
-                combined,
+            filtered_documents = filter_docs_for_programme(
+                combined_documents,
                 email_context,
                 topic_id=topic_id,
                 min_keep=3,
             )
 
-            topic["query"] = evidence_query
-            topic["source_count"] = len(filtered)
+            topic_result = dict(topic)
+            topic_result["query"] = evidence_query
+            topic_result["official_source_count"] = len(
+                official_documents
+            )
+            topic_result["retrieved_source_count"] = len(
+                retrieved_documents
+            )
+            topic_result["source_count"] = len(
+                filtered_documents
+            )
 
-            topic_results.append(topic)
-            all_documents.extend(filtered)
+            topic_results.append(topic_result)
+            all_documents.extend(filtered_documents)
 
+        # Remove duplicate chunks and URLs before conflict resolution.
         all_documents = deduplicate_documents(
             all_documents,
-            limit=max(settings.final_source_limit * 2, 12),
+            limit=max(
+                settings.final_source_limit * 2,
+                12,
+            ),
         )
 
         resolved_documents, conflicts = (
@@ -260,6 +316,10 @@ class EmailAssistantService:
         timing["retrieval"] = (
             time.perf_counter() - retrieval_start
         )
+
+        # -------------------------------------------------------------
+        # Staff-draft generation with the HTW-hosted Qwen model
+        # -------------------------------------------------------------
 
         generation_start = time.perf_counter()
 
@@ -282,7 +342,8 @@ class EmailAssistantService:
                 "Thank you for your enquiry.\n\n"
                 "I could not confirm the requested information "
                 "from the available official sources. "
-                "Please review this enquiry manually before replying.\n\n"
+                "Please review this enquiry manually before "
+                "replying.\n\n"
                 "Kind regards,\n"
                 "HTW Berlin Student Services"
             )
@@ -315,6 +376,10 @@ class EmailAssistantService:
             time.perf_counter() - generation_start
         )
 
+        # -------------------------------------------------------------
+        # Citation, grounding and review validation
+        # -------------------------------------------------------------
+
         validation_start = time.perf_counter()
 
         validation = validate_email_draft(
@@ -324,34 +389,45 @@ class EmailAssistantService:
             email_context=email_context,
         )
 
+        validation_review_required = bool(
+            validation.get("review_required", False)
+        )
+
         review_required = (
-            validation["review_required"]
+            validation_review_required
             or settings.staff_review_required_for_all
         )
 
-        review_reasons = []
+        review_reasons: List[str] = []
 
-        if validation.get("review_reason"):
-            review_reasons.append(
-                validation["review_reason"]
-            )
+        validation_reason = str(
+            validation.get("review_reason") or ""
+        ).strip()
+
+        if validation_reason:
+            review_reasons.append(validation_reason)
 
         if settings.staff_review_required_for_all:
             review_reasons.append(
-                "All HANS drafts require staff review before sending"
+                "All HANS drafts require staff review "
+                "before sending"
             )
 
+        # Remove duplicate review reasons while preserving order.
         review_reason = "; ".join(
             dict.fromkeys(review_reasons)
         )
 
         quality_score = round(
-            float(validation.get("confidence", 0.0)) * 100
+            float(validation.get("confidence", 0.0))
+            * 100
         )
 
+        # The quality label represents content quality. A good draft may
+        # still require staff review because production is draft-only.
         quality_label = (
             "review"
-            if validation["review_required"]
+            if validation_review_required
             else "good"
         )
 
@@ -366,9 +442,17 @@ class EmailAssistantService:
             "quality_label": quality_label,
             "review_required": review_required,
             "review_reason": review_reason,
-            "citation_count": validation["citation_count"],
-            "citations": validation["citations"],
+            "citation_count": int(
+                validation.get("citation_count", 0)
+            ),
+            "citations": list(
+                validation.get("citations", [])
+            ),
         }
+
+        # -------------------------------------------------------------
+        # Thread-memory update
+        # -------------------------------------------------------------
 
         if settings.thread_memory_enabled:
             save_thread_context(
@@ -385,26 +469,47 @@ class EmailAssistantService:
             time.perf_counter() - overall_start
         )
 
-        sources = []
+        # -------------------------------------------------------------
+        # API-safe source representation
+        # -------------------------------------------------------------
+
+        sources: List[Dict[str, Any]] = []
 
         for document in display_documents:
+            content = str(
+                document.get("content")
+                or document.get("chunk_text")
+                or ""
+            )
+
             sources.append(
                 {
-                    "id": str(document.get("id", "")),
-                    "title": document.get("title", ""),
-                    "url": (
+                    "id": str(
+                        document.get("id")
+                        or document.get("object_id")
+                        or ""
+                    ),
+                    "title": str(
+                        document.get("title") or ""
+                    ),
+                    "url": str(
                         document.get("source_url")
                         or document.get("url")
                         or ""
                     ),
-                    "type": document.get("object_type", ""),
-                    "last_updated": document.get(
-                        "last_updated",
-                        "",
+                    "type": str(
+                        document.get("object_type")
+                        or ""
                     ),
-                    "excerpt": (
-                        document.get("content", "")[:300]
+                    "last_updated": str(
+                        document.get("last_updated")
+                        or document.get(
+                            "metadata",
+                            {},
+                        ).get("retrieved_at", "")
+                        or ""
                     ),
+                    "excerpt": content[:300],
                 }
             )
 
@@ -419,17 +524,38 @@ class EmailAssistantService:
             "email_context": email_context,
             "detected_topics": topic_results,
             "staff_draft": draft,
-            "citations": validation["citations"],
+            "citations": list(
+                validation.get("citations", [])
+            ),
             "sources": sources,
             "validation": {
-                key: validation[key]
-                for key in [
-                    "is_grounded",
-                    "citations_valid",
-                    "has_hallucinations",
-                    "confidence",
-                    "failure_type",
-                ]
+                "is_grounded": bool(
+                    validation.get(
+                        "is_grounded",
+                        False,
+                    )
+                ),
+                "citations_valid": bool(
+                    validation.get(
+                        "citations_valid",
+                        False,
+                    )
+                ),
+                "has_hallucinations": bool(
+                    validation.get(
+                        "has_hallucinations",
+                        False,
+                    )
+                ),
+                "confidence": float(
+                    validation.get(
+                        "confidence",
+                        0.0,
+                    )
+                ),
+                "failure_type": validation.get(
+                    "failure_type"
+                ),
             },
             "quality": quality,
             "conflicts": conflicts,

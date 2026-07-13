@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import yaml
@@ -29,6 +29,18 @@ _yaml = _load_yaml()
 @dataclass(frozen=True)
 class Settings:
     project_root: Path = PROJECT_ROOT
+    
+    object_type_priority: dict[str, int] = field(
+        default_factory=lambda: {
+            "official_programme_page_cache": 100,
+            "programme_official_page": 100,
+            "canonical_programme_object": 90,
+            "programme_catalogue": 80,
+            "web": 50,
+            "qa": 40,
+            "general": 10,
+        }
+    )
 
     environment: str = os.getenv("HANS_ENVIRONMENT", "development")
     api_host: str = os.getenv("HANS_API_HOST", "127.0.0.1")
