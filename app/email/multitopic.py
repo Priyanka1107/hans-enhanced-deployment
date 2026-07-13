@@ -2143,6 +2143,290 @@ def _doc_programme_score(doc: Dict[str, Any], context: Dict[str, Optional[str]])
     return score
 
 
+def _normalised_document_url(
+    document: Dict[str, Any],
+) -> str:
+    """
+    Return a normalised URL for comparison and deduplication.
+    """
+    return str(
+        document.get("source_url")
+        or document.get("url")
+        or ""
+    ).strip().lower().rstrip("/")
+
+
+def _document_topic_text(
+    document: Dict[str, Any],
+) -> str:
+    """
+    Combine searchable document fields for deterministic topic ranking.
+    """
+    metadata = (
+        document.get("metadata", {})
+        if isinstance(document.get("metadata"), dict)
+        else {}
+    )
+
+    return " ".join(
+        [
+            str(document.get("title") or ""),
+            str(document.get("source_url") or ""),
+            str(document.get("url") or ""),
+            str(document.get("content") or ""),
+            str(document.get("chunk_text") or ""),
+            str(document.get("object_type") or ""),
+            str(metadata.get("topic_id") or ""),
+            str(metadata.get("source") or ""),
+        ]
+    ).lower()
+
+
+def _is_official_programme_document(
+    document: Dict[str, Any],
+) -> bool:
+    """
+    Return True for programme-specific evidence from the local official
+    programme-page cache.
+    """
+    text = _document_topic_text(document)
+
+    return (
+        "official_programme_page_cache" in text
+        or "official programme page cache" in text
+    )
+
+
+def _is_wrong_document_for_topic(
+    document: Dict[str, Any],
+    topic_id: str,
+) -> bool:
+    """
+    Exclude pages that are misleading for a specific topic.
+
+    These are deterministic safety rules. They do not exclude the same page
+    globally; a page may still be valid for a different topic.
+    """
+    text = _document_topic_text(document)
+    url = _normalised_document_url(document)
+
+    common_weak_fragments = (
+        "student-exchange-programmes",
+        "nomination-and-application",
+        "studying-abroad",
+        "pathways-abroad",
+        "campus-stories",
+    )
+
+    if any(
+        fragment in text or fragment in url
+        for fragment in common_weak_fragments
+    ):
+        return True
+
+    topic_exclusions: Dict[str, tuple[str, ...]] = {
+        "application_deadline": (
+            "finances-and-scholarships",
+            "finance and scholarships",
+            "final thesis",
+            "academic calendar",
+            "accepting your study place",
+        ),
+        "required_documents": (
+            "changing-study-programme",
+            "changing study programme",
+            "changing university",
+            "part-time study",
+            "division of continuing education",
+        ),
+        "language_of_instruction": (
+            "division of continuing education",
+            "part-time study",
+            "changing-study-programme",
+            "changing study programme",
+            "studienkolleg",
+        ),
+        "study_format": (
+            "part-time study",
+            "division of continuing education",
+            "changing-study-programme",
+            "changing study programme",
+        ),
+        "english_language_requirements": (
+            "division of continuing education",
+            "part-time study",
+            "studienkolleg",
+        ),
+        "work_experience": (
+            "part-time study",
+            "changing-study-programme",
+            "changing study programme",
+        ),
+    }
+
+    return any(
+        fragment in text or fragment in url
+        for fragment in topic_exclusions.get(
+            topic_id,
+            (),
+        )
+    )
+
+
+def _topic_relevance_score(
+    document: Dict[str, Any],
+    context: Dict[str, Optional[str]],
+    topic_id: str,
+) -> int:
+    """
+    Rank programme-specific official evidence above generic HTW pages.
+
+    Higher score means stronger evidence.
+    """
+    text = _document_topic_text(document)
+    url = _normalised_document_url(document)
+
+    score = _doc_programme_score(
+        document,
+        context,
+    )
+
+    if _is_official_programme_document(document):
+        score += 100
+
+    target_program_url = str(
+        context.get("target_program_url") or ""
+    ).lower()
+
+    target_host = (
+        target_program_url
+        .replace("https://", "")
+        .replace("http://", "")
+        .split("/")[0]
+    )
+
+    if target_host and target_host in url:
+        score += 35
+
+    # Direct page preferences for each topic.
+    if topic_id in {
+        "application_deadline",
+        "required_documents",
+        "application_before_graduation",
+        "final_certificate_submission",
+        "work_experience",
+        "english_language_requirements",
+    }:
+        if any(
+            fragment in url
+            for fragment in (
+                "/applying",
+                "/application",
+                "/admission",
+                "/requirements",
+                "/bewerbung",
+            )
+        ):
+            score += 35
+
+    if topic_id == "application_deadline":
+        if any(
+            phrase in text
+            for phrase in (
+                "application period",
+                "application deadline",
+                "bewerbungsfrist",
+                "bewerbungszeitraum",
+            )
+        ):
+            score += 20
+
+    elif topic_id == "required_documents":
+        if any(
+            phrase in text
+            for phrase in (
+                "required documents",
+                "application documents",
+                "degree certificate",
+                "grade transcript",
+                "proof of english",
+                "documents attached",
+            )
+        ):
+            score += 20
+
+    elif topic_id == "language_of_instruction":
+        if any(
+            phrase in text
+            for phrase in (
+                "language of instruction",
+                "taught in english",
+                "entirely in english",
+                "international master's",
+                "english-language programme",
+            )
+        ):
+            score += 20
+
+        # English proof is related, but not the same as teaching language.
+        if (
+            "proof of english" in text
+            and "taught in english" not in text
+            and "language of instruction" not in text
+        ):
+            score -= 5
+
+    elif topic_id == "study_format":
+        if any(
+            phrase in text
+            for phrase in (
+                "on-campus",
+                "on campus",
+                "full-time",
+                "full time",
+                "online learning",
+                "modern learning environment",
+                "lectures",
+                "company visits",
+            )
+        ):
+            score += 20
+
+    elif topic_id == "work_experience":
+        if any(
+            phrase in text
+            for phrase in (
+                "professional experience",
+                "work experience",
+                "qualified professional experience",
+            )
+        ):
+            score += 20
+
+    elif topic_id == "motivation_letter":
+        if any(
+            phrase in text
+            for phrase in (
+                "motivation letter",
+                "letter of motivation",
+                "required documents",
+            )
+        ):
+            score += 20
+
+    # Generic HTW pages are useful only as backup.
+    if "www.htw-berlin.de" in url:
+        score -= 8
+
+    if _is_wrong_document_for_topic(
+        document,
+        topic_id,
+    ):
+        score -= 1000
+
+    return score
+
+
 def filter_docs_for_programme(
     docs: List[Dict[str, Any]],
     context: Dict[str, Optional[str]],
@@ -2150,18 +2434,19 @@ def filter_docs_for_programme(
     min_keep: int = 3,
 ) -> List[Dict[str, Any]]:
     """
-    Prefer documents related to the detected programme for programme-specific topics.
+    Filter and rank evidence for programme-specific topics.
 
-    This is intentionally light-touch:
-    - if programme-specific docs are found, prefer them;
-    - if none are found, keep the original docs so the system can still answer
-      using general HTW application information.
+    Priority:
+    1. official programme-page cache;
+    2. pages hosted on the matched programme domain;
+    3. programme-related HTW pages;
+    4. generic HTW pages only when useful as backup.
+
+    Quality is preferred over reaching min_keep. An unrelated page is not
+    included merely to reach a requested document count.
     """
     if not docs:
-        return docs
-
-    if not context.get("target_program"):
-        return docs
+        return []
 
     programme_specific_topics = {
         "application_deadline",
@@ -2174,36 +2459,153 @@ def filter_docs_for_programme(
         "work_experience",
         "motivation_letter",
         "application_before_graduation",
+        "final_certificate_submission",
     }
 
-    # Application route and fees often need general HTW / uni-assist pages.
-    # Do not filter them too strongly.
-    if topic_id not in programme_specific_topics:
-        return docs
+    # For general topics, preserve retrieval order but remove duplicate URLs.
+    if (
+        not context.get("target_program")
+        or topic_id not in programme_specific_topics
+    ):
+        output: List[Dict[str, Any]] = []
+        seen_urls: set[str] = set()
 
-    scored = [(doc, _doc_programme_score(doc, context)) for doc in docs]
-    strong = [doc for doc, score in scored if score >= 3]
+        for document in docs:
+            url = _normalised_document_url(document)
 
-    if len(strong) >= min_keep:
-        return strong[: max(min_keep, 5)]
-
-    if strong:
-        # Keep strong programme docs first, then add original docs as backup.
-        result: List[Dict[str, Any]] = []
-        seen = set()
-
-        for doc in strong + docs:
-            doc_id = str(doc.get("id", "")) or str(doc.get("source_url", "")) or str(doc.get("url", ""))
-            if doc_id in seen:
+            if url and url in seen_urls:
                 continue
-            seen.add(doc_id)
-            result.append(doc)
-            if len(result) >= max(min_keep, 5):
-                break
 
+            if url:
+                seen_urls.add(url)
+
+            output.append(document)
+
+        return output
+
+    ranked_documents: List[
+        tuple[Dict[str, Any], int, int]
+    ] = []
+
+    for original_index, document in enumerate(docs):
+        if _is_wrong_document_for_topic(
+            document,
+            topic_id,
+        ):
+            continue
+
+        relevance_score = _topic_relevance_score(
+            document,
+            context,
+            topic_id,
+        )
+
+        ranked_documents.append(
+            (
+                document,
+                relevance_score,
+                original_index,
+            )
+        )
+
+    ranked_documents.sort(
+        key=lambda item: (
+            item[1],
+            -item[2],
+        ),
+        reverse=True,
+    )
+
+    result: List[Dict[str, Any]] = []
+    seen_urls: set[str] = set()
+    seen_content: set[str] = set()
+
+    for document, relevance_score, _ in ranked_documents:
+        url = _normalised_document_url(document)
+
+        content = str(
+            document.get("content")
+            or document.get("chunk_text")
+            or ""
+        )
+
+        content_key = re.sub(
+            r"\s+",
+            " ",
+            content.lower(),
+        )[:300]
+
+        if url and url in seen_urls:
+            continue
+
+        if content_key and content_key in seen_content:
+            continue
+
+        is_official = _is_official_programme_document(
+            document
+        )
+
+        programme_score = _doc_programme_score(
+            document,
+            context,
+        )
+
+        # Keep official programme evidence even when metadata is incomplete.
+        # Generic pages must show positive programme/topic relevance.
+        if (
+            not is_official
+            and programme_score < 1
+            and relevance_score < 10
+        ):
+            continue
+
+        if url:
+            seen_urls.add(url)
+
+        if content_key:
+            seen_content.add(content_key)
+
+        ranked_document = dict(document)
+        ranked_document[
+            "topic_relevance_score"
+        ] = relevance_score
+
+        result.append(ranked_document)
+
+        # Three strong sources are enough for a single topic.
+        if len(result) >= 3:
+            break
+
+    # If a direct official programme document exists, do not add unrelated
+    # documents merely to satisfy min_keep.
+    if result:
         return result
 
-    return docs
+    # Safe fallback: retain up to two original documents after exclusions.
+    fallback: List[Dict[str, Any]] = []
+    seen_urls = set()
+
+    for document in docs:
+        if _is_wrong_document_for_topic(
+            document,
+            topic_id,
+        ):
+            continue
+
+        url = _normalised_document_url(document)
+
+        if url and url in seen_urls:
+            continue
+
+        if url:
+            seen_urls.add(url)
+
+        fallback.append(document)
+
+        if len(fallback) >= 2:
+            break
+
+    return fallback
 
 # ---------------------------------------------------------------------
 # UI source ordering and citation remapping
