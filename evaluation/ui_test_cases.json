@@ -1,0 +1,55 @@
+{
+  "description": "Synthetic UI evaluation cases for the enhanced HANS email assistant.",
+  "cases": [
+    {
+      "test_case_id": "UI-001-MPMD-MULTITOPIC-EN",
+      "student_email": "arjun@example.com",
+      "subject": "MPMD application questions",
+      "thread_id": "ui-mpmd-thread-001",
+      "email_id": "ui-mpmd-email-001",
+      "language": "en",
+      "top_k": 6,
+      "email_text": "Dear Admissions Team,\n\nI would like to apply for the Master's programme in Project Management and Data Science.\n\nCould you please tell me:\n\n1. What is the application deadline?\n2. Is the programme taught entirely in English?\n3. Is it an on-campus programme?\n4. Which application documents are required?\n\nKind regards,\nArjun"
+    },
+    {
+      "test_case_id": "UI-002-UNKNOWN-PROGRAMME-EN",
+      "student_email": "maya@example.com",
+      "subject": "Question about an unknown programme",
+      "thread_id": "ui-unknown-thread-001",
+      "email_id": "ui-unknown-email-001",
+      "language": "en",
+      "top_k": 6,
+      "email_text": "Dear Admissions Team,\n\nI am interested in the Master of Quantum Business Analytics. What is the deadline and which documents are required?\n\nKind regards,\nMaya"
+    },
+    {
+      "test_case_id": "UI-003-GERMAN-ENQUIRY",
+      "student_email": "lena@example.com",
+      "subject": "Fragen zur Bewerbung",
+      "thread_id": "ui-german-thread-001",
+      "email_id": "ui-german-email-001",
+      "language": "de",
+      "top_k": 6,
+      "email_text": "Guten Tag,\n\nich interessiere mich für den Masterstudiengang Project Management and Data Science. Welche Bewerbungsfrist gilt und welche Unterlagen muss ich einreichen?\n\nMit freundlichen Grüßen\nLena"
+    },
+    {
+      "test_case_id": "UI-004-FOLLOWUP-FIRST",
+      "student_email": "sam@example.com",
+      "subject": "MPMD application",
+      "thread_id": "ui-followup-thread-001",
+      "email_id": "ui-followup-email-001",
+      "language": "en",
+      "top_k": 6,
+      "email_text": "Dear Admissions Team,\n\nWhat is the application deadline for Project Management and Data Science?\n\nKind regards,\nSam"
+    },
+    {
+      "test_case_id": "UI-005-FOLLOWUP-SECOND",
+      "student_email": "sam@example.com",
+      "subject": "Re: MPMD application",
+      "thread_id": "ui-followup-thread-001",
+      "email_id": "ui-followup-email-002",
+      "language": "en",
+      "top_k": 6,
+      "email_text": "Thank you. Is proof of English also required?"
+    }
+  ]
+}

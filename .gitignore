@@ -23,3 +23,5 @@ data/postgres/
 # Optional IDE files
 .vscode/
 .idea/
+
+runtime_data/evaluation/ui_runs/

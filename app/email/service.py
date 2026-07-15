@@ -9,6 +9,10 @@ from urllib.parse import urlparse
 import psycopg
 
 from app.email.disclaimer import append_disclaimer_to_draft
+from app.email.programme_guard import (
+    build_unconfirmed_programme_draft,
+    extract_unmatched_programme_name,
+)
 from app.email.multitopic import (
     add_reference_links_to_draft,
     build_evidence_query,
@@ -826,36 +830,97 @@ class EmailAssistantService:
         email_context["student_email"] = student_email or ""
         email_context["requested_language"] = language or ""
 
-        matched_programme = (
+        matched_programme = str(
             programme_match.get("program_name")
             or programme_match.get("matched_programme")
             or ""
-        )
+        ).strip()
+
+        # Detect a specific programme title from natural wording only when
+        # the official HTW catalogue did not return a confirmed match.
+        programme_candidate = ""
+
+        if not matched_programme:
+            programme_candidate = extract_unmatched_programme_name(
+                email_text
+            )
 
         if matched_programme:
             email_context["target_program"] = matched_programme
             email_context["target_programme"] = matched_programme
             email_context["matched_programme"] = matched_programme
 
-        matched_url = programme_match.get("url") or ""
+        matched_url = str(
+            programme_match.get("url") or ""
+        ).strip()
 
         if matched_url:
             email_context["target_program_url"] = matched_url
             email_context["matched_programme_url"] = matched_url
 
-        application_url = (
+        application_url = str(
             programme_match.get("application_url") or ""
-        )
+        ).strip()
 
         if application_url:
             email_context[
                 "target_program_application_url"
             ] = application_url
 
+        # Merge prior context first. A newly stated unknown programme must then
+        # override an older programme retained in thread memory.
         email_context = merge_context_with_thread(
             email_context,
             previous_context,
         )
+
+        programme_context_keys = (
+            "target_program",
+            "target_programme",
+            "matched_programme",
+            "target_program_url",
+            "target_programme_url",
+            "matched_programme_url",
+            "target_program_application_url",
+            "matched_programme_application_url",
+            "target_program_match_score",
+            "target_program_source",
+            "catalog_degree",
+            "catalog_language",
+            "catalog_study_format",
+        )
+
+        if matched_programme:
+            email_context["programme_status"] = "confirmed"
+            email_context["programme_mentioned"] = matched_programme
+
+        elif programme_candidate:
+            # Do not let fallback extraction or thread memory turn an
+            # unconfirmed title into a programme match.
+            for key in programme_context_keys:
+                email_context.pop(key, None)
+
+            email_context["programme_status"] = "unknown"
+            email_context["programme_mentioned"] = programme_candidate
+
+        elif (
+            email_context.get("target_program")
+            or email_context.get("matched_programme")
+        ):
+            inherited_programme = str(
+                email_context.get("target_program")
+                or email_context.get("matched_programme")
+                or ""
+            ).strip()
+
+            email_context["programme_status"] = "confirmed"
+            email_context["programme_mentioned"] = (
+                inherited_programme or None
+            )
+
+        else:
+            email_context["programme_status"] = "not_provided"
+            email_context["programme_mentioned"] = None
 
         topics = detect_topics(
             enriched_email,
@@ -866,6 +931,93 @@ class EmailAssistantService:
         timing["context_and_topics"] = (
             time.perf_counter() - context_start
         )
+
+        # Hard stop before retrieval and generation. The system must not attach
+        # generic Master's deadlines to a programme absent from the catalogue.
+        if email_context.get("programme_status") == "unknown":
+            requested_language = str(language or "").lower()
+
+            reply_language = (
+                "de"
+                if requested_language.startswith("de")
+                else "en"
+            )
+
+            safe_draft = build_unconfirmed_programme_draft(
+                programme_name=programme_candidate,
+                reply_language=reply_language,
+            )
+
+            safe_draft = append_disclaimer_to_draft(
+                safe_draft
+            )
+
+            safe_topics: List[Dict[str, Any]] = []
+
+            for topic in topics:
+                safe_topic = dict(topic)
+                safe_topic["query"] = (
+                    safe_topic.get("base_query")
+                    or safe_topic.get("query")
+                    or email_text
+                )
+                safe_topic["official_source_count"] = 0
+                safe_topic["retrieved_source_count"] = 0
+                safe_topic["source_count"] = 0
+                safe_topics.append(safe_topic)
+
+            quality = {
+                "quality_score": 75,
+                "quality_label": "review",
+                "review_required": True,
+                "review_reason": (
+                    "Programme named by the student was not "
+                    "confirmed in the HTW programme catalogue"
+                ),
+                "citation_count": 0,
+                "citations": [],
+            }
+
+            if settings.thread_memory_enabled:
+                save_thread_context(
+                    thread_key,
+                    student_email=student_email,
+                    subject=subject,
+                    email_context=email_context,
+                    detected_topics=safe_topics,
+                    staff_draft=safe_draft,
+                    quality=quality,
+                )
+
+            timing["total"] = (
+                time.perf_counter() - overall_start
+            )
+
+            return {
+                "is_followup": (
+                    followup_type != "new_enquiry"
+                ),
+                "followup_type": followup_type,
+                "flagged_for_human": True,
+                "thread_id": thread_key,
+                "email_id": email_id,
+                "email_context": email_context,
+                "detected_topics": safe_topics,
+                "staff_draft": safe_draft,
+                "citations": [],
+                "sources": [],
+                "validation": {
+                    "is_grounded": False,
+                    "citations_valid": False,
+                    "has_hallucinations": False,
+                    "confidence": 0.0,
+                    "failure_type": "programme_not_confirmed",
+                },
+                "quality": quality,
+                "conflicts": [],
+                "timing": timing,
+                "automatic_send": False,
+            }
 
         # -------------------------------------------------------------
         # Topic-specific retrieval

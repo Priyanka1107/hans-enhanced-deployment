@@ -44,7 +44,7 @@ class Settings:
 
     environment: str = os.getenv("HANS_ENVIRONMENT", "development")
     api_host: str = os.getenv("HANS_API_HOST", "127.0.0.1")
-    api_port: int = int(os.getenv("HANS_API_PORT", "8008"))
+    api_port: int = int(os.getenv("HANS_API_PORT", "8009"))
 
     api_key: str = os.getenv("HANS_INTERNAL_API_KEY", "")
 

@@ -1,0 +1,131 @@
+{
+  "name": "HANS Enhanced API - Manual Test",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger-1",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        260,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "field-email-text",
+              "name": "email_text",
+              "value": "Dear Admissions Team,\n\nI would like to apply for the Master's programme in Project Management and Data Science.\n\nCould you please tell me:\n\n1. What is the application deadline?\n2. Is the programme taught entirely in English?\n3. Is it an on-campus programme?\n4. Which application documents are required?\n\nKind regards,\nArjun",
+              "type": "string"
+            },
+            {
+              "id": "field-student-email",
+              "name": "student_email",
+              "value": "arjun@example.com",
+              "type": "string"
+            },
+            {
+              "id": "field-subject",
+              "name": "subject",
+              "value": "MPMD application questions",
+              "type": "string"
+            },
+            {
+              "id": "field-thread-id",
+              "name": "thread_id",
+              "value": "n8n-manual-thread-001",
+              "type": "string"
+            },
+            {
+              "id": "field-email-id",
+              "name": "email_id",
+              "value": "n8n-manual-email-001",
+              "type": "string"
+            },
+            {
+              "id": "field-language",
+              "name": "language",
+              "value": "en",
+              "type": "string"
+            },
+            {
+              "id": "field-top-k",
+              "name": "top_k",
+              "value": 6,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "edit-fields-1",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        500,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8009/email",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { email_text: $json.email_text, student_email: $json.student_email, subject: $json.subject, thread_id: $json.thread_id, email_id: $json.email_id, language: $json.language || 'en', top_k: Number($json.top_k || 6) } }}",
+        "options": {
+          "timeout": 720000
+        }
+      },
+      "id": "http-request-1",
+      "name": "HANS Email API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        760,
+        300
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HANS Email API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "11111111-1111-4111-8111-111111111111",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}
