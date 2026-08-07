@@ -44,8 +44,8 @@ from app.retrieval.baseline_adapter import (
 from app.retrieval.conflict import (
     detect_and_resolve_conflicts,
 )
+from app.runtime.generation import build_generation_client
 from app.runtime.local_llm import (
-    HTWOllamaClient,
     build_email_system_prompt,
     build_email_user_prompt,
 )
@@ -698,7 +698,7 @@ SOURCE-TO-CLAIM RULES:
 class EmailAssistantService:
     def __init__(self, connection: psycopg.Connection) -> None:
         self.connection = connection
-        self.llm = HTWOllamaClient()
+        self.llm = build_generation_client()
 
     async def process_email(
         self,
@@ -1225,7 +1225,7 @@ class EmailAssistantService:
         )
 
         # -------------------------------------------------------------
-        # Staff-draft generation with the HTW-hosted Qwen model
+        # Staff-draft generation with the configured model provider
         # -------------------------------------------------------------
 
         generation_start = time.perf_counter()

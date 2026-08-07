@@ -11,6 +11,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from app.email.service import EmailAssistantService
+from app.runtime.generation import (
+    selected_generation_model,
+    selected_generation_provider,
+)
 from app.settings import settings
 from hansdb.conn import ensure_schema
 
@@ -173,7 +177,8 @@ async def health() -> Dict[str, Any]:
         "status": status,
         "service": "hans-enhanced-email-assistant",
         "environment": settings.environment,
-        "generation_model": settings.ollama_model,
+        "generation_provider": selected_generation_provider(),
+        "generation_model": selected_generation_model(),
         "embedding_model": settings.embedding_model,
         "database": (
             "operational"
@@ -186,6 +191,11 @@ async def health() -> Dict[str, Any]:
 
 @app.post(
     "/email",
+    response_model=EmailResponse,
+    dependencies=[Depends(verify_internal_api_key)],
+)
+@app.post(
+    "/v1/drafts",
     response_model=EmailResponse,
     dependencies=[Depends(verify_internal_api_key)],
 )

@@ -1,0 +1,139 @@
+﻿{
+    "is_followup":  false,
+    "followup_type":  "new_enquiry",
+    "flagged_for_human":  true,
+    "thread_id":  "api-test-t1-thread",
+    "email_id":  "API-TEST-T1-EMAIL",
+    "email_context":  {
+                          "target_degree":  "Master",
+                          "target_program":  "Project Management and Data Science",
+                          "target_program_url":  "http://mpmd.htw-berlin.de/en/?no_cache=1",
+                          "target_program_match_score":  "1.00",
+                          "target_program_source":  "scraped_programme_catalogue",
+                          "catalog_degree":  "Master",
+                          "original_subject":  "MPMD application questions",
+                          "student_email":  "test.student@example.invalid",
+                          "requested_language":  "en",
+                          "target_programme":  "Project Management and Data Science",
+                          "matched_programme":  "Project Management and Data Science",
+                          "matched_programme_url":  "http://mpmd.htw-berlin.de/en/?no_cache=1",
+                          "programme_status":  "confirmed",
+                          "programme_mentioned":  "Project Management and Data Science"
+                      },
+    "detected_topics":  [
+                            {
+                                "topic_id":  "application_deadline",
+                                "label":  "Application deadline",
+                                "base_query":  "What is the application deadline or application period?",
+                                "query":  "What is the application deadline or application period?. Target programme: Project Management and Data Science. Programme catalogue match: Project Management and Data Science. http://mpmd.htw-berlin.de/en/?no_cache=1. catalogue degree Master. Target degree: Master. Prefer programme-specific applying page or programme deadline page when a programme is detected. Use general HTW deadline rules only as backup.",
+                                "official_source_count":  3,
+                                "retrieved_source_count":  6,
+                                "source_count":  3
+                            },
+                            {
+                                "topic_id":  "required_documents",
+                                "label":  "Required documents",
+                                "base_query":  "Which documents are required for the application?",
+                                "query":  "Which documents are required for the application?. Target programme: Project Management and Data Science. Programme catalogue match: Project Management and Data Science. http://mpmd.htw-berlin.de/en/?no_cache=1. catalogue degree Master. Target degree: Master",
+                                "official_source_count":  3,
+                                "retrieved_source_count":  6,
+                                "source_count":  3
+                            },
+                            {
+                                "topic_id":  "language_of_instruction",
+                                "label":  "Language of instruction",
+                                "base_query":  "What is the language of instruction for the programme?",
+                                "query":  "What is the language of instruction for the programme?. Target programme: Project Management and Data Science. Programme catalogue match: Project Management and Data Science. http://mpmd.htw-berlin.de/en/?no_cache=1. catalogue degree Master. Target degree: Master. Use the programme page if available. Include whether the programme is taught in English or German.",
+                                "official_source_count":  3,
+                                "retrieved_source_count":  6,
+                                "source_count":  3
+                            },
+                            {
+                                "topic_id":  "study_format",
+                                "label":  "Study format",
+                                "base_query":  "What is the study format for the programme, such as on-campus, online, distance learning, full-time or part-time?",
+                                "query":  "What is the study format for the programme, such as on-campus, online, distance learning, full-time or part-time?. Target programme: Project Management and Data Science. Programme catalogue match: Project Management and Data Science. http://mpmd.htw-berlin.de/en/?no_cache=1. catalogue degree Master. Target degree: Master. Use the programme page if available. Include whether the programme is on-campus, online, distance learning, full-time or part-time.",
+                                "official_source_count":  3,
+                                "retrieved_source_count":  6,
+                                "source_count":  3
+                            }
+                        ],
+    "staff_draft":  "Dear Test Student,\n\nThank you for your interest in the Master\u0027s programme in Project Management and Data Science at HTW Berlin.\n\nHere are the answers to your questions:\n\n1. The application period for the summer semester 2027 intake is from 1 May to 31 August 2026 [Doc 1].\n2. The required documents for the application include:\n   - A copy of your degree certificate\n   - For applicants from China, Vietnam or India: a certificate from the academic test centre (APS)\n   - A copy of your grade transcript with an explanation of the grading system if it is in another language [Doc 1]\n3. The programme is taught entirely in English [Doc 2].\n4. The study format could not be confirmed from the available official sources.\n\nPlease note that this information does not constitute a final or binding admission decision. The official application review will determine your eligibility.\n\nKind regards,\nHTW Berlin Student Services\n\nReference links for staff verification:\n- [Doc 1] Applying - Project Management and Data Science Master - HTW Berlin: https://mpmd.htw-berlin.de/applying\n- [Doc 2] Project Management and Data Science - Project Management and Data Science Master - HTW Berlin: https://mpmd.htw-berlin.de/",
+    "citations":  [
+                      "[Doc 1]",
+                      "[Doc 2]"
+                  ],
+    "sources":  [
+                    {
+                        "id":  "official_programme_page::Project Management and Data Science::https://mpmd.htw-berlin.de/applying::application_deadline",
+                        "title":  "Applying - Project Management and Data Science Master - HTW Berlin",
+                        "url":  "https://mpmd.htw-berlin.de/applying",
+                        "type":  "official_programme_page_cache",
+                        "last_updated":  "2026-06-02T13:09:50",
+                        "excerpt":  "er - HTW Berlin --\u003e Applying --\u003e Zum Hauptinhalt / Skip to main content Master Project Management and Data Science --\u003e Menu --\u003e Applying Applications welcome for MPMD We are currently accepting applications for the International Master\u0027s in Project Management and Data Science (MPMD) for Intake summe"
+                    },
+                    {
+                        "id":  "official_programme_page::Project Management and Data Science::https://mpmd.htw-berlin.de/::required_documents",
+                        "title":  "Project Management and Data Science - Project Management and Data Science Master - HTW Berlin",
+                        "url":  "https://mpmd.htw-berlin.de/",
+                        "type":  "official_programme_page_cache",
+                        "last_updated":  "2026-06-02T13:09:49",
+                        "excerpt":  ",400 per semester) Fees: approximately â¬350 per semester (including public transport for Berlin) While there are no scholarships available from HTW Berlin, you can check the DAAD website for possible scholarships . Admission requirements Bachelor\u0027s degree with at least 180 ECTS At least 1 year of pr"
+                    },
+                    {
+                        "id":  "2a3b33d4-e52e-487a-ab72-245bfa6cf492",
+                        "title":  "Masterâs study programmes",
+                        "url":  "https://www.htw-berlin.de/en/studies/applications/application-via-the-application-portal-of-htw-berlin/masters-study-programmes/",
+                        "type":  "web",
+                        "last_updated":  "",
+                        "excerpt":  "rtain additional modules or internships during the Masterâs study programme in order to reach a combined total of 300 ETCS through your Bachelorâs and Masterâs study programmes. Different additional selection criteria apply for different study programmes. The applicable criteria are listed in the El"
+                    },
+                    {
+                        "id":  "25e21bca-be67-4a75-81ac-1523eb4f47e2",
+                        "title":  "FAQ Studies \u0026 Application",
+                        "url":  "https://www.htw-berlin.de/en/studies/faq-studies-application/",
+                        "type":  "web",
+                        "last_updated":  "",
+                        "excerpt":  " applying for a Masterâs degree programme . What are the application deadlines? The application periods and the application procedure differ depending on the degree type (Bachelorâs or Masterâs), higher education entrance qualification and admission requirements (aptitude test, etc.). Can I apply be"
+                    },
+                    {
+                        "id":  "9ba62147-3ca4-4be1-bd92-b1cef44704b9",
+                        "title":  "Bachelor",
+                        "url":  "https://www.htw-berlin.de/en/studies/applications/bachelor/",
+                        "type":  "web",
+                        "last_updated":  "",
+                        "excerpt":  "nce qualification and are not a national of an EU or EEA country . â uni-assist The following application periods apply: Winter semester: 02.04. - 30.06. Summer semester: 01.10. - 31.12. More information on the Bachelorâs application via the HTW application portal Bachelorâs application via uni-assi"
+                    }
+                ],
+    "validation":  {
+                       "is_grounded":  true,
+                       "citations_valid":  true,
+                       "has_hallucinations":  false,
+                       "confidence":  1.0,
+                       "failure_type":  null
+                   },
+    "quality":  {
+                    "quality_score":  100,
+                    "quality_label":  "good",
+                    "review_required":  true,
+                    "review_reason":  "All HANS drafts require staff review before sending",
+                    "citation_count":  2,
+                    "citations":  [
+                                      "[Doc 1]",
+                                      "[Doc 2]"
+                                  ]
+                },
+    "conflicts":  [
+
+                  ],
+    "timing":  {
+                   "followup_detection":  0.0008676000870764256,
+                   "programme_matching":  0.0018541999161243439,
+                   "context_and_topics":  0.02309969998896122,
+                   "retrieval":  8.817821600008756,
+                   "generation":  8.340700899949297,
+                   "validation":  0.0009928001090884209,
+                   "total":  17.199168999912217
+               },
+    "automatic_send":  false
+}

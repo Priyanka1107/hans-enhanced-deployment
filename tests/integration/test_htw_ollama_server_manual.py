@@ -219,18 +219,11 @@ async def main() -> None:
     expected_url = (
         "https://f2ki-h100-1.f2.htw-berlin.de:11435"
     )
-    expected_model = "qwen3:32b"
 
     if BASE_URL != expected_url:
         raise AssertionError(
             "The smoke test is not using the expected HTW "
             f"endpoint. Got: {BASE_URL}"
-        )
-
-    if MODEL != expected_model:
-        raise AssertionError(
-            "The smoke test is not using qwen3:32b. "
-            f"Got: {MODEL}"
         )
 
     if VERIFY_SSL is not True:
@@ -388,9 +381,9 @@ async def main() -> None:
             )
 
         print(
-            "PASS: The raw HTW Ollama endpoint accepted a "
-            "sequential qwen3:32b request."
-        )
+	    "PASS: The raw HTW Ollama endpoint accepted a "
+    	    f"sequential {MODEL} request."
+	)
 
 
 if __name__ == "__main__":

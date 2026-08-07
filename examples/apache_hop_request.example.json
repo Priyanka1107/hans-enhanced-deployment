@@ -1,0 +1,9 @@
+{
+  "email_text": "Dear HTW Berlin, I am interested in the Project Management and Data Science Master's programme. What is the application deadline and which documents are required? Kind regards, Test Student",
+  "student_email": "test.student@example.invalid",
+  "subject": "MPMD application deadline and documents",
+  "thread_id": "DEMO-THREAD-001",
+  "email_id": "DEMO-EMAIL-001",
+  "language": "en",
+  "top_k": 6
+}

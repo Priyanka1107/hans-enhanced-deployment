@@ -1,0 +1,4 @@
+email_id,thread_id,subject,email_text,language
+DEMO-001,THREAD-001,MPMD application,"I want to apply for MPMD. What is the application deadline and which documents are required?",en
+DEMO-002,THREAD-002,Cafeteria question,"What time does the cafeteria close?",en
+DEMO-003,THREAD-003,Unknown programme,"What is the application deadline for the Master of Quantum Business Analytics?",en

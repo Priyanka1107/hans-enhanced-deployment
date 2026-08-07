@@ -1,19 +1,37 @@
 from __future__ import annotations
 
 import asyncio
+import os
 import re
 import uuid
+from pathlib import Path
 from pprint import pprint
 from urllib.parse import urlparse
+
+from dotenv import load_dotenv
+
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+load_dotenv(
+    PROJECT_ROOT / ".env",
+    override=True,
+)
 
 from app.email.service import EmailAssistantService
 from hansdb.conn import get_db_connection, load_config
 
 
-EXPECTED_URL = (
-    "https://f2ki-h100-1.f2.htw-berlin.de:11435"
-)
-EXPECTED_MODEL = "qwen3:32b"
+EXPECTED_URL = os.getenv(
+    "OLLAMA_BASE_URL",
+    "https://f2ki-h100-1.f2.htw-berlin.de:11435",
+).rstrip("/")
+
+EXPECTED_MODEL = os.getenv(
+    "OLLAMA_MODEL",
+    "",
+).strip()
+
 
 EMAIL = """
 Dear Admissions Team,
@@ -63,6 +81,7 @@ async def main() -> None:
 
         print("\nGENERATION RUNTIME")
         print("=" * 100)
+
         print(
             "Client class:",
             service.llm.__class__.__name__,
@@ -103,10 +122,16 @@ async def main() -> None:
                 f"{service.llm.base_url}"
             )
 
+        if not EXPECTED_MODEL:
+            raise AssertionError(
+                "OLLAMA_MODEL is not configured."
+            )
+
         if service.llm.model != EXPECTED_MODEL:
             raise AssertionError(
-                "The email pipeline is not using "
-                f"qwen3:32b. Got: {service.llm.model}"
+                "The email pipeline is not using the "
+                f"configured Ollama model {EXPECTED_MODEL}. "
+                f"Got: {service.llm.model}"
             )
 
         if service.llm.verify_ssl is not True:
@@ -118,13 +143,13 @@ async def main() -> None:
 
         result = await service.process_email(
             email_text=EMAIL,
-            student_email="arjun@example.com",
+            student_email="arjun@example.invalid",
             subject="MPMD application questions",
             thread_id=(
-                f"htw-qwen-thread-{run_id}"
+                f"htw-ollama-thread-{run_id}"
             ),
             email_id=(
-                f"htw-qwen-email-{run_id}"
+                f"htw-ollama-email-{run_id}"
             ),
             language="en",
             top_k=6,
@@ -132,6 +157,7 @@ async def main() -> None:
 
         print("\nRESULT SUMMARY")
         print("=" * 100)
+
         print(
             "Follow-up type:",
             result.get("followup_type"),
@@ -147,12 +173,14 @@ async def main() -> None:
 
         print("\nEMAIL CONTEXT")
         print("=" * 100)
+
         pprint(
             result.get("email_context")
         )
 
         print("\nDETECTED TOPICS")
         print("=" * 100)
+
         pprint(
             result.get("detected_topics")
         )
@@ -165,6 +193,7 @@ async def main() -> None:
             start=1,
         ):
             print(f"\nSource {index}")
+
             print(
                 "Title:",
                 source.get("title"),
@@ -187,22 +216,26 @@ async def main() -> None:
 
         print("\nVALIDATION")
         print("=" * 100)
+
         pprint(
             result.get("validation")
         )
 
         print("\nQUALITY")
         print("=" * 100)
+
         pprint(
             result.get("quality")
         )
 
         print("\nSTAFF DRAFT")
         print("=" * 100)
+
         staff_draft = str(
             result.get("staff_draft")
             or ""
         )
+
         print(staff_draft)
 
         expected_topics = {
@@ -286,8 +319,10 @@ async def main() -> None:
         if re.search(
             r"^\s*subject\s*:",
             body_before_references,
-            flags=re.IGNORECASE
-            | re.MULTILINE,
+            flags=(
+                re.IGNORECASE
+                | re.MULTILINE
+            ),
         ):
             raise AssertionError(
                 "A Subject line was generated "
@@ -296,7 +331,8 @@ async def main() -> None:
 
         source_urls = {
             _normalise_url(
-                source.get("url") or ""
+                source.get("url")
+                or ""
             )
             for source in result.get(
                 "sources",
@@ -333,6 +369,7 @@ async def main() -> None:
         ):
             print("\nQUALITY NOTICE")
             print("-" * 100)
+
             print(
                 "The technical pipeline passed, "
                 "but validation still reported:",
@@ -340,6 +377,7 @@ async def main() -> None:
                     "failure_type"
                 ),
             )
+
             print(
                 "This result remains visible and "
                 "must be reviewed separately."
@@ -347,14 +385,17 @@ async def main() -> None:
 
         print("\nTEST RESULT")
         print("=" * 100)
+
         print(
-            "PASS: Complete HTW Qwen "
-            "email-service pipeline test passed."
+            "PASS: Complete HANS email-service pipeline "
+            f"test passed with {service.llm.model}."
         )
+
         print(
             "Generation endpoint:",
             service.llm.base_url,
         )
+
         print(
             "Generation model:",
             service.llm.model,
