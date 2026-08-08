@@ -74,7 +74,7 @@ Current and planned generation options are:
 
 ### Branch
 
-`production-candidate/apache-hop-v1`
+`hans-poc/apache-hop-v1`
 
 ### Environment
 
