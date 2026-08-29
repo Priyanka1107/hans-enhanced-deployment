@@ -803,10 +803,55 @@ class EmailAssistantService:
 
         programme_start = time.perf_counter()
 
-        programme_match = enrich_email_text_with_programme_context(
-            email_text=email_text,
-            subject=subject or "",
+        # Resolve the programme named in the current email body first.
+        # A programme mentioned in the body is more authoritative than
+        # programme text retained in an email subject.
+        body_programme_match = (
+            enrich_email_text_with_programme_context(
+                email_text=email_text,
+                subject="",
+            )
         )
+
+        # If the body explicitly names a programme that is not present in
+        # the catalogue, preserve that as an unconfirmed programme instead
+        # of silently falling back to a different programme in the subject.
+        body_programme_candidate = ""
+
+        if not body_programme_match.get("matched"):
+            body_programme_candidate = (
+                extract_unmatched_programme_name(
+                    email_text
+                )
+            )
+
+        # Resolve the subject independently. It may be used only as fallback
+        # context when the current email body does not identify a programme.
+        subject_programme_match = (
+            enrich_email_text_with_programme_context(
+                email_text="",
+                subject=subject or "",
+            )
+        )
+
+        if body_programme_match.get("matched"):
+            programme_match = body_programme_match
+            programme_resolution_source = "email_body"
+
+        elif body_programme_candidate:
+            programme_match = body_programme_match
+            programme_resolution_source = (
+                "email_body_unconfirmed"
+            )
+
+        else:
+            programme_match = subject_programme_match
+
+            programme_resolution_source = (
+                "subject_fallback"
+                if subject_programme_match.get("matched")
+                else "not_resolved"
+            )
 
         enriched_email = programme_match.get(
             "enriched_email_text",
@@ -829,12 +874,47 @@ class EmailAssistantService:
         email_context["original_subject"] = subject or ""
         email_context["student_email"] = student_email or ""
         email_context["requested_language"] = language or ""
+        
+        email_context["programme_resolution_source"] = (
+            programme_resolution_source
+        )
 
         matched_programme = str(
             programme_match.get("program_name")
             or programme_match.get("matched_programme")
             or ""
         ).strip()
+        
+        subject_programme = str(
+            subject_programme_match.get("program_name")
+            or subject_programme_match.get(
+                "matched_programme"
+            )
+            or ""
+        ).strip()
+
+        if (
+            programme_resolution_source == "email_body"
+            and subject_programme
+            and matched_programme
+            and subject_programme != matched_programme
+        ):
+            email_context[
+                "programme_subject_body_mismatch"
+            ] = True
+
+            email_context["subject_programme"] = (
+                subject_programme
+            )
+
+            email_context["body_programme"] = (
+                matched_programme
+            )
+
+        else:
+            email_context[
+                "programme_subject_body_mismatch"
+            ] = False
 
         # Detect a specific programme title from natural wording only when
         # the official HTW catalogue did not return a confirmed match.
