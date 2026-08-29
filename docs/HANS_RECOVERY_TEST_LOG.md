@@ -158,7 +158,7 @@ Target flow:
 Gmail test email
 -> Apache Hop
 -> relevance routing
--> HANS /email API
+-> HANS /v1/drafts API
 -> parse HANS response
 -> save audit result
 -> determine draft eligibility
@@ -167,3 +167,4 @@ Gmail test email
 -> manual send
 
 Automatic sending must remain disabled.
+
