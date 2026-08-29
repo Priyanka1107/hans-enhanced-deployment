@@ -50,6 +50,8 @@ TEST_CASES_PATH = (
     / "ui_test_cases.json"
 )
 
+CUSTOM_CASE_ID = "CUSTOM-MANUAL"
+
 try:
     from evaluation.ui_eval_logger import (
         save_ui_evaluation_run,
@@ -92,8 +94,15 @@ class EnhancedHANSEmailUI:
         self.root.title(
             "HANS Enhanced Email Assistant"
         )
-        self.root.geometry("1180x850")
+        self.root.geometry("1450x900")
         self.root.minsize(1000, 720)
+
+        # Start maximized on Windows when supported. The UI still works
+        # normally on platforms where the "zoomed" state is unavailable.
+        try:
+            self.root.state("zoomed")
+        except tk.TclError:
+            pass
 
         self.processing = False
         self.last_result: Dict[str, Any] | None = None
@@ -117,7 +126,7 @@ class EnhancedHANSEmailUI:
             main,
             text=(
                 "HANS Enhanced Email Assistant "
-                "(HTW Qwen / Draft Only)"
+                "(Draft Only)"
             ),
             font=("Segoe UI", 16, "bold"),
         )
@@ -193,7 +202,8 @@ class EnhancedHANSEmailUI:
         self.test_case_combo = ttk.Combobox(
             test_frame,
             textvariable=self.test_case_var,
-            values=list(self.test_cases.keys()),
+            values=[CUSTOM_CASE_ID] + list(self.test_cases.keys()),
+            state="readonly",
         )
         self.test_case_combo.grid(
             row=0,
@@ -309,8 +319,8 @@ class EnhancedHANSEmailUI:
 
         ttk.Spinbox(
             metadata_frame,
-            from_=1,
-            to=20,
+            from_=3,
+            to=10,
             textvariable=self.top_k_var,
             width=8,
         ).grid(
@@ -320,8 +330,37 @@ class EnhancedHANSEmailUI:
             pady=(8, 0),
         )
 
-        email_frame = ttk.LabelFrame(
+        # -----------------------------------------------------------------
+        # Main resizable work area
+        #
+        # The upper pane contains the incoming email and action buttons.
+        # The lower pane contains the generated draft and technical details.
+        # Drag the horizontal divider to give more space to either section.
+        # -----------------------------------------------------------------
+        work_pane = ttk.Panedwindow(
             main,
+            orient=tk.VERTICAL,
+        )
+        work_pane.pack(
+            fill=tk.BOTH,
+            expand=True,
+            pady=(0, 8),
+        )
+
+        input_section = ttk.Frame(work_pane)
+        result_section = ttk.Frame(work_pane)
+
+        work_pane.add(
+            input_section,
+            weight=2,
+        )
+        work_pane.add(
+            result_section,
+            weight=3,
+        )
+
+        email_frame = ttk.LabelFrame(
+            input_section,
             text="Incoming student email",
             padding=8,
         )
@@ -333,7 +372,7 @@ class EnhancedHANSEmailUI:
 
         self.email_text = scrolledtext.ScrolledText(
             email_frame,
-            height=11,
+            height=8,
             wrap=tk.WORD,
             font=("Segoe UI", 10),
         )
@@ -342,10 +381,9 @@ class EnhancedHANSEmailUI:
             expand=True,
         )
 
-        button_row = ttk.Frame(main)
+        button_row = ttk.Frame(input_section)
         button_row.pack(
             fill=tk.X,
-            pady=(0, 8),
         )
 
         self.generate_button = ttk.Button(
@@ -375,6 +413,15 @@ class EnhancedHANSEmailUI:
             padx=(8, 0),
         )
 
+        ttk.Button(
+            button_row,
+            text="Open full draft",
+            command=self._open_full_draft,
+        ).pack(
+            side=tk.LEFT,
+            padx=(8, 0),
+        )
+
         self.progress = ttk.Progressbar(
             button_row,
             mode="indeterminate",
@@ -386,8 +433,14 @@ class EnhancedHANSEmailUI:
             padx=(20, 0),
         )
 
+        # -----------------------------------------------------------------
+        # Resizable result area
+        #
+        # Drag the vertical divider between the draft and validation panel.
+        # This makes it easy to enlarge the draft for demos/screenshots.
+        # -----------------------------------------------------------------
         output_pane = ttk.Panedwindow(
-            main,
+            result_section,
             orient=tk.HORIZONTAL,
         )
         output_pane.pack(
@@ -409,7 +462,7 @@ class EnhancedHANSEmailUI:
 
         output_pane.add(
             draft_frame,
-            weight=3,
+            weight=4,
         )
         output_pane.add(
             details_frame,
@@ -486,29 +539,44 @@ class EnhancedHANSEmailUI:
         )
 
     def _load_default_case(self) -> None:
-        if self.test_cases:
-            first_id = next(
-                iter(self.test_cases)
-            )
-            self.test_case_var.set(first_id)
-            self._apply_case(
-                self.test_cases[first_id]
-            )
-        else:
-            self.test_case_var.set(
-                "UI-MANUAL-TEST"
-            )
-            self.thread_id_var.set(
-                f"ui-thread-{uuid.uuid4().hex[:8]}"
-            )
-            self.email_id_var.set(
-                f"ui-email-{uuid.uuid4().hex[:8]}"
-            )
+        # Start with a clean manual input instead of silently loading the
+        # first evaluation preset. This avoids stale test-case metadata.
+        self._load_custom_case()
+
+    def _load_custom_case(self) -> None:
+        self.test_case_var.set(CUSTOM_CASE_ID)
+        self.student_email_var.set("")
+        self.subject_var.set("")
+        self.thread_id_var.set(
+            f"ui-thread-{uuid.uuid4().hex[:8]}"
+        )
+        self.email_id_var.set(
+            f"ui-email-{uuid.uuid4().hex[:8]}"
+        )
+        self.language_var.set("en")
+        self.top_k_var.set(6)
+
+        self.email_text.delete(
+            "1.0",
+            tk.END,
+        )
+        self.draft_text.delete(
+            "1.0",
+            tk.END,
+        )
+        self.details_text.delete(
+            "1.0",
+            tk.END,
+        )
 
     def _load_selected_case(self) -> None:
         case_id = (
             self.test_case_var.get().strip()
         )
+
+        if case_id == CUSTOM_CASE_ID:
+            self._load_custom_case()
+            return
 
         case = self.test_cases.get(
             case_id
@@ -518,7 +586,7 @@ class EnhancedHANSEmailUI:
             messagebox.showwarning(
                 "Unknown test case",
                 (
-                    "The entered test case ID was not found "
+                    "The selected test case was not found "
                     "in evaluation/ui_test_cases.json."
                 ),
             )
@@ -591,9 +659,10 @@ class EnhancedHANSEmailUI:
 
             message = (
                 "Online"
-                f" | database={data.get('database_ok')}"
-                f" | automatic_send="
-                f"{data.get('automatic_send')}"
+                f" | database={data.get('database')}"
+                f" | provider={data.get('generation_provider')}"
+                f" | model={data.get('generation_model')}"
+                f" | automatic_send={data.get('automatic_send')}"
             )
 
             self.root.after(
@@ -633,6 +702,20 @@ class EnhancedHANSEmailUI:
                 "Incoming email text is required."
             )
 
+        student_email = (
+            self.student_email_var.get().strip()
+            or None
+        )
+        subject = (
+            self.subject_var.get().strip()
+            or None
+        )
+        language = (
+            self.language_var.get().strip()
+            or "en"
+        )
+        top_k = int(self.top_k_var.get())
+
         thread_id = (
             self.thread_id_var.get().strip()
             or f"ui-thread-{uuid.uuid4().hex[:8]}"
@@ -646,25 +729,64 @@ class EnhancedHANSEmailUI:
         self.thread_id_var.set(thread_id)
         self.email_id_var.set(email_id)
 
+        # If a preset was loaded and then edited, it is no longer that
+        # evaluation case. Mark it as CUSTOM so logs cannot claim that the
+        # official test case produced a result from modified input.
+        selected_case_id = self.test_case_var.get().strip()
+        selected_case = self.test_cases.get(selected_case_id)
+
+        if selected_case is not None:
+            preset_values = {
+                "email_text": str(
+                    selected_case.get("email_text") or ""
+                ).strip(),
+                "student_email": (
+                    str(
+                        selected_case.get("student_email") or ""
+                    ).strip()
+                    or None
+                ),
+                "subject": (
+                    str(
+                        selected_case.get("subject") or ""
+                    ).strip()
+                    or None
+                ),
+                "thread_id": str(
+                    selected_case.get("thread_id") or ""
+                ).strip(),
+                "email_id": str(
+                    selected_case.get("email_id") or ""
+                ).strip(),
+                "language": str(
+                    selected_case.get("language") or "en"
+                ).strip(),
+                "top_k": int(
+                    selected_case.get("top_k") or 6
+                ),
+            }
+
+            current_values = {
+                "email_text": email_text,
+                "student_email": student_email,
+                "subject": subject,
+                "thread_id": thread_id,
+                "email_id": email_id,
+                "language": language,
+                "top_k": top_k,
+            }
+
+            if current_values != preset_values:
+                self.test_case_var.set(CUSTOM_CASE_ID)
+
         return {
             "email_text": email_text,
-            "student_email": (
-                self.student_email_var.get().strip()
-                or None
-            ),
-            "subject": (
-                self.subject_var.get().strip()
-                or None
-            ),
+            "student_email": student_email,
+            "subject": subject,
             "thread_id": thread_id,
             "email_id": email_id,
-            "language": (
-                self.language_var.get().strip()
-                or "en"
-            ),
-            "top_k": int(
-                self.top_k_var.get()
-            ),
+            "language": language,
+            "top_k": top_k,
         }
 
     def _generate_async(self) -> None:
@@ -688,7 +810,7 @@ class EnhancedHANSEmailUI:
         )
         self.progress.start()
         self.footer_var.set(
-            "Waiting for the HANS backend and HTW Qwen..."
+            "Waiting for the HANS backend..."
         )
 
         threading.Thread(
@@ -870,19 +992,85 @@ class EnhancedHANSEmailUI:
             text="Generate staff draft",
         )
 
+    def _open_full_draft(self) -> None:
+        """Open the current staff draft in a larger scrollable window."""
+        draft = self.draft_text.get(
+            "1.0",
+            tk.END,
+        ).strip()
+
+        if not draft:
+            messagebox.showinfo(
+                "No draft available",
+                "Generate a staff draft first.",
+            )
+            return
+
+        popup = tk.Toplevel(self.root)
+        popup.title("HANS - Full Staff Draft")
+        popup.geometry("1000x780")
+        popup.minsize(700, 500)
+
+        container = ttk.Frame(
+            popup,
+            padding=12,
+        )
+        container.pack(
+            fill=tk.BOTH,
+            expand=True,
+        )
+
+        ttk.Label(
+            container,
+            text="Full staff draft",
+            font=("Segoe UI", 13, "bold"),
+        ).pack(
+            anchor=tk.W,
+            pady=(0, 8),
+        )
+
+        full_draft_text = scrolledtext.ScrolledText(
+            container,
+            wrap=tk.WORD,
+            font=("Segoe UI", 11),
+        )
+        full_draft_text.pack(
+            fill=tk.BOTH,
+            expand=True,
+        )
+        full_draft_text.insert(
+            "1.0",
+            draft,
+        )
+
+        button_row = ttk.Frame(container)
+        button_row.pack(
+            fill=tk.X,
+            pady=(8, 0),
+        )
+
+        def copy_full_draft() -> None:
+            self.root.clipboard_clear()
+            self.root.clipboard_append(draft)
+
+        ttk.Button(
+            button_row,
+            text="Copy draft",
+            command=copy_full_draft,
+        ).pack(side=tk.LEFT)
+
+        ttk.Button(
+            button_row,
+            text="Close",
+            command=popup.destroy,
+        ).pack(
+            side=tk.RIGHT,
+        )
+
     def _clear(self) -> None:
-        self.email_text.delete(
-            "1.0",
-            tk.END,
-        )
-        self.draft_text.delete(
-            "1.0",
-            tk.END,
-        )
-        self.details_text.delete(
-            "1.0",
-            tk.END,
-        )
+        # Clear the entire request, not only the message body. Leaving the
+        # old subject/test-case metadata behind can create a false mixed case.
+        self._load_custom_case()
         self.last_result = None
         self.footer_var.set(
             "Draft-only workflow: "
