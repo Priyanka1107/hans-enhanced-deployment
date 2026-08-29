@@ -168,19 +168,74 @@ def programme_reference_lines(context: Dict[str, Optional[str]]) -> List[str]:
     return lines
 
 
-def programme_query_terms(context: Dict[str, Optional[str]]) -> str:
-    """Build retrieval-enrichment text for the matched programme."""
+def programme_query_terms(
+    context: Dict[str, Optional[str]],
+) -> str:
+    """
+    Build retrieval-enrichment text for the matched programme.
+
+    An explicit degree stated by the student is authoritative.
+    A conflicting catalogue degree must not be injected into the
+    retrieval query.
+    """
     parts: List[str] = []
+
     if context.get("target_program"):
         parts.append(str(context["target_program"]))
+
     if context.get("target_program_url"):
         parts.append(str(context["target_program_url"]))
+
     if context.get("target_program_application_url"):
-        parts.append(str(context["target_program_application_url"]))
-    if context.get("catalog_degree"):
-        parts.append(f"catalogue degree {context['catalog_degree']}")
+        parts.append(
+            str(context["target_program_application_url"])
+        )
+
+    target_degree = str(
+        context.get("target_degree") or ""
+    ).strip().lower()
+
+    catalog_degree = str(
+        context.get("catalog_degree") or ""
+    ).strip().lower()
+
+    target_degree_family = (
+        "master"
+        if "master" in target_degree
+        else "bachelor"
+        if "bachelor" in target_degree
+        else target_degree
+    )
+
+    catalog_degree_family = (
+        "master"
+        if "master" in catalog_degree
+        else "bachelor"
+        if "bachelor" in catalog_degree
+        else catalog_degree
+    )
+
+    if (
+        context.get("catalog_degree")
+        and (
+            not target_degree_family
+            or target_degree_family
+            == catalog_degree_family
+        )
+    ):
+        parts.append(
+            f"catalogue degree {context['catalog_degree']}"
+        )
+
     if context.get("catalog_language"):
-        parts.append(f"catalogue language {context['catalog_language']}")
+        parts.append(
+            f"catalogue language {context['catalog_language']}"
+        )
+
     if context.get("catalog_study_format"):
-        parts.append(f"catalogue study format {context['catalog_study_format']}")
+        parts.append(
+            "catalogue study format "
+            f"{context['catalog_study_format']}"
+        )
+
     return ". ".join(parts)

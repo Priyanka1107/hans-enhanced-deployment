@@ -2182,6 +2182,83 @@ def _document_topic_text(
     ).lower()
 
 
+def is_document_degree_compatible(
+    document: Dict[str, Any],
+    context: Dict[str, Optional[str]],
+) -> bool:
+    """
+    Return False when a document is clearly specific to the
+    opposite degree level.
+
+    Shared pages that explicitly cover both Bachelor's and
+    Master's programmes remain valid.
+    """
+    target_degree = str(
+        context.get("target_degree") or ""
+    ).strip().lower()
+
+    if "master" in target_degree:
+        target_marker = "master"
+        opposite_marker = "bachelor"
+
+    elif "bachelor" in target_degree:
+        target_marker = "bachelor"
+        opposite_marker = "master"
+
+    else:
+        return True
+
+    title = str(
+        document.get("title") or ""
+    ).lower()
+
+    url = _normalised_document_url(document)
+
+    object_id = str(
+        document.get("object_id") or ""
+    ).lower()
+
+    identity_text = " ".join(
+        [
+            title,
+            url,
+            object_id,
+        ]
+    )
+
+    # A page whose title/URL/object identity explicitly belongs to
+    # the opposite degree is not applicable unless it clearly
+    # identifies itself as covering both degree levels.
+    if (
+        opposite_marker in identity_text
+        and target_marker not in identity_text
+    ):
+        return False
+
+    document_text = _document_topic_text(document)
+
+    target_programme = str(
+        context.get("target_program")
+        or context.get("target_programme")
+        or context.get("matched_programme")
+        or ""
+    ).strip().lower()
+
+    # Example:
+    # "International Business (Bachelor)" must not support an
+    # International Business Master's enquiry. A combined page
+    # containing both Bachelor and Master remains allowed.
+    if (
+        target_programme
+        and target_programme in document_text
+        and opposite_marker in document_text
+        and target_marker not in document_text
+    ):
+        return False
+
+    return True
+
+
 def _is_official_programme_document(
     document: Dict[str, Any],
 ) -> bool:
@@ -2445,6 +2522,21 @@ def filter_docs_for_programme(
     Quality is preferred over reaching min_keep. An unrelated page is not
     included merely to reach a requested document count.
     """
+    if not docs:
+        return []
+
+    # Apply degree compatibility before ranking, topic filtering,
+    # or fallback selection. This prevents Bachelor-only evidence
+    # from being used for Master's enquiries and vice versa.
+    docs = [
+        document
+        for document in docs
+        if is_document_degree_compatible(
+            document,
+            context,
+        )
+    ]
+
     if not docs:
         return []
 

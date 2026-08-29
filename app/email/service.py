@@ -22,6 +22,7 @@ from app.email.multitopic import (
     extract_email_context,
     filter_docs_for_programme,
     fix_application_fee_confusion,
+    is_document_degree_compatible,
     prepare_docs_for_staff_ui,
 )
 from app.email.thread_memory import (
@@ -1146,6 +1147,15 @@ class EmailAssistantService:
             combined_documents = (
                 official_documents + retrieved_documents
             )
+
+            combined_documents = [
+                document
+                for document in combined_documents
+                if is_document_degree_compatible(
+                    document,
+                    email_context,
+                )
+            ]
 
             all_candidate_documents.extend(
                 combined_documents
