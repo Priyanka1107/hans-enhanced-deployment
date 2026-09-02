@@ -369,7 +369,7 @@ var hans_draft_url = base_url + "/v1/drafts";</jsScript_script>
     <schema_definition/>
     <ignore_fields>N</ignore_fields>
     <file>
-      <name>C:\Working_Student\HTW\HANS_Project\hans-enhanced-deployment\runtime_data\apache_hop_demo\gmail_draft_pipeline_results</name>
+      <name>C:\Working_Student\HTW\HANS_Project\hans-recovery-pre-source-fix\runtime_data\filename.txt</name>
       <do_not_open_new_file_init>N</do_not_open_new_file_init>
       <extension>csv</extension>
       <append>N</append>
@@ -690,7 +690,7 @@ var hans_draft_url = base_url + "/v1/drafts";</jsScript_script>
     <schema_definition/>
     <ignore_fields>N</ignore_fields>
     <file>
-      <name>C:\Working_Student\HTW\HANS_Project\hans-enhanced-deployment\runtime_data\apache_hop_demo\gmail_skipped_emails</name>
+      <name>C:\Working_Student\HTW\HANS_Project\hans-recovery-pre-source-fix\runtime_data\filename.txt</name>
       <do_not_open_new_file_init>N</do_not_open_new_file_init>
       <extension>csv</extension>
       <append>N</append>
@@ -801,7 +801,7 @@ var hans_draft_url = base_url + "/v1/drafts";</jsScript_script>
     <type>MailInput</type>
     <name>01 - Read Gmail Test Emails</name>
     <conditionreceiveddate>0</conditionreceiveddate>
-    <valueimaplist>imaplistunread</valueimaplist>
+    <valueimaplist>imaplistall</valueimaplist>
     <servername>imap.gmail.com</servername>
     <username>${GMAIL_TEST_USERNAME}</username>
     <password>${GMAIL_TEST_APP_PASSWORD}</password>
@@ -1256,6 +1256,7 @@ var recipient_email =
         </conditions>
       </condition>
     </compare>
+    <send_true_to>10B - Draft Ready</send_true_to>
     <send_false_to>10A - No Gmail Draft</send_false_to>
     <distribute>Y</distribute>
     <copies>1</copies>
@@ -1277,6 +1278,21 @@ var recipient_email =
     <GUI>
       <xloc>1696</xloc>
       <yloc>480</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>Dummy</type>
+    <name>10B - Draft Ready</name>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1696</xloc>
+      <yloc>592</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -1358,6 +1374,11 @@ var recipient_email =
     <hop>
       <from>10 - Draft Eligible?</from>
       <to>10A - No Gmail Draft</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>10 - Draft Eligible?</from>
+      <to>10B - Draft Ready</to>
       <enabled>Y</enabled>
     </hop>
   </order>
