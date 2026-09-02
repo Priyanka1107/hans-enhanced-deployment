@@ -801,7 +801,7 @@ var hans_draft_url = base_url + "/v1/drafts";</jsScript_script>
     <type>MailInput</type>
     <name>01 - Read Gmail Test Emails</name>
     <conditionreceiveddate>0</conditionreceiveddate>
-    <valueimaplist>imaplistall</valueimaplist>
+    <valueimaplist>imaplistunread</valueimaplist>
     <servername>imap.gmail.com</servername>
     <username>${GMAIL_TEST_USERNAME}</username>
     <password>${GMAIL_TEST_APP_PASSWORD}</password>
@@ -812,7 +812,7 @@ var hans_draft_url = base_url + "/v1/drafts";</jsScript_script>
     <retrievemails>0</retrievemails>
     <delete>N</delete>
     <protocol>IMAP</protocol>
-    <imapfirstmails>5</imapfirstmails>
+    <imapfirstmails>1</imapfirstmails>
     <imapfolder>HANS-Test</imapfolder>
     <senderSearch/>
     <notTermSenderSearch>N</notTermSenderSearch>
@@ -844,11 +844,11 @@ var hans_draft_url = base_url + "/v1/drafts";</jsScript_script>
       </field>
       <field>
         <name>Body</name>
-        <column>Reply to</column>
+        <column>Body</column>
       </field>
       <field>
         <name>Received date</name>
-        <column>Recipients</column>
+        <column>Received date</column>
       </field>
     </fields>
     <USE_BATCH>N</USE_BATCH>
