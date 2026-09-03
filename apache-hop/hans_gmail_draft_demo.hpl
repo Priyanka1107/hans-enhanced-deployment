@@ -843,12 +843,72 @@ var hans_draft_url = base_url + "/v1/drafts";</jsScript_script>
         <column>Sender</column>
       </field>
       <field>
+        <name>Reply to</name>
+        <column>Reply to</column>
+      </field>
+      <field>
+        <name>Recipients</name>
+        <column>Recipients</column>
+      </field>
+      <field>
+        <name>Description</name>
+        <column>Description</column>
+      </field>
+      <field>
         <name>Body</name>
         <column>Body</column>
       </field>
       <field>
         <name>Received date</name>
         <column>Received date</column>
+      </field>
+      <field>
+        <name>Sent date</name>
+        <column>Sent date</column>
+      </field>
+      <field>
+        <name>Content type</name>
+        <column>Content type</column>
+      </field>
+      <field>
+        <name>Folder name</name>
+        <column>Folder name</column>
+      </field>
+      <field>
+        <name>Size</name>
+        <column>Size</column>
+      </field>
+      <field>
+        <name>Flag new</name>
+        <column>Flag new</column>
+      </field>
+      <field>
+        <name>Flag read</name>
+        <column>Flag read</column>
+      </field>
+      <field>
+        <name>Flag flagged</name>
+        <column>Flag flagged</column>
+      </field>
+      <field>
+        <name>Flag draft</name>
+        <column>Flag draft</column>
+      </field>
+      <field>
+        <name>Flag deleted</name>
+        <column>Flag deleted</column>
+      </field>
+      <field>
+        <name>Attached files count</name>
+        <column>Attached files count</column>
+      </field>
+      <field>
+        <name>Mail Header(Name)</name>
+        <column>Mail Header(Name)</column>
+      </field>
+      <field>
+        <name>Content Type (Body)</name>
+        <column>Content Type (Body)</column>
       </field>
     </fields>
     <USE_BATCH>N</USE_BATCH>
@@ -1438,7 +1498,22 @@ payloadFile.setText(
 )
 
 
-draft_payload_file = payloadFile.getAbsolutePath()</scriptBody>
+draft_payload_file = payloadFile.getAbsolutePath()
+def pythonExe =
+    "C:\\Working_Student\\HTW\\HANS_Project\\" +
+    "hans-enhanced-deployment\\.venv\\Scripts\\python.exe"
+
+def draftHelper =
+    "C:\\Working_Student\\HTW\\HANS_Project\\" +
+    "hans-recovery-pre-source-fix\\apache-hop\\" +
+    "create_gmail_draft_imap.py"
+
+draft_process_command =
+    pythonExe +
+    " " +
+    draftHelper +
+    " --payload-file " +
+    draft_payload_file</scriptBody>
       </script>
     </scripts>
     <fields>
@@ -1451,11 +1526,43 @@ draft_payload_file = payloadFile.getAbsolutePath()</scriptBody>
         <replace>N</replace>
         <scriptResult>N</scriptResult>
       </field>
+      <field>
+        <name>draft_process_command</name>
+        <rename>draft_process_command</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+        <scriptResult>N</scriptResult>
+      </field>
     </fields>
     <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
       <xloc>1888</xloc>
+      <yloc>592</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>ExecProcess</type>
+    <name>12 - Create Gmail Draft</name>
+    <processfield>draft_process_command</processfield>
+    <resultfieldname>draft_create_stdout</resultfieldname>
+    <errorfieldname>draft_create_stderr</errorfieldname>
+    <exitvaluefieldname>draft_create_exit_code</exitvaluefieldname>
+    <failwhennotsuccess>Y</failwhennotsuccess>
+    <outputlinedelimiter/>
+    <argumentsInFields>N</argumentsInFields>
+    <argumentFields/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>2096</xloc>
       <yloc>592</yloc>
     </GUI>
     <partitioning>
@@ -1548,6 +1655,11 @@ draft_payload_file = payloadFile.getAbsolutePath()</scriptBody>
     <hop>
       <from>10B - Draft Ready</from>
       <to>11 - Prepare Gmail Draft Payload</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>11 - Prepare Gmail Draft Payload</from>
+      <to>12 - Create Gmail Draft</to>
       <enabled>Y</enabled>
     </hop>
   </order>
