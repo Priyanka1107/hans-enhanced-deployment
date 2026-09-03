@@ -1300,6 +1300,170 @@ var recipient_email =
     </partitioning>
     <attributes/>
   </transform>
+  <transform>
+    <type>SuperScript</type>
+    <name>11 - Prepare Gmail Draft Payload</name>
+    <scriptLanguage>Groovy</scriptLanguage>
+    <scripts>
+      <script>
+        <scriptType>0</scriptType>
+        <scriptName>script1</scriptName>
+        <scriptBody>def draftTo = String.valueOf(
+    recipient_email ?: ""
+).trim()
+
+def draftSubject = String.valueOf(
+    subject ?: ""
+).trim()
+
+def draftBody = String.valueOf(
+    staff_draft ?: ""
+)
+
+def sourceEmailId = String.valueOf(
+    email_id ?: ""
+).trim()
+
+if (!draftTo) {
+    throw new RuntimeException(
+        "Cannot prepare Gmail draft: recipient is missing"
+    )
+}
+
+if (!draftSubject) {
+    throw new RuntimeException(
+        "Cannot prepare Gmail draft: subject is missing"
+    )
+}
+
+if (!draftBody) {
+    throw new RuntimeException(
+        "Cannot prepare Gmail draft: staff_draft is missing"
+    )
+}
+
+
+// JSON-escape a string without requiring groovy-json.
+def jsonEscape = { value ->
+
+    def text = value == null ? "" : value.toString()
+    def escaped = new StringBuilder()
+
+    for (int i = 0; i &lt; text.length(); i++) {
+
+        def ch = text.substring(i, i + 1)
+
+        if (ch == "\\") {
+            escaped.append("\\\\")
+        }
+        else if (ch == "\"") {
+            escaped.append("\\\"")
+        }
+        else if (ch == "\b") {
+            escaped.append("\\b")
+        }
+        else if (ch == "\f") {
+            escaped.append("\\f")
+        }
+        else if (ch == "\n") {
+            escaped.append("\\n")
+        }
+        else if (ch == "\r") {
+            escaped.append("\\r")
+        }
+        else if (ch == "\t") {
+            escaped.append("\\t")
+        }
+        else if (((int) text.charAt(i)) &lt; 32) {
+            escaped.append(
+                String.format(
+                    "\\u%04x",
+                    (int) text.charAt(i)
+                )
+            )
+        }
+        else {
+            escaped.append(ch)
+        }
+    }
+
+    return escaped.toString()
+}
+
+
+def safeId = (
+    sourceEmailId ?: "unknown"
+).replaceAll(
+    "[^A-Za-z0-9._-]",
+    "_"
+)
+
+
+def outputDir = new File(
+    System.getProperty("java.io.tmpdir"),
+    "hans-hop-drafts"
+)
+
+if (!outputDir.exists()) {
+
+    if (!outputDir.mkdirs()) {
+        throw new RuntimeException(
+            "Could not create temporary Gmail draft directory"
+        )
+    }
+}
+
+
+def payloadFile = new File(
+    outputDir,
+    "gmail_draft_" + safeId + ".json"
+)
+
+
+def payloadJson =
+    '{"to":"' +
+    jsonEscape(draftTo) +
+    '","subject":"' +
+    jsonEscape(draftSubject) +
+    '","body":"' +
+    jsonEscape(draftBody) +
+    '","source_email_id":"' +
+    jsonEscape(sourceEmailId) +
+    '"}'
+
+
+payloadFile.setText(
+    payloadJson,
+    "UTF-8"
+)
+
+
+draft_payload_file = payloadFile.getAbsolutePath()</scriptBody>
+      </script>
+    </scripts>
+    <fields>
+      <field>
+        <name>draft_payload_file</name>
+        <rename>draft_payload_file</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+        <scriptResult>N</scriptResult>
+      </field>
+    </fields>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1888</xloc>
+      <yloc>592</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
   <order>
     <hop>
       <from>02 - Determine HANS Relevance</from>
@@ -1379,6 +1543,11 @@ var recipient_email =
     <hop>
       <from>10 - Draft Eligible?</from>
       <to>10B - Draft Ready</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>10B - Draft Ready</from>
+      <to>11 - Prepare Gmail Draft Payload</to>
       <enabled>Y</enabled>
     </hop>
   </order>
