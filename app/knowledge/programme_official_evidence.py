@@ -112,7 +112,9 @@ TOPIC_KEYWORDS = {
     "study_format": [
         "on campus",
         "on-campus",
-        "online",
+        "online learning",
+        "online programme",
+        "online program",
         "distance learning",
         "study format",
         "attendance",
