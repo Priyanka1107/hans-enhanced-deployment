@@ -455,7 +455,7 @@ TOPIC_DEFINITIONS: Dict[str, Dict[str, Any]] = {
             r"\bfully in english\b",
             r"\bis (the )?(course|programme|program) in english\b",
             r"\bwhat language (is|are).{0,60}(course|programme|program|lectures|classes)",
-            r"\bis (the )?(course|programme|program) taught in english\b",
+            r"\bis (the )?(course|programme|program) taught(?: (?:entirely|fully|completely))? in english\b",
             r"\bis it taught in english\b",
             r"\bare lectures in english\b",
             r"\bare classes in english\b",
