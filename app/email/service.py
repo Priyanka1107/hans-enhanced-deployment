@@ -385,6 +385,7 @@ def _clean_email_structure(draft: str) -> str:
 def _remove_unasked_topic_content(
     draft: str,
     topics: List[Dict[str, Any]],
+    original_email: str = "",
 ) -> str:
     """
     Remove application-route advice when that topic was not detected.
@@ -394,11 +395,10 @@ def _remove_unasked_topic_content(
         for topic in topics
     }
 
-    if (
+    route_allowed = (
         "application_route" in topic_ids
         or "application_process" in topic_ids
-    ):
-        return draft
+    )
 
     patterns = [
         (
@@ -415,13 +415,14 @@ def _remove_unasked_topic_content(
 
     cleaned = str(draft or "")
 
-    for pattern in patterns:
-        cleaned = re.sub(
-            pattern,
-            "",
-            cleaned,
-            flags=re.IGNORECASE,
-        )
+    if not route_allowed:
+        for pattern in patterns:
+            cleaned = re.sub(
+                pattern,
+                "",
+                cleaned,
+                flags=re.IGNORECASE,
+            )
 
     cleaned = re.sub(
         r"\n{3,}",
@@ -429,7 +430,200 @@ def _remove_unasked_topic_content(
         cleaned,
     )
 
-    return cleaned.strip()
+    cleaned = cleaned.strip()
+
+    # Remove clearly unrelated applicant/profile advice only when the
+    # student did not ask about admission/profile/document topics.
+    admission_topics = {
+        "admission_requirements",
+    }
+
+    work_experience_topics = {
+        "work_experience",
+        "admission_requirements",
+        "required_documents",
+        "document_uploads",
+        "hard_copy_documents",
+    }
+
+    english_proof_topics = {
+        "english_language_requirements",
+        "admission_requirements",
+        "required_documents",
+        "document_uploads",
+        "hard_copy_documents",
+        "certified_translations",
+    }
+
+    if not (topic_ids & admission_topics):
+        admission_terms = (
+            "eligibility for the programme",
+            "eligibility for this programme",
+            "eligibility and suitability",
+            "admission requirements",
+            "180 ects",
+            "bachelor's degree with",
+            "bachelor degree with",
+        )
+
+        paragraphs = re.split(r"\n\s*\n", cleaned)
+        rebuilt_paragraphs: List[str] = []
+
+        for paragraph in paragraphs:
+            sentences = re.split(
+                r"(?<=[.!?])\s+",
+                paragraph,
+            )
+
+            kept_sentences = [
+                sentence
+                for sentence in sentences
+                if not any(
+                    term in sentence.lower()
+                    for term in admission_terms
+                )
+            ]
+
+            rebuilt = " ".join(
+                sentence.strip()
+                for sentence in kept_sentences
+                if sentence.strip()
+            )
+
+            if rebuilt:
+                rebuilt_paragraphs.append(rebuilt)
+
+        cleaned = "\n\n".join(rebuilt_paragraphs)
+
+    if not (topic_ids & work_experience_topics):
+        work_experience_terms = (
+            "professional experience",
+            "work experience",
+            "qualified professional experience",
+        )
+
+        paragraphs = re.split(r"\n\s*\n", cleaned)
+        rebuilt_paragraphs = []
+
+        for paragraph in paragraphs:
+            sentences = re.split(
+                r"(?<=[.!?])\s+",
+                paragraph,
+            )
+
+            kept_sentences = []
+            previous_removed = False
+
+            for sentence in sentences:
+                lower_sentence = sentence.lower().strip()
+
+                remove_current = any(
+                    term in lower_sentence
+                    for term in work_experience_terms
+                )
+
+                if (
+                    not remove_current
+                    and previous_removed
+                    and re.match(
+                        r"^this requirement\b",
+                        lower_sentence,
+                    )
+                ):
+                    remove_current = True
+
+                if remove_current:
+                    previous_removed = True
+                    continue
+
+                kept_sentences.append(sentence)
+                previous_removed = False
+
+            rebuilt = " ".join(
+                sentence.strip()
+                for sentence in kept_sentences
+                if sentence.strip()
+            )
+
+            if rebuilt:
+                rebuilt_paragraphs.append(rebuilt)
+
+        cleaned = "\n\n".join(rebuilt_paragraphs)
+
+    # English-proof wording can be relevant to document or language-proof
+    # questions, so remove it only when none of those topics was asked.
+    if not (topic_ids & english_proof_topics):
+        english_proof_terms = (
+            "proof of english language proficiency",
+            "english language proficiency",
+        )
+
+        paragraphs = re.split(r"\n\s*\n", cleaned)
+        rebuilt_paragraphs = []
+
+        for paragraph in paragraphs:
+            sentences = re.split(
+                r"(?<=[.!?])\s+",
+                paragraph,
+            )
+
+            kept_sentences = [
+                sentence
+                for sentence in sentences
+                if not any(
+                    term in sentence.lower()
+                    for term in english_proof_terms
+                )
+            ]
+
+            rebuilt = " ".join(
+                sentence.strip()
+                for sentence in kept_sentences
+                if sentence.strip()
+            )
+
+            if rebuilt:
+                rebuilt_paragraphs.append(rebuilt)
+
+        cleaned = "\n\n".join(rebuilt_paragraphs)
+
+    # Scholarship advice is outside the current detected topic set.
+    # Preserve it when the student explicitly asks about funding.
+    incoming = str(original_email or "").lower()
+
+    scholarship_asked = any(
+        marker in incoming
+        for marker in (
+            "scholarship",
+            "scholarships",
+            "funding",
+            "financial aid",
+        )
+    )
+
+    if not scholarship_asked:
+        paragraphs = [
+            paragraph
+            for paragraph in re.split(
+                r"\n\s*\n",
+                cleaned,
+            )
+            if not any(
+                marker in paragraph.lower()
+                for marker in (
+                    "scholarship",
+                    "scholarships",
+                )
+            )
+        ]
+
+        cleaned = "\n\n".join(paragraphs)
+
+    return re.sub(
+        r"\n{3,}",
+        "\n\n",
+        cleaned,
+    ).strip()
 
 
 def _document_text(document: Dict[str, Any]) -> str:
@@ -1355,6 +1549,7 @@ class EmailAssistantService:
         draft = _remove_unasked_topic_content(
             draft,
             topic_results,
+            email_text,
         )
 
         draft = fix_application_fee_confusion(
