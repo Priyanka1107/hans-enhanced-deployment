@@ -9,6 +9,9 @@ from urllib.parse import urlparse
 import psycopg
 
 from app.email.disclaimer import append_disclaimer_to_draft
+from app.email.deadline_temporal import (
+    determine_application_timeline,
+)
 from app.email.programme_guard import (
     build_unconfirmed_programme_draft,
     extract_unmatched_programme_name,
@@ -74,6 +77,458 @@ PROGRAMME_DIRECT_SOURCE_TOPICS = {
     "study_format",
     "motivation_letter",
 }
+
+
+def _build_programme_deadline_temporal_guidance(
+    topics: List[Dict[str, Any]],
+    email_context: Dict[str, Any],
+    documents: List[Dict[str, Any]],
+    *,
+    as_of_date=None,
+) -> str:
+    """
+    Build deterministic temporal guidance for a confirmed
+    programme-specific application-deadline enquiry.
+
+    Dates are extracted only from retrieved official evidence.
+    No HTW deadline values are stored in application code.
+    """
+    topic_ids = {
+        str(
+            topic.get("topic_id")
+            or ""
+        ).strip()
+        for topic in (topics or [])
+    }
+
+    if "application_deadline" not in topic_ids:
+        return ""
+
+    programme_status = str(
+        email_context.get("programme_status")
+        or ""
+    ).strip().lower()
+
+    if programme_status != "confirmed":
+        return ""
+
+    official_types = {
+        "official_programme_page_cache",
+        "programme_official_page",
+    }
+
+    for document_index, document in enumerate(
+        documents or [],
+        start=1,
+    ):
+        metadata = (
+            document.get("metadata", {})
+            if isinstance(
+                document.get("metadata"),
+                dict,
+            )
+            else {}
+        )
+
+        document_topic = str(
+            metadata.get("topic_id")
+            or ""
+        ).strip()
+
+        if document_topic != "application_deadline":
+            continue
+
+        object_type = str(
+            document.get("object_type")
+            or document.get("type")
+            or ""
+        ).strip().lower()
+
+        if object_type not in official_types:
+            continue
+
+        content = str(
+            document.get("content")
+            or document.get("chunk_text")
+            or ""
+        ).strip()
+
+        if not content:
+            continue
+
+        timeline = determine_application_timeline(
+            content,
+            as_of_date=as_of_date,
+        )
+
+        periods = list(
+            timeline.get("periods")
+            or []
+        )
+
+        if not periods:
+            continue
+
+        reference_date = timeline.get(
+            "as_of_date"
+        )
+
+        lines = [
+            (
+                "TEMPORAL INTERPRETATION "
+                "(deterministically derived from the "
+                "official programme evidence):"
+            ),
+            f"Reference date: {reference_date.isoformat()}.",
+        ]
+
+        for period in periods:
+            label = str(
+                period.get("label")
+                or ""
+            ).strip()
+
+            status = str(
+                period.get("status")
+                or "unknown"
+            ).strip()
+
+            application_start = period.get(
+                "application_start"
+            )
+
+            application_end = period.get(
+                "application_end"
+            )
+
+            if (
+                application_start is not None
+                and application_end is not None
+            ):
+                range_text = (
+                    f"{application_start.isoformat()} "
+                    f"to {application_end.isoformat()}"
+                )
+            else:
+                range_text = (
+                    "no numeric application-period "
+                    "range parsed"
+                )
+
+            lines.append(
+                f"- {label}: {status}; "
+                f"{range_text}. [Doc {document_index}]"
+            )
+
+        current_period = timeline.get(
+            "current_period"
+        )
+
+        next_period = timeline.get(
+            "next_period"
+        )
+
+        if current_period is None:
+            lines.append(
+                "No regular application period is "
+                "currently open."
+            )
+        else:
+            lines.append(
+                "Current regular application period: "
+                f"{current_period['label']}."
+            )
+
+        if (
+            current_period is None
+            and next_period is not None
+        ):
+            next_start = next_period.get(
+                "application_start"
+            )
+            next_end = next_period.get(
+                "application_end"
+            )
+
+            next_range = ""
+
+            if (
+                next_start is not None
+                and next_end is not None
+            ):
+                next_range = (
+                    f" ({next_start.isoformat()} "
+                    f"to {next_end.isoformat()})"
+                )
+
+            lines.append(
+                "Next regular application period: "
+                f"{next_period['label']}"
+                f"{next_range}. "
+                f"[Doc {document_index}]"
+            )
+
+        lines.append(
+            "Do not describe a period classified as "
+            "closed as current, open, or next."
+        )
+
+        return "\n".join(lines)
+
+    return ""
+
+
+def _apply_programme_deadline_temporal_safeguard(
+    draft: str,
+    topics: List[Dict[str, Any]],
+    email_context: Dict[str, Any],
+    documents: List[Dict[str, Any]],
+    *,
+    as_of_date=None,
+) -> str:
+    """
+    Replace only a generated programme application-deadline
+    paragraph when deterministic official evidence establishes
+    the current/next application period.
+
+    Other answer sections remain unchanged.
+    """
+    original = str(draft or "").strip()
+
+    if not original:
+        return original
+
+    topic_ids = {
+        str(
+            topic.get("topic_id")
+            or ""
+        ).strip()
+        for topic in (topics or [])
+    }
+
+    if "application_deadline" not in topic_ids:
+        return original
+
+    programme_status = str(
+        email_context.get("programme_status")
+        or ""
+    ).strip().lower()
+
+    if programme_status != "confirmed":
+        return original
+
+    official_types = {
+        "official_programme_page_cache",
+        "programme_official_page",
+    }
+
+    timeline = None
+    deadline_document_index = None
+
+    for document_index, document in enumerate(
+        documents or [],
+        start=1,
+    ):
+        metadata = (
+            document.get("metadata", {})
+            if isinstance(
+                document.get("metadata"),
+                dict,
+            )
+            else {}
+        )
+
+        document_topic = str(
+            metadata.get("topic_id")
+            or ""
+        ).strip()
+
+        if document_topic != "application_deadline":
+            continue
+
+        object_type = str(
+            document.get("object_type")
+            or document.get("type")
+            or ""
+        ).strip().lower()
+
+        if object_type not in official_types:
+            continue
+
+        content = str(
+            document.get("content")
+            or document.get("chunk_text")
+            or ""
+        ).strip()
+
+        if not content:
+            continue
+
+        candidate = determine_application_timeline(
+            content,
+            as_of_date=as_of_date,
+        )
+
+        if candidate.get("periods"):
+            timeline = candidate
+            deadline_document_index = document_index
+            break
+
+    if (
+        timeline is None
+        or deadline_document_index is None
+    ):
+        return original
+
+    def format_date(value) -> str:
+        if value is None:
+            return ""
+
+        return (
+            f"{value.day} "
+            f"{value.strftime('%B %Y')}"
+        )
+
+    periods = list(
+        timeline.get("periods")
+        or []
+    )
+
+    current_period = timeline.get(
+        "current_period"
+    )
+
+    next_period = timeline.get(
+        "next_period"
+    )
+
+    closed_periods = [
+        period
+        for period in periods
+        if (
+            period.get("status") == "closed"
+            and period.get(
+                "application_end"
+            ) is not None
+        )
+    ]
+
+    latest_closed = None
+
+    if closed_periods:
+        latest_closed = max(
+            closed_periods,
+            key=lambda item: item[
+                "application_end"
+            ],
+        )
+
+    citation = (
+        f"[Doc {deadline_document_index}]"
+    )
+
+    replacement = ""
+
+    if current_period is not None:
+        label = str(
+            current_period.get("label")
+            or ""
+        ).strip()
+
+        start = format_date(
+            current_period.get(
+                "application_start"
+            )
+        )
+
+        end = format_date(
+            current_period.get(
+                "application_end"
+            )
+        )
+
+        if start and end:
+            replacement = (
+                "Regarding the application deadline, "
+                f"the regular application period for "
+                f"{label} is currently open, from "
+                f"{start} to {end} {citation}."
+            )
+
+    elif next_period is not None:
+        label = str(
+            next_period.get("label")
+            or ""
+        ).strip()
+
+        start = format_date(
+            next_period.get(
+                "application_start"
+            )
+        )
+
+        end = format_date(
+            next_period.get(
+                "application_end"
+            )
+        )
+
+        closed_text = ""
+
+        if latest_closed is not None:
+            closed_label = str(
+                latest_closed.get("label")
+                or ""
+            ).strip()
+
+            if closed_label:
+                closed_text = (
+                    "The regular application period "
+                    f"for {closed_label} has closed. "
+                )
+
+        if start and end:
+            replacement = (
+                "Regarding the application deadline, "
+                f"{closed_text}"
+                "The next regular application period "
+                f"is for {label}, from "
+                f"{start} to {end} {citation}."
+            )
+
+    if not replacement:
+        return original
+
+    paragraphs = re.split(
+        r"\n\s*\n",
+        original,
+    )
+
+    deadline_markers = (
+        "application deadline",
+        "application period",
+        "currently accepting applications",
+        "currently open for applications",
+        "applications are currently open",
+        "next application",
+    )
+
+    for index, paragraph in enumerate(
+        paragraphs
+    ):
+        lower = paragraph.lower()
+
+        if any(
+            marker in lower
+            for marker in deadline_markers
+        ):
+            paragraphs[index] = replacement
+
+            return "\n\n".join(
+                paragraphs
+            ).strip()
+
+    return original
 
 
 def _document_key(document: Dict[str, Any]) -> str:
@@ -1522,6 +1977,21 @@ class EmailAssistantService:
                 documents=final_documents,
             )
 
+            temporal_guidance = (
+                _build_programme_deadline_temporal_guidance(
+                    topics=topic_results,
+                    email_context=email_context,
+                    documents=final_documents,
+                )
+            )
+
+            if temporal_guidance:
+                user_prompt = (
+                    user_prompt
+                    + "\n\n"
+                    + temporal_guidance
+                )
+
             draft = await self.llm.generate(
                 system_prompt=_build_strengthened_system_prompt(),
                 user_prompt=user_prompt,
@@ -1557,6 +2027,13 @@ class EmailAssistantService:
             topic_results,
             final_documents,
             email_context,
+        )
+
+        draft = _apply_programme_deadline_temporal_safeguard(
+            draft=draft,
+            topics=topic_results,
+            email_context=email_context,
+            documents=final_documents,
         )
 
         draft, display_documents = prepare_docs_for_staff_ui(
