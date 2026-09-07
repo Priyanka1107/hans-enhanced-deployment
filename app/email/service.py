@@ -59,6 +59,22 @@ from app.validation.email_validator import (
 logger = logging.getLogger(__name__)
 
 
+PROGRAMME_DIRECT_SOURCE_TOPICS = {
+    "programme_start",
+    "programme_duration",
+    "application_deadline",
+    "application_route",
+    "admission_requirements",
+    "required_documents",
+    "work_experience",
+    "english_language_requirements",
+    "german_language_requirements",
+    "language_of_instruction",
+    "study_format",
+    "motivation_letter",
+}
+
+
 def _document_key(document: Dict[str, Any]) -> str:
     """
     Build a stable key used to deduplicate evidence across topics.
@@ -1336,11 +1352,20 @@ class EmailAssistantService:
                 3,
             )
 
-            # Programme-specific official evidence is deliberately placed
-            # before generic vector-retrieval results.
-            combined_documents = (
-                official_documents + retrieved_documents
-            )
+            # For programme-specific facts, a confirmed official programme page
+            # is sufficient and safer than padding the prompt with generic HTW
+            # vector hits. Generic retrieval remains the fallback when no
+            # programme-specific evidence exists.
+            if (
+                email_context.get("target_program")
+                and topic_id in PROGRAMME_DIRECT_SOURCE_TOPICS
+                and official_documents
+            ):
+                combined_documents = list(official_documents)
+            else:
+                combined_documents = (
+                    official_documents + retrieved_documents
+                )
 
             combined_documents = [
                 document
