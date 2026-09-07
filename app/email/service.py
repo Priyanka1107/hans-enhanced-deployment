@@ -1134,9 +1134,10 @@ def _find_claim_support_issues(
         {
             "claim_name": "study_format",
             "claim_regexes": (
-                r"\b(?:programme|program)\b.*?\b(?:is|offered|delivered)\b"
-                r".*?\b(?:on[- ]campus|online|hybrid|distance learning)\b",
-                r"\b(?:offered|delivered)\b.*?"
+                r"\b(?:programme|program)\b[^.!?\n]*?"
+                r"\b(?:is|offered|delivered)\b[^.!?\n]*?"
+                r"\b(?:on[- ]campus|online|hybrid|distance learning)\b",
+                r"\b(?:offered|delivered)\b[^.!?\n]*?"
                 r"\b(?:on[- ]campus|online|hybrid|distance learning)\b",
             ),
             "support_patterns": (
