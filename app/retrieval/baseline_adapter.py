@@ -6,6 +6,7 @@ from typing import Any, Dict, List
 import psycopg
 
 from app.settings import settings
+from app.retrieval.document_identity import evidence_document_key
 from hansdb.retrieval import retrieve_top_k
 
 
@@ -82,11 +83,7 @@ def deduplicate_documents(
     seen: set[str] = set()
 
     for document in documents:
-        key = (
-            str(document.get("object_id") or "")
-            or str(document.get("source_url") or "")
-            or str(document.get("id") or "")
-        )
+        key = evidence_document_key(document)
 
         if not key or key in seen:
             continue

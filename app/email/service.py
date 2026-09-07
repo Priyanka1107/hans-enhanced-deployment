@@ -42,6 +42,7 @@ from app.retrieval.baseline_adapter import (
     deduplicate_documents,
     retrieve_for_topic,
 )
+from app.retrieval.document_identity import evidence_document_key
 from app.retrieval.conflict import (
     detect_and_resolve_conflicts,
 )
@@ -76,34 +77,8 @@ PROGRAMME_DIRECT_SOURCE_TOPICS = {
 
 
 def _document_key(document: Dict[str, Any]) -> str:
-    """
-    Build a stable key used to deduplicate evidence across topics.
-    """
-    url = str(
-        document.get("source_url")
-        or document.get("url")
-        or ""
-    ).strip().lower().rstrip("/")
-
-    if url:
-        return f"url::{url}"
-
-    identifier = str(
-        document.get("id")
-        or document.get("object_id")
-        or ""
-    ).strip()
-
-    if identifier:
-        return f"id::{identifier}"
-
-    content = str(
-        document.get("content")
-        or document.get("chunk_text")
-        or ""
-    )
-
-    return f"content::{content[:250].lower()}"
+    """Build the shared stable evidence key."""
+    return evidence_document_key(document)
 
 
 def _normalised_url_parts(url: str) -> tuple[str, str]:
