@@ -970,6 +970,8 @@ def detect_topics(email_text: str, context: Dict[str, Optional[str]], max_topics
     if re.search(
         r"\b("
         r"what\s+language\s+(is|are).{0,60}(course|programme|program|lectures|classes)|"
+        r"what\s+(is\s+)?(the\s+)?teaching\s+language|"
+        r"is\s+(the\s+)?teaching\s+language\s+(english|german)|"
         r"is\s+(the\s+)?(course|programme|program)\s+taught\s+in\s+english|"
         r"is\s+it\s+taught\s+in\s+english|"
         r"are\s+(lectures|classes)\s+in\s+english"

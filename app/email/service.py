@@ -1054,7 +1054,7 @@ class EmailAssistantService:
 
         context_start = time.perf_counter()
 
-        email_context = extract_email_context(enriched_email)
+        email_context = extract_email_context(email_text)
 
         # Preserve request metadata for later draft formatting and n8n.
         email_context["original_subject"] = subject or ""
@@ -1189,7 +1189,7 @@ class EmailAssistantService:
             email_context["programme_mentioned"] = None
 
         topics = detect_topics(
-            enriched_email,
+            email_text,
             email_context,
             max_topics=6,
         )

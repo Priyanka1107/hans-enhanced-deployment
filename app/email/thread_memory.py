@@ -198,7 +198,6 @@ def classify_followup_email(email_text: str, has_thread_memory: bool = False) ->
         r"\bi do not understand\b",
         r"\bi don't understand\b",
         r"\bi am still confused\b",
-        r"\bi am confused\b",
         r"\bthis does not answer\b",
         r"\bthis did not answer\b",
         r"\bthis is not clear\b",
@@ -222,6 +221,37 @@ def classify_followup_email(email_text: str, has_thread_memory: bool = False) ->
     ]
 
     if any(re.search(pattern, text, flags=re.IGNORECASE) for pattern in clarification_patterns):
+        return "clarification_or_complaint"
+
+    # "I am confused" is ambiguous on its own. Students may use this
+    # wording in a first enquiry about a difficult application process.
+    # Treat it as clarification only when an existing thread or an
+    # explicit reference to a previous response supports that reading.
+    ambiguous_confusion = bool(
+        re.search(
+            r"\bi am confused\b",
+            text,
+            flags=re.IGNORECASE,
+        )
+    )
+
+    previous_response_reference = bool(
+        re.search(
+            r"\b("
+            r"your previous (answer|reply|response)|"
+            r"your (answer|reply|response)|"
+            r"previous (answer|reply|response)|"
+            r"you (said|told me|mentioned|wrote|explained)"
+            r")\b",
+            text,
+            flags=re.IGNORECASE,
+        )
+    )
+
+    if ambiguous_confusion and (
+        has_thread_memory
+        or previous_response_reference
+    ):
         return "clarification_or_complaint"
 
     # Normal follow-up signals.
