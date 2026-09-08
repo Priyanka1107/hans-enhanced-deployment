@@ -1397,6 +1397,116 @@ def _build_study_format_uncertainty_fallback(
     )
 
 
+
+def _apply_study_format_uncertainty_fallback_to_draft(
+    *,
+    draft: str,
+    email_text: str,
+    documents: List[Dict[str, Any]],
+    language: str = "en",
+) -> str:
+    """
+    Add a conservative evidence-aware uncertainty statement to an
+    existing study-format paragraph.
+
+    This helper does not infer online or on-campus delivery. It only
+    runs when the deterministic study-format fallback confirms that
+    the student's online-vs-on-campus question cannot be answered
+    categorically from the supplied evidence.
+
+    It deliberately preserves the rest of the draft unchanged.
+    """
+    draft_text = str(draft or "")
+
+    if not draft_text.strip():
+        return draft_text
+
+    # Keep the first implementation deliberately narrow and tested.
+    # Other languages can be added with their own regression tests.
+    if not str(language or "").lower().startswith("en"):
+        return draft_text
+
+    evidence_text = "\n".join(
+        _document_text(document)
+        for document in (documents or [])
+        if document
+    )
+
+    fallback = _build_study_format_uncertainty_fallback(
+        email_text=email_text,
+        evidence_text=evidence_text,
+    )
+
+    if not fallback:
+        return draft_text
+
+    # The existing draft may already contain the supported full-time
+    # information. Use the tested fallback only as the decision signal
+    # and add only the missing delivery-mode uncertainty.
+    uncertainty_statement = (
+        "The available official evidence does not directly "
+        "confirm whether the programme is entirely online "
+        "or on-campus."
+    )
+
+    normalised_draft = re.sub(
+        r"\s+",
+        " ",
+        draft_text,
+    ).strip().lower()
+
+    normalised_uncertainty = re.sub(
+        r"\s+",
+        " ",
+        uncertainty_statement,
+    ).strip().lower()
+
+    # Never duplicate an uncertainty statement already present.
+    if normalised_uncertainty in normalised_draft:
+        return draft_text
+
+    paragraphs = re.split(
+        r"\n\s*\n",
+        draft_text.strip(),
+    )
+
+    study_format_index = None
+
+    for index, paragraph in enumerate(paragraphs):
+        cleaned = re.sub(
+            r"\s+",
+            " ",
+            paragraph,
+        ).strip().lower()
+
+        if re.search(
+            r"\bstudy format\b"
+            r"|\bmode of study\b",
+            cleaned,
+            flags=re.IGNORECASE,
+        ):
+            study_format_index = index
+            break
+
+    # If we cannot identify the existing study-format paragraph
+    # safely, leave the draft untouched.
+    if study_format_index is None:
+        return draft_text
+
+    paragraphs[study_format_index] = (
+        paragraphs[study_format_index].rstrip()
+        + " "
+        + uncertainty_statement
+    )
+
+    result = "\n\n".join(paragraphs)
+
+    if draft_text.endswith("\n"):
+        result += "\n"
+
+    return result
+
+
 def _find_topic_coverage_issues(
     draft: str,
     topics: List[Dict[str, Any]],
