@@ -2428,6 +2428,183 @@ class EmailAssistantService:
             email_text,
         )
 
+        # Parity 3C-3:
+        # If the generated draft missed the requested study-format
+        # dimension, allow exactly one evidence-grounded repair attempt.
+        # The 3C-2 gate decides whether that repaired draft is safe to
+        # replace the original. There is deliberately no repair loop.
+        if topic_coverage_issues and display_documents:
+            repair_start = time.perf_counter()
+
+            repair_evidence_prompt = build_email_user_prompt(
+                original_email=email_text,
+                email_context=email_context,
+                topics=topic_results,
+                documents=display_documents,
+            )
+
+            repair_issue_text = "\n".join(
+                f"- {issue}"
+                for issue in topic_coverage_issues
+            )
+
+            repair_prompt = (
+                repair_evidence_prompt
+                + "\n\n"
+                + "ONE-TIME TOPIC-COVERAGE REPAIR:\n"
+                + "The current draft did not directly answer the "
+                + "following detected topic requirement:\n"
+                + repair_issue_text
+                + "\n\n"
+                + "Return the complete revised email draft only.\n"
+                + "Rules for this repair:\n"
+                + "- Preserve all already-correct non-study-format "
+                + "answer content.\n"
+                + "- Repair only the missing study-format answer.\n"
+                + "- Answer the exact dimension the student asked "
+                + "about, such as online/on-campus or "
+                + "full-time/part-time.\n"
+                + "- Use only the supplied evidence and cite the "
+                + "supporting [Doc n].\n"
+                + "- Do not infer a categorical study format from "
+                + "online application wording or from online-learning "
+                + "components.\n"
+                + "- If the requested study-format dimension cannot "
+                + "be confirmed from the evidence, say that clearly "
+                + "instead of guessing.\n"
+                + "- Keep the reply addressed directly to the "
+                + "student.\n"
+                + "- Do not add new topics or unsupported claims.\n"
+                + "\nCURRENT DRAFT:\n"
+                + draft
+            )
+
+            repaired_draft = await self.llm.generate(
+                system_prompt=_build_strengthened_system_prompt(),
+                user_prompt=repair_prompt,
+                temperature=0.0,
+            )
+
+            repaired_draft = clean_staff_draft(
+                repaired_draft,
+                email_context,
+            )
+
+            repaired_draft = _clean_email_structure(
+                repaired_draft
+            )
+
+            repaired_draft = _remove_unasked_topic_content(
+                repaired_draft,
+                topic_results,
+                email_text,
+            )
+
+            repaired_draft = fix_application_fee_confusion(
+                repaired_draft,
+                topic_results,
+                display_documents,
+                email_context,
+            )
+
+            repaired_draft = (
+                _apply_programme_deadline_temporal_safeguard(
+                    draft=repaired_draft,
+                    topics=topic_results,
+                    email_context=email_context,
+                    documents=display_documents,
+                )
+            )
+
+            (
+                repaired_draft,
+                repaired_display_documents,
+            ) = prepare_docs_for_staff_ui(
+                draft=repaired_draft,
+                docs=display_documents,
+                context=email_context,
+                max_sources=settings.final_source_limit,
+            )
+
+            repaired_draft = add_reference_links_to_draft(
+                repaired_draft,
+                repaired_display_documents,
+                topic_results,
+                email_context,
+            )
+
+            repaired_claim_support_issues = (
+                _find_claim_support_issues(
+                    repaired_draft,
+                    repaired_display_documents,
+                )
+            )
+
+            repaired_audience_issues = (
+                _find_audience_issues(
+                    repaired_draft
+                )
+            )
+
+            repaired_topic_coverage_issues = (
+                _find_topic_coverage_issues(
+                    repaired_draft,
+                    topic_results,
+                    email_text,
+                )
+            )
+
+            repair_safe = (
+                _is_topic_repair_safe_to_accept(
+                    original_draft=draft,
+                    repaired_draft=repaired_draft,
+                    initial_coverage_issues=(
+                        topic_coverage_issues
+                    ),
+                    repaired_coverage_issues=(
+                        repaired_topic_coverage_issues
+                    ),
+                    original_claim_support_issues=(
+                        claim_support_issues
+                    ),
+                    repaired_claim_support_issues=(
+                        repaired_claim_support_issues
+                    ),
+                )
+                and set(
+                    repaired_audience_issues
+                ).issubset(
+                    set(audience_issues)
+                )
+            )
+
+            if repair_safe:
+                draft = repaired_draft
+                display_documents = (
+                    repaired_display_documents
+                )
+
+                validation = validate_email_draft(
+                    draft=draft,
+                    documents=display_documents,
+                    topics=topic_results,
+                    email_context=email_context,
+                )
+
+                claim_support_issues = (
+                    repaired_claim_support_issues
+                )
+                audience_issues = (
+                    repaired_audience_issues
+                )
+                topic_coverage_issues = (
+                    repaired_topic_coverage_issues
+                )
+
+            timing["topic_repair"] = (
+                time.perf_counter() - repair_start
+            )
+
         deterministic_issues = (
             claim_support_issues
             + audience_issues
