@@ -1291,6 +1291,112 @@ def _is_topic_repair_safe_to_accept(
     return True
 
 
+
+def _build_study_format_uncertainty_fallback(
+    *,
+    email_text: str,
+    evidence_text: str,
+):
+    """
+    Build a conservative fallback for an explicit online-vs-on-campus
+    question when the available evidence confirms full-time status but
+    does not directly establish either delivery mode.
+
+    This helper must never infer on-campus delivery merely from a campus
+    name/location, nor infer online delivery from online-learning
+    components or application-process wording.
+    """
+    question = re.sub(
+        r"\s+",
+        " ",
+        str(email_text or ""),
+    ).strip().lower()
+
+    evidence = re.sub(
+        r"\s+",
+        " ",
+        str(evidence_text or ""),
+    ).strip().lower()
+
+    asks_online = bool(
+        re.search(
+            r"\bonline\b",
+            question,
+            flags=re.IGNORECASE,
+        )
+    )
+
+    asks_on_campus = bool(
+        re.search(
+            r"\bon[- ]campus\b",
+            question,
+            flags=re.IGNORECASE,
+        )
+    )
+
+    if not (
+        asks_online
+        and asks_on_campus
+    ):
+        return None
+
+    # Direct delivery-mode evidence means no uncertainty fallback is
+    # needed. The ordinary evidence-grounded answer should be used.
+    direct_delivery_mode = bool(
+        re.search(
+            r"\b(?:programme|program|course|studies?)\b"
+            r"[^.!?\n]{0,100}"
+            r"\b(?:is|are)\s+"
+            r"(?:delivered|taught|offered|held)\s+"
+            r"(?:entirely\s+|fully\s+)?"
+            r"(?:on[- ]campus|online)\b",
+            evidence,
+            flags=re.IGNORECASE,
+        )
+        or re.search(
+            r"\b(?:programme|program|course|studies?)\b"
+            r"[^.!?\n]{0,80}"
+            r"\b(?:is|are)\s+"
+            r"(?:entirely\s+|fully\s+)?"
+            r"(?:on[- ]campus|online)\b",
+            evidence,
+            flags=re.IGNORECASE,
+        )
+    )
+
+    if direct_delivery_mode:
+        return None
+
+    # Keep this fallback deliberately narrow. We only state full-time
+    # when the evidence itself directly describes the programme/course
+    # as full-time.
+    full_time_supported = bool(
+        re.search(
+            r"\b(?:programme|program|course|studies?)\b"
+            r"[^.!?\n]{0,100}"
+            r"\bfull[- ]time\b",
+            evidence,
+            flags=re.IGNORECASE,
+        )
+        or re.search(
+            r"\bfull[- ]time\s+"
+            r"(?:programme|program|course|studies?)\b",
+            evidence,
+            flags=re.IGNORECASE,
+        )
+    )
+
+    if not full_time_supported:
+        return None
+
+    return (
+        "The available official evidence confirms that "
+        "the programme is full-time. However, it does "
+        "not directly confirm whether the programme is "
+        "entirely online or on-campus."
+    )
+
+
 def _find_topic_coverage_issues(
     draft: str,
     topics: List[Dict[str, Any]],
