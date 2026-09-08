@@ -1099,6 +1099,198 @@ def _citation_numbers(text: str) -> List[int]:
 
 
 
+
+def _is_topic_repair_safe_to_accept(
+    *,
+    original_draft: str,
+    repaired_draft: str,
+    initial_coverage_issues: List[str],
+    repaired_coverage_issues: List[str],
+    original_claim_support_issues: List[str],
+    repaired_claim_support_issues: List[str],
+) -> bool:
+    """
+    Accept a one-time topic repair only when it improves coverage
+    without introducing new claim-support problems or dropping
+    already-supported non-study-format answer content.
+
+    This is intentionally conservative. Parity 3C-2 may relax
+    preservation later only if real regression tests justify it.
+    """
+    initial_coverage_set = set(initial_coverage_issues)
+    repaired_coverage_set = set(repaired_coverage_issues)
+
+    # Coverage must strictly improve, matching the mature HANS design.
+    if not (
+        repaired_coverage_set
+        < initial_coverage_set
+    ):
+        return False
+
+    original_claim_set = set(
+        original_claim_support_issues
+    )
+    repaired_claim_set = set(
+        repaired_claim_support_issues
+    )
+
+    # A repair may remove an existing claim issue, or leave the
+    # existing issue set unchanged, but it must never add a new one.
+    if not repaired_claim_set.issubset(
+        original_claim_set
+    ):
+        return False
+
+    def answer_body(text: str) -> str:
+        body = str(text or "")
+
+        for marker in (
+            "Reference links for staff verification:",
+            "Referenzlinks zur Pr\u00fcfung durch Mitarbeitende:",
+            "\n---\n",
+            "\n\\---\n",
+        ):
+            if marker in body:
+                body = body.split(marker, 1)[0]
+
+        return body.strip()
+
+    def normalise_paragraph(paragraph: str) -> str:
+        return re.sub(
+            r"\s+",
+            " ",
+            str(paragraph or "").strip(),
+        ).lower()
+
+    def is_structural_paragraph(paragraph: str) -> bool:
+        cleaned = normalise_paragraph(paragraph)
+
+        if not cleaned:
+            return True
+
+        if re.fullmatch(
+            r"(?:dear|hello|hi)\b.{0,100}",
+            cleaned,
+            flags=re.IGNORECASE,
+        ):
+            return True
+
+        if re.fullmatch(
+            r"(?:kind regards|best regards|"
+            r"yours sincerely|yours faithfully)[,.]?",
+            cleaned,
+            flags=re.IGNORECASE,
+        ):
+            return True
+
+        if re.fullmatch(
+            r"htw berlin student services[,.]?",
+            cleaned,
+            flags=re.IGNORECASE,
+        ):
+            return True
+
+        return False
+
+    def is_study_format_paragraph(
+        paragraph: str,
+    ) -> bool:
+        cleaned = normalise_paragraph(paragraph)
+
+        # Explicit labels always indicate study-format content.
+        if re.search(
+            r"\bstudy format\b"
+            r"|\bmode of study\b",
+            cleaned,
+            flags=re.IGNORECASE,
+        ):
+            return True
+
+        # Time mode must describe the programme/studies, not some
+        # unrelated process.
+        if re.search(
+            r"\b(?:programme|program|course|studies?)\b"
+            r"[^.!?\n]{0,120}"
+            r"\b(?:is|offered|delivered)\b"
+            r"[^.!?\n]{0,60}"
+            r"\b(?:full[- ]time|part[- ]time)\b",
+            cleaned,
+            flags=re.IGNORECASE,
+        ):
+            return True
+
+        # Delivery mode must describe the programme or its teaching.
+        # A bare word such as "online" is intentionally insufficient:
+        # "online application form" is application-process content.
+        if re.search(
+            r"\b(?:programme|program|course|studies?)\b"
+            r"[^.!?\n]{0,120}"
+            r"\b(?:is|offered|delivered|held)\b"
+            r"[^.!?\n]{0,80}"
+            r"\b(?:on[- ]campus|online|hybrid|distance learning)\b",
+            cleaned,
+            flags=re.IGNORECASE,
+        ):
+            return True
+
+        if re.search(
+            r"\b(?:on[- ]campus|online|hybrid|distance learning)\b"
+            r"\s+(?:programme|program|format|study)\b",
+            cleaned,
+            flags=re.IGNORECASE,
+        ):
+            return True
+
+        # Teaching components can legitimately be study-format
+        # information without classifying the whole programme.
+        if re.search(
+            r"\bonline\s+"
+            r"(?:learning|teaching|classes?|lectures?|sessions?)\b"
+            r"|\bself[- ]paced online learning\b"
+            r"|\bstreamed lectures?\b"
+            r"|\binteractive video conferences?\b",
+            cleaned,
+            flags=re.IGNORECASE,
+        ):
+            return True
+
+        return False
+
+    original_body = answer_body(original_draft)
+    repaired_body = answer_body(repaired_draft)
+
+    repaired_normalised = normalise_paragraph(
+        repaired_body
+    )
+
+    original_paragraphs = re.split(
+        r"\n\s*\n",
+        original_body,
+    )
+
+    for paragraph in original_paragraphs:
+        if is_structural_paragraph(paragraph):
+            continue
+
+        # The repair is explicitly allowed to replace or expand the
+        # paragraph that contains the missing study-format answer.
+        if is_study_format_paragraph(paragraph):
+            continue
+
+        required_paragraph = normalise_paragraph(
+            paragraph
+        )
+
+        if (
+            required_paragraph
+            and required_paragraph
+            not in repaired_normalised
+        ):
+            return False
+
+    return True
+
+
 def _find_topic_coverage_issues(
     draft: str,
     topics: List[Dict[str, Any]],
