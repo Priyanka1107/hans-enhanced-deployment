@@ -1655,6 +1655,85 @@ def _find_audience_issues(draft: str) -> List[str]:
     return []
 
 
+
+def _build_topic_scoped_evidence_guidance(
+    topics: List[Dict[str, Any]],
+    topic_document_groups: List[List[Dict[str, Any]]],
+    final_documents: List[Dict[str, Any]],
+) -> str:
+    """
+    Preserve the topic-to-evidence relationship for generation.
+
+    Retrieval already selects evidence per topic. This guidance tells
+    the generator which final [Doc N] sources belong to each topic so
+    that multi-topic enquiries are not silently reduced to the most
+    prominent evidence.
+    """
+    final_doc_numbers = {
+        _document_key(document): index
+        for index, document in enumerate(
+            final_documents,
+            start=1,
+        )
+    }
+
+    lines = [
+        "TOPIC-SCOPED EVIDENCE MAP",
+        "-------------------------",
+    ]
+
+    for topic, document_group in zip(
+        topics,
+        topic_document_groups,
+    ):
+        label = str(
+            topic.get("label")
+            or topic.get("topic_id")
+            or "Topic"
+        ).strip()
+
+        doc_numbers: List[int] = []
+
+        for document in document_group:
+            number = final_doc_numbers.get(
+                _document_key(document)
+            )
+
+            if number is not None and number not in doc_numbers:
+                doc_numbers.append(number)
+
+        if doc_numbers:
+            references = ", ".join(
+                f"[Doc {number}]"
+                for number in doc_numbers
+            )
+
+            lines.append(
+                f"- {label}: {references}"
+            )
+        else:
+            lines.append(
+                f"- {label}: no topic-specific final document "
+                "is available"
+            )
+
+    lines.extend(
+        [
+            "",
+            "MANDATORY TOPIC-COVERAGE RULES:",
+            "- Answer every topic in the map explicitly.",
+            "- Keep the same topic order.",
+            "- For each topic, use only the [Doc N] evidence "
+            "mapped to that topic for topic-specific factual claims.",
+            "- If the mapped evidence does not directly establish "
+            "the requested detail, say that explicitly instead of "
+            "omitting the topic or inferring an answer.",
+        ]
+    )
+
+    return "\n".join(lines)
+
+
 def _build_strengthened_system_prompt() -> str:
     """
     Extend the shared model prompt with deterministic email and
@@ -2324,6 +2403,21 @@ class EmailAssistantService:
                 topics=topic_results,
                 documents=final_documents,
             )
+
+            topic_scoped_guidance = (
+                _build_topic_scoped_evidence_guidance(
+                    topics=topic_results,
+                    topic_document_groups=topic_document_groups,
+                    final_documents=final_documents,
+                )
+            )
+
+            if topic_scoped_guidance:
+                user_prompt = (
+                    user_prompt
+                    + "\n\n"
+                    + topic_scoped_guidance
+                )
 
             temporal_guidance = (
                 _build_programme_deadline_temporal_guidance(
