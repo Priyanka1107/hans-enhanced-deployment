@@ -1098,6 +1098,161 @@ def _citation_numbers(text: str) -> List[int]:
     ]
 
 
+
+def _find_topic_coverage_issues(
+    draft: str,
+    topics: List[Dict[str, Any]],
+    original_email: str = "",
+) -> List[str]:
+    """
+    Check whether selected detected topics received a direct answer.
+
+    Parity 3C-1 intentionally restores only study-format coverage.
+    The requested study-format dimension is taken from the student's
+    original email so that, for example, "full-time" does not count
+    as answering a specific "online or on-campus?" question.
+    """
+    answer = str(draft or "")
+
+    # Validate only the answer body. Reference-link titles and the
+    # standard AI disclaimer must not accidentally satisfy coverage.
+    for marker in (
+        "Reference links for staff verification:",
+        "Referenzlinks zur Pr\u00fcfung durch Mitarbeitende:",
+        "\n---\n",
+        "\n\\---\n",
+    ):
+        if marker in answer:
+            answer = answer.split(marker, 1)[0]
+
+    answer = answer.lower()
+    question = str(original_email or "").lower()
+
+    topic_ids = {
+        str(topic.get("topic_id") or "")
+        for topic in topics
+    }
+
+    issues: List[str] = []
+
+    if "study_format" not in topic_ids:
+        return issues
+
+    uncertainty_phrases = (
+        "could not be confirmed",
+        "cannot be confirmed",
+        "does not explicitly confirm",
+        "do not explicitly confirm",
+        "not explicitly stated",
+        "not stated in the available sources",
+        "available official sources do not confirm",
+        "available evidence is not sufficient",
+    )
+
+    asks_delivery_mode = bool(
+        re.search(
+            r"\bon[- ]campus\b"
+            r"|\bon campus\b"
+            r"|\bonline\b"
+            r"|\bhybrid\b"
+            r"|\bdistance learning\b",
+            question,
+            flags=re.IGNORECASE,
+        )
+    )
+
+    asks_time_mode = bool(
+        re.search(
+            r"\bfull[- ]time\b"
+            r"|\bpart[- ]time\b",
+            question,
+            flags=re.IGNORECASE,
+        )
+    )
+
+    delivery_mode_answer = bool(
+        re.search(
+            r"\b(?:programme|program|course|study programme)\b"
+            r"[^.!?\n]{0,120}"
+            r"\b(?:is|offered|delivered|held)\b"
+            r"[^.!?\n]{0,80}"
+            r"\b(?:on[- ]campus|online|hybrid|distance learning)\b",
+            answer,
+            flags=re.IGNORECASE,
+        )
+        or re.search(
+            r"\b(?:on[- ]campus|online|hybrid|distance learning)\b"
+            r"\s+(?:programme|program|format|study)\b",
+            answer,
+            flags=re.IGNORECASE,
+        )
+    )
+
+    time_mode_answer = bool(
+        re.search(
+            r"\b(?:programme|program|course|study programme)\b"
+            r"[^.!?\n]{0,120}"
+            r"\b(?:is|offered)\b"
+            r"[^.!?\n]{0,60}"
+            r"\b(?:full[- ]time|part[- ]time)\b",
+            answer,
+            flags=re.IGNORECASE,
+        )
+        or re.search(
+            r"\b(?:full[- ]time|part[- ]time)\b"
+            r"\s+(?:programme|program|format|study)\b",
+            answer,
+            flags=re.IGNORECASE,
+        )
+    )
+
+    uncertainty_answer = (
+        any(
+            phrase in answer
+            for phrase in uncertainty_phrases
+        )
+        and bool(
+            re.search(
+                r"\bon[- ]campus\b"
+                r"|\bon campus\b"
+                r"|\bonline\b"
+                r"|\bhybrid\b"
+                r"|\bdistance learning\b"
+                r"|\bfull[- ]time\b"
+                r"|\bpart[- ]time\b"
+                r"|\bstudy format\b",
+                answer,
+                flags=re.IGNORECASE,
+            )
+        )
+    )
+
+    answered = False
+
+    if uncertainty_answer:
+        answered = True
+    elif asks_delivery_mode:
+        answered = delivery_mode_answer
+    elif asks_time_mode:
+        answered = time_mode_answer
+    else:
+        # General study-format question: either recognised dimension
+        # is a substantive answer.
+        answered = (
+            delivery_mode_answer
+            or time_mode_answer
+        )
+
+    if not answered:
+        issues.append(
+            "topic_not_answered: study_format was detected "
+            "but the requested study-format dimension "
+            "was not directly answered"
+        )
+
+    return issues
+
+
 def _find_claim_support_issues(
     draft: str,
     documents: List[Dict[str, Any]],
@@ -2075,25 +2230,68 @@ class EmailAssistantService:
 
         audience_issues = _find_audience_issues(draft)
 
+        topic_coverage_issues = _find_topic_coverage_issues(
+            draft,
+            topic_results,
+            email_text,
+        )
+
         deterministic_issues = (
-            claim_support_issues + audience_issues
+            claim_support_issues
+            + audience_issues
+            + topic_coverage_issues
         )
 
         if deterministic_issues:
-            validation["is_grounded"] = False
-            validation["citations_valid"] = False
+            # Missing topic coverage is a completeness problem.
+            # It must lower quality/review confidence, but it does not
+            # by itself invalidate otherwise grounded citations.
+            if claim_support_issues:
+                validation["is_grounded"] = False
+                validation["citations_valid"] = False
+
             validation["has_hallucinations"] = bool(
                 claim_support_issues
             )
+
+            confidence_cap = 1.0
+
+            if claim_support_issues:
+                confidence_cap = min(
+                    confidence_cap,
+                    0.6,
+                )
+
+            if audience_issues:
+                confidence_cap = min(
+                    confidence_cap,
+                    0.5,
+                )
+
+            if topic_coverage_issues:
+                confidence_cap = min(
+                    confidence_cap,
+                    0.7,
+                )
+
             validation["confidence"] = min(
                 float(validation.get("confidence", 0.0)),
-                0.6 if claim_support_issues else 0.5,
+                confidence_cap,
             )
-            validation["failure_type"] = (
-                "wrong_audience"
-                if audience_issues and not claim_support_issues
-                else "claim_source_mismatch"
-            )
+
+            if claim_support_issues:
+                validation["failure_type"] = (
+                    "claim_source_mismatch"
+                )
+            elif topic_coverage_issues:
+                validation["failure_type"] = (
+                    "topic_not_answered"
+                )
+            else:
+                validation["failure_type"] = (
+                    "wrong_audience"
+                )
+
             validation["review_required"] = True
             validation["review_reason"] = "; ".join(
                 deterministic_issues
