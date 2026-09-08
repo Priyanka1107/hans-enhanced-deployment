@@ -16,6 +16,17 @@ def extract_unmatched_programme_name(email_text: str) -> str:
     end = r"(?=\s*(?:[?.!]|$))"
 
     patterns = [
+        # RG10 unmatched programme title safety.
+        # Supports wording such as:
+        # "the Master's programme Quantum Penguin Engineering at HTW Berlin"
+        (
+            r"\b(?:master(?:'s|\u2019s)?|"
+            r"bachelor(?:'s|\u2019s)?)"
+            r"\s+(?:programme|program|degree)\s+"
+            r"(?!in\b|of\b|at\s+HTW(?:\s+Berlin)?\b)"
+            + candidate
+            + end
+        ),
         (
             r"\b(?:master(?:'s|’s)?(?:\s+(?:programme|program|degree))?|master)"
             r"\s+(?:in|of)\s+"
