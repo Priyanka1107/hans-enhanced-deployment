@@ -1652,6 +1652,25 @@ def _find_audience_issues(draft: str) -> List[str]:
             "to the student"
         ]
 
+    # Detect first-person language that places HANS in the
+    # applicant's role. Legitimate staff wording such as
+    # "I recommend..." or "I can confirm..." remains allowed.
+    applicant_perspective_patterns = (
+        r"\bi\s+am\s+writing\s+to\s+apply\b",
+        r"\bi\s+(?:want|wish|would\s+like)\s+to\s+apply\b",
+        r"\bi\s+am\s+(?:an?\s+)?(?:dual\s+)?citizen\b",
+        r"\bmy\s+(?:application|citizenship|nationality)\b",
+    )
+
+    if any(
+        re.search(pattern, lower_draft)
+        for pattern in applicant_perspective_patterns
+    ):
+        return [
+            "wrong_audience: draft is written from the "
+            "applicant's perspective"
+        ]
+
     return []
 
 
