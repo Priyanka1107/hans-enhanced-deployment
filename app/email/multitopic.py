@@ -1695,9 +1695,24 @@ def clean_staff_draft(draft: str, context: Dict[str, Optional[str]]) -> str:
             flags=re.IGNORECASE,
         )
 
-        # Add English closing only if missing.
-        if "Kind regards" not in text:
-            text = text.rstrip() + "\n\nKind regards,\nHTW Berlin Student Services"
+        # HANS owns the final English closing/signature.
+        # Remove a trailing model-generated sign-off block first,
+        # then append exactly one canonical staff-service closing.
+        text = re.sub(
+            r"\n{1,3}"
+            r"(?:(?:kind|best|warm)\s+regards|regards|"
+            r"sincerely|yours\s+sincerely|yours\s+faithfully)"
+            r",?[^\S\r\n]*"
+            r"(?:\r?\n[\s\S]*)?\Z",
+            "",
+            text,
+            flags=re.IGNORECASE,
+        )
+
+        text = (
+            text.rstrip()
+            + "\n\nKind regards,\nHTW Berlin Student Services"
+        )
 
     # Collapse excessive blank lines.
     text = re.sub(r"\n{3,}", "\n\n", text).strip()

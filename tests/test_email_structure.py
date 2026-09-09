@@ -32,3 +32,86 @@ HTW Berlin Student Services"""
     assert final_draft.endswith(
         "Kind regards,\nHTW Berlin Student Services"
     )
+
+
+def test_staff_cleanup_replaces_placeholder_signature_with_canonical_closing():
+    raw_model_draft = """Dear Admissions Team,
+
+Thank you for your enquiry.
+
+Kind regards,
+[Your Name]"""
+
+    context = {
+        "student_name": None,
+        "input_language": "en",
+        "reply_language": "en",
+    }
+
+    final_draft = _clean_email_structure(
+        clean_staff_draft(
+            raw_model_draft,
+            context,
+        )
+    )
+
+    assert "[Your Name]" not in final_draft
+    assert final_draft.lower().count("kind regards") == 1
+    assert final_draft.endswith(
+        "Kind regards,\nHTW Berlin Student Services"
+    )
+
+
+def test_staff_cleanup_replaces_alternate_model_closing():
+    raw_model_draft = """Dear Admissions Team,
+
+Thank you for your enquiry.
+
+Best regards,
+[Your Name]"""
+
+    context = {
+        "student_name": None,
+        "input_language": "en",
+        "reply_language": "en",
+    }
+
+    final_draft = _clean_email_structure(
+        clean_staff_draft(
+            raw_model_draft,
+            context,
+        )
+    )
+
+    assert "Best regards" not in final_draft
+    assert "[Your Name]" not in final_draft
+    assert final_draft.endswith(
+        "Kind regards,\nHTW Berlin Student Services"
+    )
+
+
+def test_staff_cleanup_keeps_already_canonical_closing_single():
+    raw_model_draft = """Dear applicant,
+
+Thank you for your enquiry.
+
+Kind regards,
+HTW Berlin Student Services"""
+
+    context = {
+        "student_name": None,
+        "input_language": "en",
+        "reply_language": "en",
+    }
+
+    final_draft = _clean_email_structure(
+        clean_staff_draft(
+            raw_model_draft,
+            context,
+        )
+    )
+
+    assert final_draft.lower().count("kind regards") == 1
+    assert final_draft.endswith(
+        "Kind regards,\nHTW Berlin Student Services"
+    )
