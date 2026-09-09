@@ -806,7 +806,7 @@ def _clean_email_structure(draft: str) -> str:
     ]
 
     if len(greeting_indexes) > 1:
-        greeting_to_keep = greeting_indexes[-1]
+        greeting_to_keep = greeting_indexes[0]
 
         lines = [
             line
