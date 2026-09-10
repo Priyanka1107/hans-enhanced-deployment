@@ -1627,6 +1627,252 @@ def _find_claim_support_issues(
     return list(dict.fromkeys(issues))
 
 
+def _apply_application_route_invariant(
+    draft: str,
+    topics: List[Dict[str, Any]],
+    email_context: Dict[str, Any],
+) -> str:
+    """
+    Prevent generated drafts from contradicting a deterministic
+    EU/EEA application-route decision.
+
+    This does not decide the route itself. It only removes model
+    sentences that positively offer uni-assist after the structured
+    context has already established an EU/EEA route.
+    """
+    original = str(draft or "")
+
+    topic_ids = {
+        str(topic.get("topic_id") or "")
+        for topic in (topics or [])
+    }
+
+    if (
+        "application_route" not in topic_ids
+        or str(
+            email_context.get("citizenship_group") or ""
+        ).strip() != "EU/EEA"
+    ):
+        return original
+
+    negative_markers = (
+        "do not need",
+        "don't need",
+        "does not need",
+        "doesn't need",
+        "need not",
+        "should not",
+        "must not",
+        "not required",
+        "rather than",
+        "instead of",
+        "not via uni-assist",
+        "not through uni-assist",
+    )
+
+    positive_patterns = (
+        r"\b(?:can|may|could)\s+(?:still\s+)?apply\b.*\buni-assist\b",
+        r"\b(?:have|has)\s+the\s+(?:option|choice)\s+to\s+apply\b.*\buni-assist\b",
+        r"\beligible\s+to\s+apply\b.*\buni-assist\b",
+        r"\bapply\b.*\b(?:or|either)\b.*\buni-assist\b",
+        r"\b(?:or|alternatively)\s+(?:via|through)\s+uni-assist\b",
+    )
+
+    paragraphs = re.split(
+        r"\n\s*\n",
+        original,
+    )
+
+    rebuilt_paragraphs: List[str] = []
+
+    for paragraph in paragraphs:
+        sentences = re.split(
+            r"(?<=[.!?])\s+",
+            paragraph,
+        )
+
+        kept_sentences: List[str] = []
+
+        for sentence in sentences:
+            lower_sentence = sentence.lower()
+
+            contradiction = (
+                "uni-assist" in lower_sentence
+                and not any(
+                    marker in lower_sentence
+                    for marker in negative_markers
+                )
+                and any(
+                    re.search(
+                        pattern,
+                        lower_sentence,
+                        flags=re.IGNORECASE,
+                    )
+                    for pattern in positive_patterns
+                )
+            )
+
+            if contradiction:
+                continue
+
+            kept_sentences.append(sentence)
+
+        rebuilt = " ".join(
+            sentence.strip()
+            for sentence in kept_sentences
+            if sentence.strip()
+        ).strip()
+
+        if rebuilt:
+            rebuilt_paragraphs.append(rebuilt)
+
+    return re.sub(
+        r"\n{3,}",
+        "\n\n",
+        "\n\n".join(rebuilt_paragraphs),
+    ).strip()
+
+
+def _apply_unsupported_vpd_evidence_guard(
+    draft: str,
+    topics: List[Dict[str, Any]],
+    original_email: str,
+    documents: List[Dict[str, Any]],
+) -> str:
+    """
+    Handle an explicit VPD question conservatively when the available
+    evidence contains no VPD information.
+
+    The guard does not decide whether a VPD is required. It prevents a
+    definitive unsupported answer and makes sure the student's explicit
+    VPD question is not silently omitted.
+    """
+    original = str(draft or "")
+
+    topic_ids = {
+        str(topic.get("topic_id") or "")
+        for topic in (topics or [])
+    }
+
+    if (
+        "qualification_recognition" not in topic_ids
+        or not re.search(
+            r"\bvpd\b",
+            str(original_email or ""),
+            flags=re.IGNORECASE,
+        )
+    ):
+        return original
+
+    evidence_text = " ".join(
+        " ".join(
+            str(document.get(key) or "")
+            for key in (
+                "title",
+                "url",
+                "source_url",
+                "content",
+                "chunk_text",
+            )
+        )
+        for document in (documents or [])
+    )
+
+    # If actual VPD evidence exists, let the evidence-grounded answer stand.
+    if re.search(
+        r"\bvpd\b",
+        evidence_text,
+        flags=re.IGNORECASE,
+    ):
+        return original
+
+    uncertainty_markers = (
+        "cannot confirm",
+        "can't confirm",
+        "could not confirm",
+        "unable to confirm",
+        "not explicitly confirmed",
+        "not explicitly stated",
+        "does not explicitly state",
+        "do not explicitly state",
+        "available official sources do not",
+        "available official information does not",
+    )
+
+    paragraphs = re.split(
+        r"\n\s*\n",
+        original,
+    )
+
+    rebuilt: List[str] = []
+    already_safe = False
+
+    for paragraph in paragraphs:
+        sentences = re.split(
+            r"(?<=[.!?])\s+",
+            paragraph,
+        )
+
+        kept: List[str] = []
+
+        for sentence in sentences:
+            lower_sentence = sentence.lower()
+
+            if "vpd" not in lower_sentence:
+                kept.append(sentence)
+                continue
+
+            if any(
+                marker in lower_sentence
+                for marker in uncertainty_markers
+            ):
+                kept.append(sentence)
+                already_safe = True
+
+            # Otherwise drop the unsupported definitive VPD sentence.
+
+        cleaned_paragraph = " ".join(
+            sentence.strip()
+            for sentence in kept
+            if sentence.strip()
+        ).strip()
+
+        if cleaned_paragraph:
+            rebuilt.append(cleaned_paragraph)
+
+    result = "\n\n".join(rebuilt).strip()
+
+    if already_safe:
+        return result
+
+    cautious_paragraph = (
+        "Regarding the VPD, the available official HTW information "
+        "does not allow us to confirm whether a VPD is required for "
+        "your stated qualification. We therefore cannot give a "
+        "definitive VPD requirement based on the currently available "
+        "official evidence."
+    )
+
+    closing_patterns = (
+        "Kind regards,\nHTW Berlin Student Services",
+        "Mit freundlichen Gr??en\nStudierendenservice der HTW Berlin",
+    )
+
+    for closing in closing_patterns:
+        if closing in result:
+            return result.replace(
+                closing,
+                cautious_paragraph + "\n\n" + closing,
+                1,
+            )
+
+    return (
+        result.rstrip()
+        + "\n\n"
+        + cautious_paragraph
+    ).strip()
+
+
 def _find_audience_issues(draft: str) -> List[str]:
     """
     Detect drafts that are incorrectly addressed to HTW staff instead
@@ -2123,23 +2369,65 @@ class EmailAssistantService:
                 topic.get("topic_id") or ""
             ).strip()
 
-            base_query = (
-                topic.get("base_query")
-                or topic.get("query")
+            retrieval_seed = (
+                topic.get("user_anchor")
+                or topic.get("base_query")
                 or email_text
             )
 
             evidence_query = build_evidence_query(
                 topic_id,
-                base_query,
+                retrieval_seed,
                 email_context,
+            )
+
+            retrieval_top_k = (
+                max(top_k, 8)
+                if topic_id in {
+                    "application_route",
+                    "qualification_recognition",
+                }
+                else max(top_k, 5)
             )
 
             retrieved_documents = retrieve_for_topic(
                 connection=self.connection,
                 query=evidence_query,
-                top_k=max(top_k, 5),
+                top_k=retrieval_top_k,
             )
+
+            # Qualification recognition benefits from two complementary views:
+            # the applicant-specific wording preserves the actual qualification
+            # being asked about, while the canonical topic query reliably
+            # retrieves HTW's general recognition/admission evidence.
+            if topic_id == "qualification_recognition":
+                canonical_seed = str(
+                    topic.get("base_query") or ""
+                ).strip()
+
+                if (
+                    canonical_seed
+                    and canonical_seed != retrieval_seed
+                ):
+                    canonical_query = build_evidence_query(
+                        topic_id,
+                        canonical_seed,
+                        email_context,
+                    )
+
+                    canonical_documents = retrieve_for_topic(
+                        connection=self.connection,
+                        query=canonical_query,
+                        top_k=retrieval_top_k,
+                    )
+
+                    retrieved_documents = deduplicate_documents(
+                        canonical_documents + retrieved_documents,
+                        limit=max(
+                            retrieval_top_k * 2,
+                            16,
+                        ),
+                    )
 
             # The actual function signature is:
             # get_official_programme_docs(context, topic_id, limit=3)
@@ -2387,6 +2675,19 @@ class EmailAssistantService:
             draft,
             topic_results,
             email_text,
+        )
+
+        draft = _apply_application_route_invariant(
+            draft,
+            topic_results,
+            email_context,
+        )
+
+        draft = _apply_unsupported_vpd_evidence_guard(
+            draft,
+            topic_results,
+            email_text,
+            final_documents,
         )
 
         draft = fix_application_fee_confusion(

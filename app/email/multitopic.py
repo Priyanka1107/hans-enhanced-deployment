@@ -783,7 +783,7 @@ TOPIC_DEFINITIONS: Dict[str, Dict[str, Any]] = {
             r"\banabin\b",
             r"\bdaad admission",
         ],
-        "query": "How is an International Baccalaureate or other foreign school qualification recognised as a higher education entrance qualification for Bachelor admission?",
+        "query": "How is the applicant's stated foreign school qualification recognised as a higher education entrance qualification for Bachelor admission, and what assessment process applies?",
     },
     "conditional_enrolment": {
         "label": "Conditional enrolment / final certificate",
@@ -1036,6 +1036,59 @@ for _topic_id, _patterns in GERMAN_EXTRA_TOPIC_PATTERNS.items():
         TOPIC_DEFINITIONS[_topic_id]["patterns"].extend(_patterns)
 
 
+
+def _extract_topic_anchor(
+    email_text: str,
+    patterns: List[str],
+    max_chars: int = 700,
+) -> str:
+    """
+    Preserve the applicant text that caused a topic to be detected.
+
+    This keeps case-specific meaning for retrieval without replacing it
+    with a generic topic query.
+    """
+    raw = str(email_text or "").strip()
+
+    if not raw or not patterns:
+        return ""
+
+    sentences = [
+        part.strip()
+        for part in re.split(
+            r"(?<=[.!?])\s+|\n+",
+            raw,
+        )
+        if part.strip()
+    ]
+
+    matched: List[str] = []
+
+    for sentence in sentences:
+        if not any(
+            re.search(
+                pattern,
+                sentence,
+                flags=re.IGNORECASE,
+            )
+            for pattern in patterns
+        ):
+            continue
+
+        # Remove an email greeting if it is attached to the first
+        # sentence; the enquiry content itself is preserved.
+        cleaned = re.sub(
+            r"^(?:dear|hello|hi)\s+[^,:\n]{1,80}[,:]\s*",
+            "",
+            sentence,
+            flags=re.IGNORECASE,
+        ).strip()
+
+        if cleaned:
+            matched.append(cleaned)
+
+    return " ".join(matched)[:max_chars].strip()
+
 def detect_topics(email_text: str, context: Dict[str, Optional[str]], max_topics: int = 4) -> List[Dict[str, str]]:
     """
     Detect the real information needs in a student email.
@@ -1190,12 +1243,32 @@ def detect_topics(email_text: str, context: Dict[str, Optional[str]], max_topics
     topics: List[Dict[str, str]] = []
     for tid in ordered:
         spec = TOPIC_DEFINITIONS[tid]
-        base_query = spec.get("query") or spec.get("base_query") or spec["label"]
+        base_query = (
+            spec.get("query")
+            or spec.get("base_query")
+            or spec["label"]
+        )
+
+        user_anchor = _extract_topic_anchor(
+            email_text,
+            list(spec.get("patterns") or []),
+        )
+
+        retrieval_seed = (
+            user_anchor
+            or base_query
+        )
+
         topics.append({
             "topic_id": tid,
             "label": spec["label"],
             "base_query": base_query,
-            "query": build_evidence_query(tid, base_query, context),
+            "user_anchor": user_anchor,
+            "query": build_evidence_query(
+                tid,
+                retrieval_seed,
+                context,
+            ),
         })
 
     return topics
@@ -1219,7 +1292,6 @@ def build_evidence_query(topic_id: str, base_query: str, context: Dict[str, Opti
 
     if context.get("country") and topic_id in {
         "application_route",
-        "qualification_recognition",
         "aps_certificate",
         "certified_translations",
         "application_fee",
@@ -1249,7 +1321,7 @@ def build_evidence_query(topic_id: str, base_query: str, context: Dict[str, Opti
             )
         parts.append("Include application route, Hochschulstart, DoSV, HTW application portal, EU/EEA and uni-assist rules.")
     elif topic_id == "qualification_recognition":
-        parts.append("Include International Baccalaureate, IB diploma, foreign school leaving certificate, higher education entrance qualification, anabin and DAAD admission database.")
+        parts.append("Use official HTW guidance on recognition of the applicant\'s stated foreign school qualification, higher education entrance qualification, anabin, DAAD admission database, and any assessment process relevant to the applicant\'s actual question.")
     elif topic_id == "motivation_letter":
         parts.append("Check whether motivation letter is listed as a programme-specific required document.")
     elif topic_id == "english_language_requirements":
@@ -2545,7 +2617,92 @@ def _topic_relevance_score(
         ):
             score += 35
 
-    if topic_id == "application_deadline":
+    if topic_id == "application_route":
+        route_signals = (
+            "application portal",
+            "application route",
+            "apply via",
+            "apply through",
+            "apply for a study place",
+            "hochschulstart",
+            "dosv",
+            "uni-assist",
+            "eu or eea",
+            "eu/eea",
+            "national of an eu",
+            "citizen of an eu",
+            "when should you apply",
+        )
+
+        route_score = sum(
+            10
+            for signal in route_signals
+            if signal in text
+        )
+
+        score += min(route_score, 50)
+
+        if any(
+            weak_signal in text
+            for weak_signal in (
+                "proof of english proficiency",
+                "proof of german proficiency",
+                "dsh exam",
+                "dual enrolment",
+                "second degree programme",
+                "refugees:",
+            )
+        ):
+            score -= 30
+
+    elif topic_id == "qualification_recognition":
+        qualification_signals = (
+            "higher education entrance qualification",
+            "higher education entry qualification",
+            "university entrance qualification",
+            "foreign school qualification",
+            "foreign education certificate",
+            "school leaving certificate",
+            "admission requirements",
+            "recognition",
+            "recognised",
+            "recognized",
+            "anabin",
+            "vpd",
+            "pre-check",
+        )
+
+        qualification_score = sum(
+            10
+            for signal in qualification_signals
+            if signal in text
+        )
+
+        score += min(
+            qualification_score,
+            50,
+        )
+
+        if any(
+            weak_signal in text
+            for weak_signal in (
+                "dual enrolment",
+                "dsh exam",
+                "changing study programme",
+                "changing university",
+                "proof of english proficiency",
+                "proof of german proficiency",
+            )
+        ):
+            score -= 30
+
+        # Refugee pages may mention recognition incidentally,
+        # but should not outrank normal admissions guidance for
+        # an ordinary qualification-recognition enquiry.
+        if "refugee" in text:
+            score -= 25
+
+    elif topic_id == "application_deadline":
         if any(
             phrase in text
             for phrase in (
@@ -2630,8 +2787,16 @@ def _topic_relevance_score(
         ):
             score += 20
 
-    # Generic HTW pages are useful only as backup.
-    if "www.htw-berlin.de" in url:
+    # Generic HTW pages are normally backup evidence for programme-specific
+    # topics. For general application-route and qualification-recognition
+    # questions, however, the central HTW admissions pages are primary sources.
+    if (
+        "www.htw-berlin.de" in url
+        and topic_id not in {
+            "application_route",
+            "qualification_recognition",
+        }
+    ):
         score -= 8
 
     if _is_wrong_document_for_topic(
@@ -2693,10 +2858,21 @@ def filter_docs_for_programme(
         "final_certificate_submission",
     }
 
-    # For general topics, preserve retrieval order but remove duplicate URLs.
+    ranked_general_topics = {
+        "application_route",
+        "qualification_recognition",
+    }
+
+    # Most general topics preserve retrieval order. Application route and
+    # qualification recognition are exceptions because broad international
+    # admissions searches otherwise admit semantically adjacent but misleading
+    # evidence (for example language, exchange, or special-case pages).
     if (
-        not context.get("target_program")
-        or topic_id not in programme_specific_topics
+        (
+            not context.get("target_program")
+            or topic_id not in programme_specific_topics
+        )
+        and topic_id not in ranked_general_topics
     ):
         output: List[Dict[str, Any]] = []
         seen_urls: set[str] = set()

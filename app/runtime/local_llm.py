@@ -405,6 +405,40 @@ Studierendenservice der HTW Berlin
 """.strip()
 
 
+
+def _neutralize_applicant_anchor(text: str) -> str:
+    """
+    Convert common English first-person applicant wording into a neutral
+    third-person description for generation. Retrieval keeps the original
+    applicant wording.
+    """
+    value = str(text or "").strip()
+
+    replacements = [
+        (r"\bI am\b", "the applicant is"),
+        (r"\bI'm\b", "the applicant is"),
+        (r"\bI have\b", "the applicant has"),
+        (r"\bI hold\b", "the applicant holds"),
+        (r"\bI want\b", "the applicant wants"),
+        (r"\bI need\b", "the applicant needs"),
+        (r"\bI would\b", "the applicant would"),
+        (r"\bI should\b", "the applicant should"),
+        (r"\bI can\b", "the applicant can"),
+        (r"\bmy\b", "the applicant's"),
+        (r"\bme\b", "the applicant"),
+        (r"\bI\b", "the applicant"),
+    ]
+
+    for pattern, replacement in replacements:
+        value = re.sub(
+            pattern,
+            replacement,
+            value,
+            flags=re.IGNORECASE,
+        )
+
+    return value
+
 def build_email_user_prompt(
     *,
     original_email: str,
@@ -439,9 +473,16 @@ def build_email_user_prompt(
     topic_lines: List[str] = []
 
     for topic in topics:
+        topic_text = (
+            topic.get("query")
+            or topic.get("user_anchor")
+            or topic.get("base_query")
+            or ""
+        )
+
         topic_lines.append(
             f"- {topic.get('label')}: "
-            f"{topic.get('base_query') or topic.get('query')}"
+            f"{_neutralize_applicant_anchor(topic_text)}"
         )
 
     evidence_blocks: List[str] = []
@@ -485,10 +526,6 @@ def build_email_user_prompt(
         )
 
     return f"""
-ORIGINAL EMAIL
---------------
-{original_email}
-
 INTERPRETED CONTEXT
 -------------------
 {chr(10).join(profile_lines) if profile_lines else "- No reliable profile details detected."}
