@@ -2369,11 +2369,26 @@ class EmailAssistantService:
                 topic.get("topic_id") or ""
             ).strip()
 
-            retrieval_seed = (
-                topic.get("user_anchor")
-                or topic.get("base_query")
-                or email_text
-            )
+            # Applicant-specific wording is essential for route and
+            # qualification questions because citizenship/residence and the
+            # stated qualification must be preserved. For other topics,
+            # prefer the canonical topic query to avoid cross-topic noise
+            # from multi-question emails.
+            if topic_id in {
+                "application_route",
+                "qualification_recognition",
+            }:
+                retrieval_seed = (
+                    topic.get("user_anchor")
+                    or topic.get("base_query")
+                    or email_text
+                )
+            else:
+                retrieval_seed = (
+                    topic.get("base_query")
+                    or topic.get("user_anchor")
+                    or email_text
+                )
 
             evidence_query = build_evidence_query(
                 topic_id,
