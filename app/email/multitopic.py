@@ -337,13 +337,135 @@ def extract_email_context(email_text: str) -> Dict[str, Optional[str]]:
             "or has a foreign school certificate. Keep qualification recognition separate from application route."
         )
 
-    residence_match = re.search(
-        r"\b(?:living|residing|currently living|currently residing)\s+in\s+([A-ZÄÖÜ][A-Za-zÄÖÜäöüß\- ]+)",
+    # Extract the residence as a proper-name phrase rather than
+    # maintaining a country whitelist or a growing list of clause endings.
+    residence_prefix_match = re.search(
+        r"\b(?:living|residing|currently living|currently residing)\s+in\s+",
         text,
         flags=re.IGNORECASE,
     )
-    if residence_match:
-        context["residence_country"] = residence_match.group(1).strip()
+
+    if residence_prefix_match:
+        residence_tail = text[
+            residence_prefix_match.end():
+        ]
+
+        # Restrict parsing to the local sentence/phrase first.
+        residence_segment = re.split(
+            r"[,.;!?\n]",
+            residence_tail,
+            maxsplit=1,
+        )[0].strip()
+
+        # Normalize a curly apostrophe only for token analysis. Character
+        # positions remain unchanged, so the original text can be preserved.
+        token_source = residence_segment.replace(
+            chr(0x2019),
+            "'",
+        )
+
+        word_matches = list(
+            re.finditer(
+                r"[^\W\d_]+(?:['-][^\W\d_]+)*",
+                token_source,
+                flags=re.UNICODE,
+            )
+        )
+
+        def _looks_like_place_name_token(token: str) -> bool:
+            letters = [
+                char
+                for char in token
+                if char.isalpha()
+            ]
+
+            if not letters:
+                return False
+
+            if letters[0].isupper():
+                return True
+
+            for separator in ("'", "-"):
+                if separator not in token:
+                    continue
+
+                parts = token.split(separator)
+
+                if any(
+                    part
+                    and part[0].isupper()
+                    for part in parts[1:]
+                ):
+                    return True
+
+            return False
+
+        def _is_short_name_connector(token: str) -> bool:
+            return (
+                token.isalpha()
+                and token.islower()
+                and len(token) <= 3
+            )
+
+        if word_matches:
+            first_name_index = 0
+
+            while (
+                first_name_index < len(word_matches)
+                and _is_short_name_connector(
+                    word_matches[first_name_index].group(0)
+                )
+            ):
+                first_name_index += 1
+
+            if (
+                first_name_index < len(word_matches)
+                and _looks_like_place_name_token(
+                    word_matches[first_name_index].group(0)
+                )
+            ):
+                residence_end = (
+                    word_matches[first_name_index].end()
+                )
+
+                index = first_name_index + 1
+
+                while index < len(word_matches):
+                    token = word_matches[index].group(0)
+
+                    if _looks_like_place_name_token(token):
+                        residence_end = word_matches[index].end()
+                        index += 1
+                        continue
+
+                    if _is_short_name_connector(token):
+                        next_index = index
+
+                        while (
+                            next_index < len(word_matches)
+                            and _is_short_name_connector(
+                                word_matches[next_index].group(0)
+                            )
+                        ):
+                            next_index += 1
+
+                        if (
+                            next_index < len(word_matches)
+                            and _looks_like_place_name_token(
+                                word_matches[next_index].group(0)
+                            )
+                        ):
+                            residence_end = (
+                                word_matches[next_index].end()
+                            )
+                            index = next_index + 1
+                            continue
+
+                    break
+
+                context["residence_country"] = (
+                    residence_segment[:residence_end].strip()
+                )
 
     return context
 

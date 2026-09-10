@@ -52,6 +52,62 @@ def document_url(document: dict[str, Any]) -> str:
     )
 
 
+def test_extract_email_context_preserves_simple_residence_country() -> None:
+    email = (
+        "I am currently residing in India. "
+        "I would like to apply for a Bachelor programme."
+    )
+
+    context = extract_email_context(email)
+
+    assert context["residence_country"] == "India"
+
+
+def test_extract_email_context_stops_residence_at_clause_boundary() -> None:
+    email = (
+        "I am a dual citizen (French and Moroccan), "
+        "currently residing in Morocco and holding "
+        "a French Baccalaureate diploma. "
+        "I want to apply for a Bachelor programme."
+    )
+
+    context = extract_email_context(email)
+
+    assert context["citizenship_group"] == "EU/EEA"
+    assert context["residence_country"] == "Morocco"
+
+def test_extract_email_context_preserves_unlisted_residence_country() -> None:
+    email = (
+        "I am currently residing in Germany. "
+        "I would like to apply for a Master programme."
+    )
+
+    context = extract_email_context(email)
+
+    assert context["residence_country"] == "Germany"
+
+
+def test_extract_email_context_preserves_country_name_with_and() -> None:
+    email = (
+        "I am currently residing in Bosnia and Herzegovina. "
+        "I would like to apply for a Bachelor programme."
+    )
+
+    context = extract_email_context(email)
+
+    assert context["residence_country"] == "Bosnia and Herzegovina"
+
+def test_extract_email_context_trims_clause_for_unlisted_residence_country() -> None:
+    email = (
+        "I am currently residing in Germany and holding "
+        "an International Baccalaureate diploma. "
+        "I would like to apply for a Bachelor programme."
+    )
+
+    context = extract_email_context(email)
+
+    assert context["residence_country"] == "Germany"
+
 def main() -> None:
     programme_result = enrich_email_text_with_programme_context(
         email_text=EMAIL,
