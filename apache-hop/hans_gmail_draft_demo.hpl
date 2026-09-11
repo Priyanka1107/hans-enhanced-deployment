@@ -369,7 +369,7 @@ var hans_draft_url = base_url + "/v1/drafts";</jsScript_script>
     <schema_definition/>
     <ignore_fields>N</ignore_fields>
     <file>
-      <name>C:\Working_Student\HTW\HANS_Project\hans-recovery-pre-source-fix\runtime_data\filename.txt</name>
+      <name>C:\Working_Student\HTW\HANS_Project\hans-hop-e2e-finalization\runtime_data\filename.txt</name>
       <do_not_open_new_file_init>N</do_not_open_new_file_init>
       <extension>csv</extension>
       <append>N</append>
@@ -690,7 +690,7 @@ var hans_draft_url = base_url + "/v1/drafts";</jsScript_script>
     <schema_definition/>
     <ignore_fields>N</ignore_fields>
     <file>
-      <name>C:\Working_Student\HTW\HANS_Project\hans-recovery-pre-source-fix\runtime_data\filename.txt</name>
+      <name>C:\Working_Student\HTW\HANS_Project\hans-hop-e2e-finalization\runtime_data\filename.txt</name>
       <do_not_open_new_file_init>N</do_not_open_new_file_init>
       <extension>csv</extension>
       <append>N</append>
@@ -1505,7 +1505,7 @@ def pythonExe =
 
 def draftHelper =
     "C:\\Working_Student\\HTW\\HANS_Project\\" +
-    "hans-recovery-pre-source-fix\\apache-hop\\" +
+    "hans-hop-e2e-finalization\\apache-hop\\" +
     "create_gmail_draft_imap.py"
 
 draft_process_command =
