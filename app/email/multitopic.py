@@ -2515,6 +2515,73 @@ def _is_wrong_document_for_topic(
     ):
         return True
 
+    if topic_id == "application_before_graduation":
+        # Use a focused leading window rather than the whole scraped
+        # page. Long pages may mention certificates or deadlines in
+        # unrelated sections and otherwise look falsely relevant.
+        title = str(
+            document.get("title")
+            or ""
+        ).lower()
+
+        raw_content = str(
+            document.get("content")
+            or document.get("chunk_text")
+            or ""
+        ).lower()
+
+        focused_text = " ".join(
+            (
+                title
+                + " "
+                + url
+                + " "
+                + raw_content[:1800]
+            ).split()
+        )
+
+        # A phrase about a missing degree certificate can occur on
+        # pages for fundamentally different applicant scenarios.
+        # Source scope therefore has to agree with this topic; a
+        # second-degree application page is not evidence about
+        # applying for a first Master's while still graduating.
+        page_scope = (
+            title
+            + " "
+            + url
+        )
+
+        if any(
+            marker in page_scope
+            for marker in (
+                "second degree programme",
+                "second-degree-programme",
+            )
+        ):
+            return True
+
+        before_graduation_signals = (
+            "currently in the final semester",
+            "applying during your final semester",
+            "final semester of your bachelor",
+            "final semester of the bachelor",
+            "before receiving the final transcript",
+            "before receiving your final transcript",
+            "before receiving the final degree",
+            "pending final transcript",
+            "provisional transcript",
+            "degree certificate by the application deadline",
+            "unable to provide a degree certificate by the application deadline",
+            "submit the final certificate later",
+            "submit the final degree certificate later",
+        )
+
+        if not any(
+            signal in focused_text
+            for signal in before_graduation_signals
+        ):
+            return True
+
     topic_exclusions: Dict[str, tuple[str, ...]] = {
         "application_deadline": (
             "finances-and-scholarships",
@@ -2576,6 +2643,11 @@ def _topic_relevance_score(
     """
     text = _document_topic_text(document)
     url = _normalised_document_url(document)
+
+    title = str(
+        document.get("title")
+        or ""
+    ).lower()
 
     score = _doc_programme_score(
         document,
@@ -2685,6 +2757,33 @@ def _topic_relevance_score(
             qualification_score,
             50,
         )
+
+        # Source scope matters in addition to lexical similarity.
+        # A central admissions/qualification page is stronger
+        # recognition evidence than a page whose main purpose is
+        # application timing or another administrative topic.
+        source_identity = (
+            title
+            + " "
+            + url
+        )
+
+        if any(
+            marker in source_identity
+            for marker in (
+                "admission requirements",
+                "admission-requirements",
+                "bachelor's study programmes",
+                "bachelor?s study programmes",
+                "bachelors-study-programmes",
+                "certificate assessment",
+                "certificate-assessment",
+            )
+        ):
+            score += 25
+
+        if "application-periods" in url:
+            score -= 15
 
         if any(
             weak_signal in text
