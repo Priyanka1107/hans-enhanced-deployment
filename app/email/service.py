@@ -201,23 +201,36 @@ def _build_programme_deadline_temporal_guidance(
                 "application_end"
             )
 
+            date_kind = str(
+                period.get("date_kind")
+                or ""
+            ).strip().lower()
+
             if (
+                date_kind == "deadline"
+                and application_end is not None
+            ):
+                temporal_text = (
+                    "application deadline "
+                    f"{application_end.isoformat()}"
+                )
+            elif (
                 application_start is not None
                 and application_end is not None
             ):
-                range_text = (
+                temporal_text = (
                     f"{application_start.isoformat()} "
                     f"to {application_end.isoformat()}"
                 )
             else:
-                range_text = (
+                temporal_text = (
                     "no numeric application-period "
                     "range parsed"
                 )
 
             lines.append(
                 f"- {label}: {status}; "
-                f"{range_text}. [Doc {document_index}]"
+                f"{temporal_text}. [Doc {document_index}]"
             )
 
         current_period = timeline.get(
@@ -228,45 +241,90 @@ def _build_programme_deadline_temporal_guidance(
             "next_period"
         )
 
-        if current_period is None:
-            lines.append(
-                "No regular application period is "
-                "currently open."
-            )
-        else:
-            lines.append(
-                "Current regular application period: "
-                f"{current_period['label']}."
-            )
+        explicit_deadline_mode = any(
+            str(
+                period.get("date_kind")
+                or ""
+            ).strip().lower()
+            == "deadline"
+            for period in periods
+        )
 
-        if (
-            current_period is None
-            and next_period is not None
-        ):
-            next_start = next_period.get(
-                "application_start"
-            )
-            next_end = next_period.get(
-                "application_end"
-            )
-
-            next_range = ""
-
-            if (
-                next_start is not None
-                and next_end is not None
-            ):
-                next_range = (
-                    f" ({next_start.isoformat()} "
-                    f"to {next_end.isoformat()})"
+        if explicit_deadline_mode:
+            if current_period is not None:
+                lines.append(
+                    "The confirmed application deadline "
+                    "is today."
+                )
+            elif next_period is not None:
+                next_deadline = next_period.get(
+                    "application_end"
                 )
 
-            lines.append(
-                "Next regular application period: "
-                f"{next_period['label']}"
-                f"{next_range}. "
-                f"[Doc {document_index}]"
-            )
+                deadline_text = (
+                    next_deadline.isoformat()
+                    if next_deadline is not None
+                    else ""
+                )
+
+                lines.append(
+                    "Next confirmed application deadline: "
+                    f"{next_period['label']}"
+                    + (
+                        f" ({deadline_text})"
+                        if deadline_text
+                        else ""
+                    )
+                    + f". [Doc {document_index}]"
+                )
+            else:
+                lines.append(
+                    "The available confirmed application "
+                    "deadline has passed. No later "
+                    "application deadline is confirmed in "
+                    "the available official programme "
+                    "evidence."
+                )
+        else:
+            if current_period is None:
+                lines.append(
+                    "No regular application period is "
+                    "currently open."
+                )
+            else:
+                lines.append(
+                    "Current regular application period: "
+                    f"{current_period['label']}."
+                )
+
+            if (
+                current_period is None
+                and next_period is not None
+            ):
+                next_start = next_period.get(
+                    "application_start"
+                )
+                next_end = next_period.get(
+                    "application_end"
+                )
+
+                next_range = ""
+
+                if (
+                    next_start is not None
+                    and next_end is not None
+                ):
+                    next_range = (
+                        f" ({next_start.isoformat()} "
+                        f"to {next_end.isoformat()})"
+                    )
+
+                lines.append(
+                    "Next regular application period: "
+                    f"{next_period['label']}"
+                    f"{next_range}. "
+                    f"[Doc {document_index}]"
+                )
 
         lines.append(
             "Do not describe a period classified as "
@@ -435,6 +493,11 @@ def _apply_programme_deadline_temporal_safeguard(
             or ""
         ).strip()
 
+        date_kind = str(
+            current_period.get("date_kind")
+            or ""
+        ).strip().lower()
+
         start = format_date(
             current_period.get(
                 "application_start"
@@ -447,7 +510,18 @@ def _apply_programme_deadline_temporal_safeguard(
             )
         )
 
-        if start and end:
+        if (
+            date_kind == "deadline"
+            and end
+        ):
+            replacement = (
+                "Regarding the application deadline, "
+                "the official programme evidence lists "
+                f"{end} as the application deadline "
+                f"for {label} {citation}. "
+                "That deadline is today."
+            )
+        elif start and end:
             replacement = (
                 "Regarding the application deadline, "
                 f"the regular application period for "
@@ -461,6 +535,11 @@ def _apply_programme_deadline_temporal_safeguard(
             or ""
         ).strip()
 
+        date_kind = str(
+            next_period.get("date_kind")
+            or ""
+        ).strip().lower()
+
         start = format_date(
             next_period.get(
                 "application_start"
@@ -473,27 +552,69 @@ def _apply_programme_deadline_temporal_safeguard(
             )
         )
 
-        closed_text = ""
-
-        if latest_closed is not None:
-            closed_label = str(
-                latest_closed.get("label")
-                or ""
-            ).strip()
-
-            if closed_label:
-                closed_text = (
-                    "The regular application period "
-                    f"for {closed_label} has closed. "
-                )
-
-        if start and end:
+        if (
+            date_kind == "deadline"
+            and end
+        ):
             replacement = (
                 "Regarding the application deadline, "
-                f"{closed_text}"
-                "The next regular application period "
-                f"is for {label}, from "
-                f"{start} to {end} {citation}."
+                "the next confirmed application "
+                f"deadline for {label} is "
+                f"{end} {citation}."
+            )
+        else:
+            closed_text = ""
+
+            if latest_closed is not None:
+                closed_label = str(
+                    latest_closed.get("label")
+                    or ""
+                ).strip()
+
+                if closed_label:
+                    closed_text = (
+                        "The regular application period "
+                        f"for {closed_label} has closed. "
+                    )
+
+            if start and end:
+                replacement = (
+                    "Regarding the application deadline, "
+                    f"{closed_text}"
+                    "The next regular application period "
+                    f"is for {label}, from "
+                    f"{start} to {end} {citation}."
+                )
+
+    elif (
+        latest_closed is not None
+        and str(
+            latest_closed.get("date_kind")
+            or ""
+        ).strip().lower()
+        == "deadline"
+    ):
+        label = str(
+            latest_closed.get("label")
+            or ""
+        ).strip()
+
+        deadline = format_date(
+            latest_closed.get(
+                "application_end"
+            )
+        )
+
+        if deadline:
+            replacement = (
+                "Regarding the application deadline, "
+                "the official programme evidence lists "
+                f"{deadline} as the application deadline "
+                f"for {label} {citation}. "
+                "That deadline has passed. "
+                "No later application deadline is "
+                "confirmed in the available official "
+                "programme evidence."
             )
 
     if not replacement:
