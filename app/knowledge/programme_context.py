@@ -1,126 +1,62 @@
-"""
-Programme context helper for HANS PoC.
+"""Programme context bridge used by the HANS email service.
 
-This file connects data/programme_catalog.json to the live email assistant flow.
-
-It does not hardcode admission facts.
-It only detects programme names and adds programme context for retrieval/generation.
+There is intentionally only one catalogue matcher.  Older versions implemented a
+second independent matcher here, which could disagree with
+``programme_catalog.match_programme_from_catalog``.  This module now delegates to
+the canonical matcher and only formats the resulting metadata for retrieval and
+generation.
 """
 
 from __future__ import annotations
 
-import json
-import re
-from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
-
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-CATALOGUE_PATH = PROJECT_ROOT / "data" / "programme_catalog.json"
-
-
-def _load_catalogue() -> List[Dict[str, Any]]:
-    if not CATALOGUE_PATH.exists():
-        return []
-
-    try:
-        with open(CATALOGUE_PATH, "r", encoding="utf-8") as f:
-            data = json.load(f)
-
-        if isinstance(data, list):
-            return data
-
-    except Exception:
-        return []
-
-    return []
-
-
-def _normalise(text: str) -> str:
-    text = str(text or "").lower()
-    text = re.sub(r"[^a-z0-9äöüß]+", " ", text)
-    text = re.sub(r"\s+", " ", text).strip()
-    return text
-
-
-def _explicit_degree_from_text(text: str) -> str:
-    lower = (text or "").lower()
-
-    if re.search(r"(master|master's|master’s|masterstudiengang)", lower):
-        return "Master"
-
-    if re.search(r"(bachelor|bachelor's|bachelor’s|bachelorstudiengang)", lower):
-        # Avoid interpreting "completed my Bachelor's degree" as the target
-        # when no Bachelor programme is being requested.
-        if re.search(r"(completed|completing|finishing|have|abgeschlossen|schließe).{0,50}(bachelor|bachelorabschluss)", lower):
-            if not re.search(r"(apply|applying|interested|want|would like|bewerben|interessiere).{0,80}(bachelor|bachelorstudiengang)", lower):
-                return ""
-        return "Bachelor"
-
-    return ""
+from app.knowledge.programme_catalog import (
+    ProgrammeMatch,
+    infer_target_degree,
+    match_programme_from_catalog,
+)
 
 
 def match_programme(text: str) -> Optional[Dict[str, Any]]:
-    """
-    Match programme from catalogue using programme name and aliases.
-
-    Returns the best matched catalogue entry or None.
-    """
-    catalogue = _load_catalogue()
-    text_norm = _normalise(text)
-
-    if not text_norm:
+    """Backward-compatible dict wrapper around the canonical matcher."""
+    match = match_programme_from_catalog(text)
+    if match is None:
         return None
 
-    best_match = None
-    best_score = 0
-
-    for item in catalogue:
-        program_name = str(item.get("program_name", "")).strip()
-        aliases = item.get("aliases", []) or []
-
-        candidates = [program_name] + [str(a) for a in aliases]
-
-        for candidate in candidates:
-            candidate = str(candidate or "").strip()
-            if not candidate:
-                continue
-
-            candidate_norm = _normalise(candidate)
-
-            if not candidate_norm:
-                continue
-
-            # Avoid accidental tiny matches.
-            if len(candidate_norm) < 4:
-                continue
-
-            score = 0
-
-            # Exact phrase match.
-            if candidate_norm in text_norm:
-                score = len(candidate_norm)
-
-            # Special abbreviation match, e.g. MPMD, PROITD.
-            if candidate.isupper() and re.search(rf"\b{re.escape(candidate.lower())}\b", text_norm):
-                score = max(score, 100 + len(candidate))
-
-            if score > best_score:
-                best_score = score
-                best_match = item
-
-    return best_match
+    return {
+        "programme_id": match.programme_id,
+        "source_url": match.source_url,
+        "retrieved_at": match.retrieved_at,
+        "program_name": match.name,
+        "aliases": match.aliases,
+        "degree": match.degree,
+        "degree_title": match.degree_title,
+        "language": match.language,
+        "study_format": match.study_format,
+        "study_type": match.study_type,
+        "study_mode_official": match.study_mode_official,
+        "duration_semesters": match.duration_semesters,
+        "start_semesters": list(match.start_semesters),
+        "start_semester_sources": dict(match.start_semester_sources),
+        "url": match.url,
+        "application_url": match.application_url,
+        "score": match.score,
+        "source": match.source,
+        "ambiguous_degree": match.ambiguous_degree,
+    }
 
 
 def build_programme_context_block(email_text: str, subject: str = "") -> Dict[str, Any]:
-    """
-    Build a programme context block to inject before retrieval/generation.
-    """
-    combined_text = f"{subject}\n{email_text}"
-    programme = match_programme(combined_text)
-    explicit_degree = _explicit_degree_from_text(combined_text)
+    """Build programme identity context without injecting admission facts."""
+    combined_text = f"{subject}\n{email_text}".strip()
+    explicit_degree = infer_target_degree(combined_text)
+    match: Optional[ProgrammeMatch] = match_programme_from_catalog(
+        combined_text,
+        target_degree=explicit_degree or None,
+    )
 
-    if not programme:
+    if match is None:
         return {
             "matched": False,
             "program_name": "",
@@ -128,87 +64,110 @@ def build_programme_context_block(email_text: str, subject: str = "") -> Dict[st
             "url": "",
             "application_url": "",
             "degree": explicit_degree,
+            "catalogue_degree": "",
+            "explicit_degree": explicit_degree,
             "language": "",
             "study_format": "",
+            "study_type": "",
+            "study_mode_official": "",
+            "start_semesters": [],
+            "start_semester_sources": {},
+            "programme_id": "",
+            "source_url": "",
+            "retrieved_at": "",
+            "ambiguous_degree": False,
         }
 
-    program_name = str(programme.get("program_name", "") or "").strip()
-    aliases = programme.get("aliases", []) or []
-    catalogue_degree = str(programme.get("degree", "") or "").strip()
+    catalogue_degree = str(match.degree or "").strip()
     degree = explicit_degree or catalogue_degree
-    language = str(programme.get("language", "") or "").strip()
-    study_format = str(programme.get("study_format", "") or "").strip()
-    url = str(programme.get("url", "") or "").strip()
-    application_url = str(programme.get("application_url", "") or "").strip()
-
-    alias_text = ", ".join(str(a) for a in aliases if a)
+    alias_text = ", ".join(alias for alias in match.aliases if alias)
 
     lines = [
-        "Known programme context from local programme catalogue:",
-        f"- Programme name: {program_name}",
+        "Known programme identity from the local HTW programme catalogue:",
+        f"- Programme name: {match.name}",
     ]
 
+    if match.programme_id:
+        lines.append(f"- Programme ID: {match.programme_id}")
+    if match.source_url:
+        lines.append(f"- Canonical catalogue source: {match.source_url}")
     if alias_text:
         lines.append(f"- Known aliases: {alias_text}")
 
     if degree:
         if explicit_degree and catalogue_degree and explicit_degree != catalogue_degree:
-            lines.append(f"- Degree level from student email: {explicit_degree}")
-            lines.append(f"- Catalogue degree hint: {catalogue_degree}")
-            lines.append("- Important: prefer the degree level explicitly stated by the student email.")
+            lines.append(f"- Degree level stated by the student: {explicit_degree}")
+            lines.append(f"- Catalogue degree metadata: {catalogue_degree}")
+            lines.append("- The student's explicitly stated target degree is authoritative for this request.")
         else:
             lines.append(f"- Degree level: {degree}")
+    elif match.ambiguous_degree:
+        lines.append("- Degree level: ambiguous (the programme exists at more than one degree level).")
 
-    if language:
-        lines.append(f"- Catalogue language hint: {language}")
-
-    if study_format:
-        lines.append(f"- Catalogue study format hint: {study_format}")
-
-    if url:
-        lines.append(f"- Programme URL for staff verification: {url}")
-
-    if application_url:
-        lines.append(f"- Programme application URL for staff verification: {application_url}")
+    if match.degree_title:
+        lines.append(f"- Qualification: {match.degree_title}")
+    if match.language:
+        lines.append(f"- Catalogue language metadata: {match.language}")
+    if match.study_type:
+        lines.append(f"- Catalogue study type metadata: {match.study_type}")
+    if match.study_mode_official:
+        lines.append(
+            f"- Official HTW study classification: {match.study_mode_official}"
+        )
+    elif match.study_format:
+        lines.append(f"- Catalogue study classification: {match.study_format}")
+    if match.start_semesters:
+        lines.append(
+            "- Official start semester(s): " + ", ".join(match.start_semesters)
+        )
+    if match.url:
+        lines.append(f"- Programme URL: {match.url}")
+    if match.application_url:
+        lines.append(f"- Programme application URL: {match.application_url}")
 
     lines.extend(
         [
             "",
-            "Important instruction:",
-            "- Use the programme name above when retrieving and drafting.",
-            "- If the student email explicitly states Bachelor or Master, do not override it only because of a catalogue hint.",
-            "- If the retrieved documents do not confirm a programme-specific fact, do not ask for the exact programme title again.",
-            "- Instead, mention that the specific point should be reviewed by staff and include the programme URL for verification.",
+            "Important:",
+            "- This block contains programme identity/metadata only, not admission facts.",
+            "- Official study classification (for example Präsenzstudium) is not the same as actual lecture delivery; online/hybrid attendance must be confirmed from programme-specific evidence.",
+            "- Deadlines, language-test thresholds, fees, documents and eligibility rules must come from retrieved official evidence.",
         ]
     )
 
     return {
         "matched": True,
-        "program_name": program_name,
+        "program_name": match.name,
+        "matched_programme": match.name,
         "context_block": "\n".join(lines),
-        "url": url,
-        "application_url": application_url,
+        "url": match.url or "",
+        "application_url": match.application_url or "",
         "degree": degree,
         "catalogue_degree": catalogue_degree,
         "explicit_degree": explicit_degree,
-        "language": language,
-        "study_format": study_format,
+        "degree_title": match.degree_title or "",
+        "language": match.language or "",
+        "study_format": match.study_format or "",
+        "study_type": match.study_type or "",
+        "study_mode_official": match.study_mode_official or "",
+        "duration_semesters": match.duration_semesters,
+        "start_semesters": list(match.start_semesters),
+        "start_semester_sources": dict(match.start_semester_sources),
+        "programme_id": match.programme_id or "",
+        "source_url": match.source_url or "",
+        "retrieved_at": match.retrieved_at or "",
+        "ambiguous_degree": match.ambiguous_degree,
+        "score": match.score,
+        "source": match.source,
     }
 
 
 def enrich_email_text_with_programme_context(email_text: str, subject: str = "") -> Dict[str, Any]:
-    """
-    Return enriched email text and programme metadata.
-
-    Use enriched_email_text instead of the original email_text in the existing flow.
-    """
+    """Return programme metadata plus a legacy enriched-text representation."""
     context = build_programme_context_block(email_text=email_text, subject=subject)
 
     if not context["matched"]:
-        return {
-            **context,
-            "enriched_email_text": email_text,
-        }
+        return {**context, "enriched_email_text": email_text}
 
     enriched_email_text = (
         context["context_block"]
@@ -216,7 +175,4 @@ def enrich_email_text_with_programme_context(email_text: str, subject: str = "")
         + str(email_text or "")
     )
 
-    return {
-        **context,
-        "enriched_email_text": enriched_email_text,
-    }
+    return {**context, "enriched_email_text": enriched_email_text}

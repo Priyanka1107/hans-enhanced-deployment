@@ -1,447 +1,2666 @@
 [
   {
-    "program_name": "AECO",
+    "programme_id": "angewandte-informatik--bachelor",
+    "program_name": "Angewandte Informatik",
     "aliases": [
-      "AECO",
-      "Aeco"
+      "Angewandte Informatik"
     ],
     "degree": "Bachelor",
-    "language": "English",
-    "study_format": null,
-    "url": null,
+    "degree_title": "Bachelor of Science",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://ai.htw-berlin.de/",
     "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\objects\\degree_program-aeco-bachelor.json"
-    ]
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
   },
   {
-    "program_name": "Applied Computer Science",
+    "programme_id": "angewandte-informatik--master",
+    "program_name": "Angewandte Informatik",
     "aliases": [
-      "ACS",
-      "AI",
-      "AI-MASTER",
-      "Applied Computer Science"
+      "Angewandte Informatik"
     ],
     "degree": "Master",
+    "degree_title": "Master of Science",
     "language": null,
-    "study_format": null,
-    "url": "https://ai.htw-berlin.de",
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://ai-master.htw-berlin.de/",
     "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\snapshots_raw\\ed6b12ded7a871f0.html",
-      "data\\snapshots_raw\\f4585791ac8a0ef4.html"
-    ]
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
   },
   {
+    "programme_id": "angewandte-landschafts-und-feldarchaeologie--master",
+    "program_name": "Angewandte Landschafts- und Feldarchäologie",
+    "aliases": [
+      "Angewandte Landschafts- und Feldarchäologie"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Science",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Summer semester"
+    ],
+    "start_semester_sources": {
+      "Summer semester": "https://alfa.htw-berlin.de/"
+    },
+    "start_semesters_source_urls": [
+      "https://alfa.htw-berlin.de/"
+    ],
+    "url": "https://alfa.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "start_semester_source_sha256": {
+      "Summer semester": "c3e84a9be617ac9f4cd5e8690888b0f389095a01a81e764b59418da1b0a47c9e"
+    },
+    "start_semester_source_method": "official_programme_page_fallback",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "arbeits-und-personalmanagement--master",
+    "program_name": "Arbeits- und Personalmanagement",
+    "aliases": [
+      "Arbeits- und Personalmanagement"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Arts",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 3,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://map.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "bauingenieurwesen--bachelor",
+    "program_name": "Bauingenieurwesen",
+    "aliases": [
+      "Bauingenieurwesen"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Science",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://bau-bachelor.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "bauingenieurwesen--master",
+    "program_name": "Bauingenieurwesen",
+    "aliases": [
+      "Bauingenieurwesen"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Science",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://bau-master.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "bekleidungstechnik-konfektion--bachelor",
+    "program_name": "Bekleidungstechnik/Konfektion",
+    "aliases": [
+      "Bekleidungstechnik/Konfektion"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Science",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 7,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://btk-bachelor.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "bekleidungstechnik-konfektion--master",
+    "program_name": "Bekleidungstechnik/Konfektion",
+    "aliases": [
+      "Bekleidungstechnik/Konfektion"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Science",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 3,
+    "start_semesters": [
+      "Summer semester"
+    ],
+    "start_semester_sources": {
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://btk-master.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "betriebliche-umweltinformatik--master",
+    "program_name": "Betriebliche Umweltinformatik",
+    "aliases": [
+      "Betriebliche Umweltinformatik"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Science",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://bui.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "betriebswirtschaftslehre--bachelor",
+    "program_name": "Betriebswirtschaftslehre",
+    "aliases": [
+      "Betriebswirtschaftslehre"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Arts",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 7,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://bwl.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "betriebswirtschaftslehre-fern--bachelor",
+    "program_name": "Betriebswirtschaftslehre - Fern",
+    "aliases": [
+      "Betriebswirtschaftslehre - Fern"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Arts",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Part-time",
+    "study_format": "Distance learning",
+    "study_mode_official": "Fernstudium",
+    "duration_semesters": 11,
+    "start_semesters": [
+      "Summer semester"
+    ],
+    "start_semester_sources": {
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://bwl-fernstudium.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "business-administration-and-engineering--master",
     "program_name": "Business Administration and Engineering",
     "aliases": [
-      "BAE",
       "Business Administration and Engineering",
+      "BAE",
       "MBAE"
     ],
     "degree": "Master",
-    "language": null,
-    "study_format": null,
-    "url": "http://mbae.htw-berlin.de",
+    "degree_title": "Master of Business Administration",
+    "language": "English",
+    "study_form": "Kontakt-/Weiterbildungsstudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 3,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://mbae.htw-berlin.de/",
     "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\snapshots_raw\\04c4b502c11bb71d.html"
-    ]
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
   },
   {
+    "programme_id": "computer-engineering--bachelor",
+    "program_name": "Computer Engineering",
+    "aliases": [
+      "Computer Engineering"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Engineering",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://ce-bachelor.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "computer-engineering--master",
+    "program_name": "Computer Engineering",
+    "aliases": [
+      "Computer Engineering"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Engineering",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://ce-master.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "construction-and-real-estate-management--master",
     "program_name": "Construction and Real Estate Management",
     "aliases": [
-      "CONREM",
       "Construction and Real Estate Management",
+      "CONREM",
       "CREM"
     ],
     "degree": "Master",
-    "language": null,
-    "study_format": null,
-    "url": "http://conrem.htw-berlin.de",
+    "degree_title": "Master of Science",
+    "language": "English",
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://conrem.htw-berlin.de/",
     "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\snapshots_raw\\04c4b502c11bb71d.html"
-    ]
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
   },
   {
+    "programme_id": "cyber-security-and-business--bachelor",
     "program_name": "Cyber Security and Business",
     "aliases": [
-      "CSB",
       "Cyber Security and Business",
+      "CSB",
       "CYBER-SECURITY-BUSINESS",
       "Cybersecurity and Business"
     ],
-    "degree": "Unknown",
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Science",
+    "language": "English",
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://cyber-security-business.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "elektrotechnik--bachelor",
+    "program_name": "Elektrotechnik",
+    "aliases": [
+      "Elektrotechnik"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Engineering",
     "language": null,
-    "study_format": null,
-    "url": "https://cyber-security-business.htw-berlin.de",
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://et-bachelor.htw-berlin.de/",
     "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\snapshots_raw\\27097d7e780825d5.html"
-    ]
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
   },
   {
-    "program_name": "Design (Bachelor)",
+    "programme_id": "elektrotechnik--master",
+    "program_name": "Elektrotechnik",
     "aliases": [
-      "Design (Bachelor)"
+      "Elektrotechnik"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Engineering",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://et-master.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "europaeische-wirtschaftspolitik--master",
+    "program_name": "Europäische Wirtschaftspolitik",
+    "aliases": [
+      "Europäische Wirtschaftspolitik"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Arts",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 3,
+    "start_semesters": [
+      "Summer semester"
+    ],
+    "start_semester_sources": {
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://ewp.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "facility-management--bachelor",
+    "program_name": "Facility Management",
+    "aliases": [
+      "Facility Management"
     ],
     "degree": "Bachelor",
-    "language": "English",
-    "study_format": null,
-    "url": null,
-    "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\objects\\degree_program-design-bachelor.json"
-    ]
-  },
-  {
-    "program_name": "Electrical Engineering",
-    "aliases": [
-      "Electrical Engineering"
+    "degree_title": "Bachelor of Science",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
     ],
-    "degree": "Unknown",
-    "language": "English",
-    "study_format": null,
-    "url": null,
-    "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\objects\\degree_program-electrical-engineering-master.json"
-    ]
-  },
-  {
-    "program_name": "Electrical Engineering (Master)",
-    "aliases": [
-      "EEM",
-      "Electrical Engineering (Master)"
+    "start_semester_sources": {
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2",
+      "Winter semester": "https://fm-bachelor.htw-berlin.de/"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=2",
+      "https://fm-bachelor.htw-berlin.de/"
     ],
-    "degree": "Unknown",
-    "language": "English",
-    "study_format": null,
-    "url": null,
+    "url": "https://fm-bachelor.htw-berlin.de/",
     "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\objects\\degree_program-electrical-engineering-master.json"
-    ]
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "start_semester_source_sha256": {
+      "Winter semester": "e2fcda99ca94643ee23bebf39efea3cc1789a8c4041deadf84357a460570af26"
+    },
+    "start_semester_source_method": "degree_index_plus_official_programme_page",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
   },
   {
-    "program_name": "Electrical Engineering for Sustainable and Renewable Energy",
+    "programme_id": "facility-management--master",
+    "program_name": "Facility Management",
     "aliases": [
-      "EESRE",
-      "Electrical Engineering for Sustainable and Renewable Energy"
+      "Facility Management"
     ],
-    "degree": "Unknown",
-    "language": "English",
-    "study_format": null,
-    "url": null,
-    "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\objects\\degree_program-electrical-engineering-sustainable-renewable-energy-master.json"
-    ]
-  },
-  {
-    "program_name": "Electrical Engineering for Sustainable and Renewable Energy (Master)",
-    "aliases": [
-      "EESREM",
-      "Electrical Engineering for Sustainable and Renewable Energy (Master)"
+    "degree": "Master",
+    "degree_title": "Master of Science",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Winter semester"
     ],
-    "degree": "Unknown",
-    "language": "English",
-    "study_format": null,
-    "url": null,
-    "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\objects\\degree_program-electrical-engineering-sustainable-renewable-energy-master.json"
-    ]
-  },
-  {
-    "program_name": "Electrical Engineering Sustainable Renewable Energy",
-    "aliases": [
-      "EESRE",
-      "Electrical Engineering Sustainable Renewable Energy"
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
     ],
-    "degree": "Unknown",
-    "language": "English",
-    "study_format": null,
-    "url": null,
+    "url": "https://fm-master.htw-berlin.de/",
     "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\objects\\degree_program-electrical-engineering-sustainable-renewable-energy-master.json"
-    ]
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
   },
   {
-    "program_name": "Environmental Engineering and Sustainability",
+    "programme_id": "fahrzeugtechnik--bachelor",
+    "program_name": "Fahrzeugtechnik",
     "aliases": [
-      "EES",
-      "Environmental Engineering and Sustainability"
+      "Fahrzeugtechnik"
     ],
     "degree": "Bachelor",
-    "language": "English",
-    "study_format": null,
-    "url": null,
+    "degree_title": "Bachelor of Science",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://fzt.htw-berlin.de/",
     "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\objects\\degree_program-environmental-engineering-sustainability-bachelor.json"
-    ]
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
   },
   {
-    "program_name": "Environmental Engineering and Sustainability (Bachelor)",
+    "programme_id": "finance-accounting-corporate-law-and-taxation--master",
+    "program_name": "Finance, Accounting, Corporate Law and Taxation",
     "aliases": [
-      "EESB",
-      "Environmental Engineering and Sustainability (Bachelor)"
+      "Finance, Accounting, Corporate Law and Taxation"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Arts",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 3,
+    "start_semesters": [
+      "Summer semester"
+    ],
+    "start_semester_sources": {
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://fact.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "future-automotive-technology--master",
+    "program_name": "Future Automotive Technology",
+    "aliases": [
+      "Future Automotive Technology"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Science",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://future-automotive-technology.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "game-design--bachelor",
+    "program_name": "Game Design",
+    "aliases": [
+      "Game Design"
     ],
     "degree": "Bachelor",
-    "language": "English",
-    "study_format": null,
-    "url": null,
+    "degree_title": "Bachelor of Arts",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 7,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://gamedesign.htw-berlin.de/bachelor",
     "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\objects\\degree_program-environmental-engineering-sustainability-bachelor.json"
-    ]
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
   },
   {
-    "program_name": "Environmental Engineering Sustainability",
+    "programme_id": "gebaeudeenergie-und-informationstechnik--bachelor",
+    "program_name": "Gebäudeenergie- und -informationstechnik",
     "aliases": [
-      "EES",
-      "Environmental Engineering Sustainability"
+      "Gebäudeenergie- und -informationstechnik"
     ],
     "degree": "Bachelor",
-    "language": "English",
-    "study_format": null,
-    "url": null,
+    "degree_title": "Bachelor of Engineering",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 7,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://geit-bachelor.htw-berlin.de/",
     "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\objects\\degree_program-environmental-engineering-sustainability-bachelor.json"
-    ]
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
   },
   {
+    "programme_id": "gebaeudeenergie-und-informationstechnik--master",
+    "program_name": "Gebäudeenergie- und -informationstechnik",
+    "aliases": [
+      "Gebäudeenergie- und -informationstechnik"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Engineering",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 3,
+    "start_semesters": [
+      "Summer semester"
+    ],
+    "start_semester_sources": {
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "http://geit-master.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "gebaeudeenergie-und-informationstechnik-mit-orientierungsjahr--bachelor",
+    "program_name": "Gebäudeenergie- und -informationstechnik mit Orientierungsjahr",
+    "aliases": [
+      "Gebäudeenergie- und -informationstechnik mit Orientierungsjahr"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Engineering",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 8,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://oja-orientierungsjahr.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "general-management--master",
     "program_name": "General Management",
     "aliases": [
       "General Management",
       "GENERAL-MANAGEMENT"
     ],
     "degree": "Master",
+    "degree_title": "Master of Business Administration",
     "language": null,
-    "study_format": null,
-    "url": "http://general-management.htw-berlin.de/en",
+    "study_form": "Kontakt-/Weiterbildungsstudium",
+    "study_type": "Part-time",
+    "study_format": "Distance learning",
+    "study_mode_official": "Fernstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://general-management.htw-berlin.de/",
     "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\snapshots_raw\\a38508ef80d9f595.html"
-    ]
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
   },
   {
-    "program_name": "Information Technology",
+    "programme_id": "gesundheitselektronik--bachelor",
+    "program_name": "Gesundheitselektronik",
     "aliases": [
-      "Information Technology"
+      "Gesundheitselektronik"
     ],
     "degree": "Bachelor",
-    "language": "English",
-    "study_format": null,
-    "url": null,
+    "degree_title": "Bachelor of Engineering",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://ge-bachelor.htw-berlin.de/",
     "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\objects\\degree_program-information-technology-bachelor.json"
-    ]
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
   },
   {
-    "program_name": "Information Technology (Bachelor)",
+    "programme_id": "immobilienwirtschaft--bachelor",
+    "program_name": "Immobilienwirtschaft",
     "aliases": [
-      "Information Technology (Bachelor)",
-      "ITB"
+      "Immobilienwirtschaft"
     ],
     "degree": "Bachelor",
-    "language": "English",
-    "study_format": null,
-    "url": null,
+    "degree_title": "Bachelor of Arts",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 7,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://iw.htw-berlin.de/",
     "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\objects\\degree_program-information-technology-bachelor.json"
-    ]
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
   },
   {
+    "programme_id": "industrial-design--bachelor",
+    "program_name": "Industrial Design",
+    "aliases": [
+      "Industrial Design"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Arts",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 7,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://id.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "industrial-sales-and-innovation-management--master",
+    "program_name": "Industrial Sales and Innovation Management",
+    "aliases": [
+      "Industrial Sales and Innovation Management"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Arts",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 3,
+    "start_semesters": [
+      "Summer semester"
+    ],
+    "start_semester_sources": {
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://misim.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "informatik-in-ingenieurwissenschaften--master",
+    "program_name": "Informatik in Ingenieurwissenschaften",
+    "aliases": [
+      "Informatik in Ingenieurwissenschaften"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Science",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://iiw.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "informatik-in-kultur-und-gesundheit--bachelor",
+    "program_name": "Informatik in Kultur und Gesundheit",
+    "aliases": [
+      "Informatik in Kultur und Gesundheit"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Science",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://ikg.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "informatik-und-wirtschaft-frauen--bachelor",
+    "program_name": "Informatik und Wirtschaft (Frauen)",
+    "aliases": [
+      "Informatik und Wirtschaft (Frauen)"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Science",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://fiw.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "informations-und-kommunikationstechnik--bachelor",
+    "program_name": "Informations- und Kommunikationstechnik",
+    "aliases": [
+      "Informations- und Kommunikationstechnik"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Engineering",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "http://ikt-bachelor.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "informations-und-kommunikationstechnik--master",
+    "program_name": "Informations- und Kommunikationstechnik",
+    "aliases": [
+      "Informations- und Kommunikationstechnik"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Engineering",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "http://ikt-master.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "ingenieurinformatik--bachelor",
+    "program_name": "Ingenieurinformatik",
+    "aliases": [
+      "Ingenieurinformatik"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Science",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://ii.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "international-and-development-economics--master",
+    "program_name": "International and Development Economics",
+    "aliases": [
+      "International and Development Economics"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Arts",
+    "language": "English",
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 3,
+    "start_semesters": [
+      "Summer semester"
+    ],
+    "start_semester_sources": {
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "http://mide.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "international-business--bachelor",
     "program_name": "International Business",
     "aliases": [
       "International Business",
       "INTERNATIONAL-BUSINESS",
-      "MIB"
-    ],
-    "degree": "Bachelor",
-    "language": "English",
-    "study_format": null,
-    "url": "http://mib.htw-berlin.de",
-    "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\objects\\degree_program-international-business-bachelor.json",
-      "data\\snapshots_raw\\04c4b502c11bb71d.html",
-      "data\\snapshots_raw\\4a490f267ce4454d.html"
-    ]
-  },
-  {
-    "program_name": "International Business (Bachelor)",
-    "aliases": [
       "IBB",
       "International Business (Bachelor)"
     ],
     "degree": "Bachelor",
+    "degree_title": "Bachelor of Arts",
     "language": "English",
-    "study_format": null,
-    "url": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 7,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://international-business.htw-berlin.de/bachelor",
     "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\objects\\degree_program-international-business-bachelor.json"
-    ]
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
   },
   {
+    "programme_id": "international-business--master",
+    "program_name": "International Business",
+    "aliases": [
+      "International Business",
+      "INTERNATIONAL-BUSINESS"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Arts",
+    "language": "English",
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 3,
+    "start_semesters": [
+      "Summer semester"
+    ],
+    "start_semester_sources": {
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://international-business.htw-berlin.de/master",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "internationaler-studiengang-medieninformatik--bachelor",
+    "program_name": "Internationaler Studiengang Medieninformatik",
+    "aliases": [
+      "Internationaler Studiengang Medieninformatik"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Science",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://imi-bachelor.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "internationaler-studiengang-medieninformatik--master",
+    "program_name": "Internationaler Studiengang Medieninformatik",
+    "aliases": [
+      "Internationaler Studiengang Medieninformatik"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Science",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "http://imi-master.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "kommunikationsdesign--bachelor",
+    "program_name": "Kommunikationsdesign",
+    "aliases": [
+      "Kommunikationsdesign"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Arts",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 7,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "http://kd.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "konservierung-und-restaurierung--master",
+    "program_name": "Konservierung und Restaurierung",
+    "aliases": [
+      "Konservierung und Restaurierung"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Arts",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 3,
+    "start_semesters": [
+      "Summer semester"
+    ],
+    "start_semester_sources": {
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "http://kr.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "konservierung-und-restaurierung-grabungstechnik--bachelor",
+    "program_name": "Konservierung und Restaurierung/Grabungstechnik",
+    "aliases": [
+      "Konservierung und Restaurierung/Grabungstechnik"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Arts",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 7,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "http://krg.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "life-science-engineering--bachelor",
+    "program_name": "Life Science Engineering",
+    "aliases": [
+      "Life Science Engineering"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Science",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "http://lse-bachelor.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "life-science-engineering--master",
+    "program_name": "Life Science Engineering",
+    "aliases": [
+      "Life Science Engineering"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Science",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://lse-master.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "life-science-management--master",
+    "program_name": "Life Science Management",
+    "aliases": [
+      "Life Science Management"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Business Administration",
+    "language": "English",
+    "study_form": "Kontakt-/Weiterbildungsstudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 3,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://lsm.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "maschinenbau--bachelor",
+    "program_name": "Maschinenbau",
+    "aliases": [
+      "Maschinenbau"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Science",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://mb-bachelor.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "maschinenbau--master",
+    "program_name": "Maschinenbau",
+    "aliases": [
+      "Maschinenbau"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Science",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "http://mb-master.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "maschinenbau-fern--bachelor",
+    "program_name": "Maschinenbau - Fern",
+    "aliases": [
+      "Maschinenbau - Fern"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Science",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Part-time",
+    "study_format": "Distance learning",
+    "study_mode_official": "Fernstudium",
+    "duration_semesters": 9,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://mb-fernstudium.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "mikrosystemtechnik--bachelor",
+    "program_name": "Mikrosystemtechnik",
+    "aliases": [
+      "Mikrosystemtechnik"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Engineering",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://mst.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "mikrosystemtechnik--master",
+    "program_name": "Mikrosystemtechnik",
+    "aliases": [
+      "Mikrosystemtechnik"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Science",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://mst.htw-berlin.de/master",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "modedesign--bachelor",
+    "program_name": "Modedesign",
+    "aliases": [
+      "Modedesign"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Arts",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 7,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "http://md-bachelor.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "modedesign--master",
+    "program_name": "Modedesign",
+    "aliases": [
+      "Modedesign"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Arts",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 3,
+    "start_semesters": [
+      "Summer semester"
+    ],
+    "start_semester_sources": {
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "http://md-master.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "museologie--bachelor",
+    "program_name": "Museologie",
+    "aliases": [
+      "Museologie"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Arts",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://museologie.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "museumsmanagement-und-kommunikation--master",
+    "program_name": "Museumsmanagement und -kommunikation",
+    "aliases": [
+      "Museumsmanagement und -kommunikation"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Arts",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://mmk.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "nonprofit-management-und-public-governance--master",
+    "program_name": "Nonprofit-Management und Public Governance",
+    "aliases": [
+      "Nonprofit-Management und Public Governance"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Arts",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "http://mango.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "professional-it-business-and-digitalization--master",
     "program_name": "Professional IT Business and Digitalization",
     "aliases": [
+      "Professional IT Business and Digitalization",
       "PIBD",
       "Professional IT and Digitalization",
-      "Professional IT Business and Digitalization",
       "PROITD"
     ],
     "degree": "Master",
-    "language": null,
-    "study_format": null,
-    "url": "http://proitd.htw-berlin.de/en",
+    "degree_title": "Master of Science",
+    "language": "English",
+    "study_form": "Kontakt-/Weiterbildungsstudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 3,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://proitd.htw-berlin.de/",
     "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\snapshots_raw\\04c4b502c11bb71d.html"
-    ]
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
   },
   {
+    "programme_id": "project-management-and-data-science--master",
     "program_name": "Project Management and Data Science",
     "aliases": [
+      "Project Management and Data Science",
       "MPMD",
-      "PMDS",
-      "Project Management and Data Science"
+      "PMDS"
     ],
     "degree": "Master",
-    "language": null,
-    "study_format": null,
-    "url": "http://mpmd.htw-berlin.de/en/?no_cache=1",
+    "degree_title": "Master of Science",
+    "language": "English",
+    "study_form": "Kontakt-/Weiterbildungsstudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://mpmd.htw-berlin.de/"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://mpmd.htw-berlin.de/"
+    ],
+    "url": "https://mpmd.htw-berlin.de/",
     "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\snapshots_raw\\0135c67e7fc95c64.html"
-    ]
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "start_semester_source_sha256": {
+      "Summer semester": "9957baa1dac1a730378ffd226f4fd8e9932230a9a33bf05c1d296f01b3b911f4"
+    },
+    "start_semester_source_method": "degree_index_plus_official_programme_page",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
   },
   {
+    "programme_id": "public-design--master",
     "program_name": "Public Design",
     "aliases": [
       "Public Design",
       "PUBLIC-DESIGN"
     ],
     "degree": "Master",
+    "degree_title": "Master of Arts",
     "language": null,
-    "study_format": null,
-    "url": "https://public-design.htw-berlin.de",
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Part-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 5,
+    "start_semesters": [
+      "Summer semester"
+    ],
+    "start_semester_sources": {
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://public-design.htw-berlin.de/",
     "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\snapshots_raw\\ed6b12ded7a871f0.html"
-    ]
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
   },
   {
-    "program_name": "Sustainable Clothing/Apparel Technology",
+    "programme_id": "public-und-nonprofit-management--bachelor",
+    "program_name": "Public und Nonprofit-Management",
     "aliases": [
-      "SCAT",
-      "Sustainable Clothing Apparel Technology",
-      "Sustainable Clothing/Apparel Technology"
+      "Public und Nonprofit-Management"
     ],
     "degree": "Bachelor",
-    "language": "English",
-    "study_format": null,
-    "url": null,
-    "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\objects\\degree_program-sustainable-clothing-apparel-technology-bachelor.json"
-    ]
-  },
-  {
-    "program_name": "Sustainable Clothing/Apparel Technology (Bachelor)",
-    "aliases": [
-      "SCATB",
-      "Sustainable Clothing/Apparel Technology (Bachelor)"
-    ],
-    "degree": "Bachelor",
-    "language": "English",
-    "study_format": null,
-    "url": null,
-    "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\objects\\degree_program-sustainable-clothing-apparel-technology-bachelor.json"
-    ]
-  },
-  {
-    "program_name": "Sustainable Smart Cities",
-    "aliases": [
-      "SSC",
-      "Sustainable Smart Cities"
-    ],
-    "degree": "Unknown",
+    "degree_title": "Bachelor of Arts",
     "language": null,
-    "study_format": "On-campus",
-    "url": "https://stat.rz.htw-berlin.de",
-    "application_url": "http://campus-stories.htw-berlin.de/en/jahr/2024/die-bewerbung-war-als-testballon-gedacht",
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\snapshots_raw\\0135c67e7fc95c64.html"
-    ]
-  },
-  {
-    "program_name": "Workplace Facility Engineering",
-    "aliases": [
-      "WFE",
-      "Workplace Facility Engineering",
-      "WORKPLACE-FACILITY-ENGINEERING"
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
     ],
-    "degree": "Unknown",
-    "language": null,
-    "study_format": null,
-    "url": "https://workplace-facility-engineering.htw-berlin.de",
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://puma.htw-berlin.de/",
     "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\snapshots_raw\\f4585791ac8a0ef4.html"
-    ]
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
   },
   {
-    "program_name": "Workspace Real Estate Engineering",
+    "programme_id": "quantitative-finance-and-data-science--master",
+    "program_name": "Quantitative Finance and Data Science",
     "aliases": [
-      "Workspace Real Estate Engineering",
-      "WORKSPACE-REAL-ESTATE-ENGINEERING",
-      "WREE"
+      "Quantitative Finance and Data Science"
     ],
     "degree": "Master",
+    "degree_title": "Master of Science",
     "language": null,
-    "study_format": null,
-    "url": "https://workspace-real-estate-engineering.htw-berlin.de",
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Summer semester"
+    ],
+    "start_semester_sources": {
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://quantitative-finance-data-science.htw-berlin.de/",
     "application_url": null,
-    "source": "scraped_programme_catalogue",
-    "source_files": [
-      "data\\snapshots_raw\\ed6b12ded7a871f0.html"
-    ]
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "real-estate-management--master",
+    "program_name": "Real Estate Management",
+    "aliases": [
+      "Real Estate Management"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Business Administration",
+    "language": null,
+    "study_form": "Kontakt-/Weiterbildungsstudium",
+    "study_type": "Part-time",
+    "study_format": "Distance learning",
+    "study_mode_official": "Fernstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://rem.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "regenerative-energien--bachelor",
+    "program_name": "Regenerative Energien",
+    "aliases": [
+      "Regenerative Energien"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Science",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 7,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://re-bachelor.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "regenerative-energien--master",
+    "program_name": "Regenerative Energien",
+    "aliases": [
+      "Regenerative Energien"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Science",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 3,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "http://re-master.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "system-design-game-design--master",
+    "program_name": "System Design/ Game Design",
+    "aliases": [
+      "System Design/ Game Design"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Arts",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 3,
+    "start_semesters": [
+      "Summer semester"
+    ],
+    "start_semester_sources": {
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://sdgd.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "umweltinformatik--bachelor",
+    "program_name": "Umweltinformatik",
+    "aliases": [
+      "Umweltinformatik"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Science",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "http://ui.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "unternehmenssteuerrecht--master",
+    "program_name": "Unternehmenssteuerrecht",
+    "aliases": [
+      "Unternehmenssteuerrecht"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Laws",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 3,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://must.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "wirtschaft-und-politik--bachelor",
+    "program_name": "Wirtschaft und Politik",
+    "aliases": [
+      "Wirtschaft und Politik"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Arts",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 7,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "http://bwp.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "wirtschaftsinformatik--bachelor",
+    "program_name": "Wirtschaftsinformatik",
+    "aliases": [
+      "Wirtschaftsinformatik"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Science",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "http://wi-bachelor.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "wirtschaftsinformatik--master",
+    "program_name": "Wirtschaftsinformatik",
+    "aliases": [
+      "Wirtschaftsinformatik"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Science",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "http://wi-master.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "wirtschaftsingenieurwesen--bachelor",
+    "program_name": "Wirtschaftsingenieurwesen",
+    "aliases": [
+      "Wirtschaftsingenieurwesen"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Science",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 7,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "http://wiw-bachelor.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "wirtschaftsingenieurwesen--master",
+    "program_name": "Wirtschaftsingenieurwesen",
+    "aliases": [
+      "Wirtschaftsingenieurwesen"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Science",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 3,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "http://wiw-master.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "wirtschaftsingenieurwesen-fernstudium--bachelor",
+    "program_name": "Wirtschaftsingenieurwesen - Fernstudium",
+    "aliases": [
+      "Wirtschaftsingenieurwesen - Fernstudium"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Science",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Part-time",
+    "study_format": "Distance learning",
+    "study_mode_official": "Fernstudium",
+    "duration_semesters": 10,
+    "start_semesters": [
+      "Summer semester"
+    ],
+    "start_semester_sources": {
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "http://wiw-fernstudium.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "wirtschaftskommunikation--bachelor",
+    "program_name": "Wirtschaftskommunikation",
+    "aliases": [
+      "Wirtschaftskommunikation"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Arts",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "http://wiko-bachelor.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "wirtschaftskommunikation--master",
+    "program_name": "Wirtschaftskommunikation",
+    "aliases": [
+      "Wirtschaftskommunikation"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Arts",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "http://wiko-master.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "wirtschaftsmathematik--bachelor",
+    "program_name": "Wirtschaftsmathematik",
+    "aliases": [
+      "Wirtschaftsmathematik"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Science",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 7,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "http://wm.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "wirtschaftsrecht--bachelor",
+    "program_name": "Wirtschaftsrecht",
+    "aliases": [
+      "Wirtschaftsrecht"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Laws",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 7,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://wr.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "wirtschaftsrecht--master",
+    "program_name": "Wirtschaftsrecht",
+    "aliases": [
+      "Wirtschaftsrecht"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Laws",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 3,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://wr.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "workplace-und-facility-engineering--bachelor",
+    "program_name": "Workplace und Facility Engineering",
+    "aliases": [
+      "Workplace und Facility Engineering"
+    ],
+    "degree": "Bachelor",
+    "degree_title": "Bachelor of Science",
+    "language": null,
+    "study_form": "Erststudium",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 6,
+    "start_semesters": [
+      "Summer semester",
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "Summer semester": "https://www.htw-berlin.de/studium/stg2?semester=2"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1",
+      "https://www.htw-berlin.de/studium/stg2?semester=2"
+    ],
+    "url": "https://workplace-facility-engineering.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
+  },
+  {
+    "programme_id": "workspace-management-und-real-estate-engineering--master",
+    "program_name": "Workspace Management und Real Estate Engineering",
+    "aliases": [
+      "Workspace Management und Real Estate Engineering"
+    ],
+    "degree": "Master",
+    "degree_title": "Master of Science",
+    "language": null,
+    "study_form": "Konsekutiver Master (BachAbschl.als einz.Abschl.)",
+    "study_type": "Full-time",
+    "study_format": "Presence study",
+    "study_mode_official": "Präsenzstudium",
+    "duration_semesters": 4,
+    "start_semesters": [
+      "Winter semester"
+    ],
+    "start_semester_sources": {
+      "Winter semester": "https://www.htw-berlin.de/studium/stg2?semester=1"
+    },
+    "start_semesters_source_urls": [
+      "https://www.htw-berlin.de/studium/stg2?semester=1"
+    ],
+    "url": "https://workspace-real-estate-engineering.htw-berlin.de/",
+    "application_url": null,
+    "source": "htw_canonical_degree_index",
+    "source_url": "https://www.htw-berlin.de/studium/stg2",
+    "retrieved_at": "2026-08-20T10:32:44.945151+00:00",
+    "source_sha256": "c45c5fb5b279a11cb130e70f4b63aa642eba8e441c2f04e1e2210fb3ccce37a7"
   }
 ]

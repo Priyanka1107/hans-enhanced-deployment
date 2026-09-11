@@ -276,7 +276,10 @@ def extract_email_context(email_text: str) -> Dict[str, Optional[str]]:
     # Programme: first use the dynamic programme catalogue built from scraped data.
     # This is more scalable than adding course names manually in code.
     explicit_target_degree = context.get("target_degree")
-    programme_match = match_programme_from_catalog(text)
+    programme_match = match_programme_from_catalog(
+        text,
+        target_degree=explicit_target_degree or None,
+    )
     if programme_match:
         context.update(programme_match.to_context_fields())
 
