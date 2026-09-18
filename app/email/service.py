@@ -2089,6 +2089,9 @@ class EmailAssistantService:
         overall_start = time.perf_counter()
         timing: Dict[str, float] = {}
 
+        # Observability only. Does not affect HANS decision logic.
+        generation_metrics: Dict[str, Any] = {}
+
         if not email_text or not email_text.strip():
             raise ValueError("email_text must not be empty")
 
@@ -2788,6 +2791,15 @@ class EmailAssistantService:
                 user_prompt=user_prompt,
                 temperature=0.1,
             )
+
+            generation_metrics = dict(
+                getattr(
+                    self.llm,
+                    "last_generation_metrics",
+                    {},
+                )
+                or {}
+            )
         else:
             draft = (
                 "Dear applicant,\n\n"
@@ -3116,5 +3128,8 @@ class EmailAssistantService:
             "quality": quality,
             "conflicts": conflicts,
             "timing": timing,
+            "observability": {
+                "generation": generation_metrics,
+            },
             "automatic_send": False,
         }

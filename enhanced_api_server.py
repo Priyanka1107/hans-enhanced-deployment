@@ -132,6 +132,9 @@ class EmailResponse(BaseModel):
     quality: Dict[str, Any]
     conflicts: List[Dict[str, Any]]
     timing: Dict[str, float]
+    observability: Dict[str, Any] = Field(
+        default_factory=dict
+    )
     automatic_send: bool
 
 

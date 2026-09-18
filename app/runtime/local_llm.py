@@ -169,6 +169,9 @@ class HTWOllamaClient:
             45.0,
         )
 
+        # Observability only. This must not affect generation behaviour.
+        self.last_generation_metrics: Dict[str, Any] = {}
+
     async def _post_with_503_retry(
         self,
         *,
@@ -283,6 +286,9 @@ class HTWOllamaClient:
         user_prompt: str,
         temperature: float = 0.1,
     ) -> str:
+        # Prevent metrics from a previous request being reused.
+        self.last_generation_metrics = {}
+
         if not self.base_url:
             raise LocalLLMError(
                 "Ollama base URL is not configured."
@@ -355,6 +361,51 @@ class HTWOllamaClient:
             raise LocalLLMError(
                 "HTW model returned an empty response."
             )
+
+        prompt_tokens = data.get("prompt_eval_count")
+        completion_tokens = data.get("eval_count")
+
+        total_tokens = None
+
+        if (
+            isinstance(prompt_tokens, int)
+            and isinstance(completion_tokens, int)
+        ):
+            total_tokens = (
+                prompt_tokens
+                + completion_tokens
+            )
+
+        def ns_to_seconds(value):
+            if isinstance(value, (int, float)):
+                return round(
+                    float(value) / 1_000_000_000.0,
+                    3,
+                )
+            return None
+
+        self.last_generation_metrics = {
+            "provider": "htw_ollama",
+            "model": str(
+                data.get("model")
+                or self.model
+            ),
+            "prompt_tokens": prompt_tokens,
+            "completion_tokens": completion_tokens,
+            "total_tokens": total_tokens,
+            "model_total_seconds": ns_to_seconds(
+                data.get("total_duration")
+            ),
+            "load_seconds": ns_to_seconds(
+                data.get("load_duration")
+            ),
+            "prompt_eval_seconds": ns_to_seconds(
+                data.get("prompt_eval_duration")
+            ),
+            "completion_eval_seconds": ns_to_seconds(
+                data.get("eval_duration")
+            ),
+        }
 
         return _remove_thinking_block(content)
 
