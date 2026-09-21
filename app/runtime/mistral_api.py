@@ -32,6 +32,9 @@ class MistralAPIClient:
             int(os.getenv("MISTRAL_MAX_ATTEMPTS", "3")),
         )
 
+        # Observability only. Does not affect generation behaviour.
+        self.last_generation_metrics: Dict[str, Any] = {}
+
     @staticmethod
     def _error_text(response: httpx.Response) -> str:
         try:
@@ -49,6 +52,9 @@ class MistralAPIClient:
         user_prompt: str,
         temperature: float = 0.1,
     ) -> str:
+        # Prevent metrics from a previous request being reused.
+        self.last_generation_metrics = {}
+
         if not self.api_key:
             raise MistralAPIError("MISTRAL_API_KEY is not configured.")
 
@@ -156,5 +162,31 @@ class MistralAPIClient:
             usage.get("completion_tokens"),
             usage.get("total_tokens"),
         )
+
+        prompt_tokens = usage.get("prompt_tokens")
+        completion_tokens = usage.get("completion_tokens")
+        total_tokens = usage.get("total_tokens")
+
+        if (
+            not isinstance(total_tokens, int)
+            and isinstance(prompt_tokens, int)
+            and isinstance(completion_tokens, int)
+        ):
+            total_tokens = prompt_tokens + completion_tokens
+
+        self.last_generation_metrics = {
+            "provider": "mistral_api",
+            "model": self.model,
+            "prompt_tokens": prompt_tokens,
+            "completion_tokens": completion_tokens,
+            "total_tokens": total_tokens,
+
+            # Mistral usage response does not provide the same
+            # native timing breakdown as Ollama.
+            "model_total_seconds": None,
+            "load_seconds": None,
+            "prompt_eval_seconds": None,
+            "completion_eval_seconds": None,
+        }
 
         return result

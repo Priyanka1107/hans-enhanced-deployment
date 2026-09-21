@@ -2786,10 +2786,17 @@ class EmailAssistantService:
                     + temporal_guidance
                 )
 
+            generation_start = time.perf_counter()
+
             draft = await self.llm.generate(
                 system_prompt=_build_strengthened_system_prompt(),
                 user_prompt=user_prompt,
                 temperature=0.1,
+            )
+
+            generation_total_seconds = round(
+                time.perf_counter() - generation_start,
+                3,
             )
 
             generation_metrics = dict(
@@ -2800,6 +2807,10 @@ class EmailAssistantService:
                 )
                 or {}
             )
+
+            generation_metrics[
+                "generation_total_seconds"
+            ] = generation_total_seconds
         else:
             draft = (
                 "Dear applicant,\n\n"
