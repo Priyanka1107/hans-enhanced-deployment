@@ -1,0 +1,158 @@
+{
+  "description": "Frozen multimodel evaluation corpus for HANS. All model configurations must use the same cases, prompts, retrieval configuration, database state and code checkpoint.",
+  "corpus_version": "2026-09-21",
+  "case_count": 8,
+  "cases": [
+    {
+      "case_id": "MM-001-MPMD-MULTITOPIC-EN",
+      "scenario": "known_programme_multitopic",
+      "sequence": 1,
+      "language": "en",
+      "student_email": "arjun@example.com",
+      "subject": "MPMD application questions",
+      "thread_id": "mm-mpmd-thread-001",
+      "email_id": "mm-001",
+      "top_k": 6,
+      "email_text": "Dear Admissions Team,\n\nI would like to apply for the Master's programme in Project Management and Data Science.\n\nCould you please tell me:\n\n1. What is the application deadline?\n2. Is the programme taught entirely in English?\n3. Is it an on-campus programme?\n4. Which application documents are required?\n\nKind regards,\nArjun",
+      "expected_route": "HANS",
+      "expected_programme": "Project Management and Data Science",
+      "expected_topics": [
+        "deadline",
+        "language_of_instruction",
+        "study_format",
+        "required_documents"
+      ],
+      "expected_generation": true
+    },
+    {
+      "case_id": "MM-002-UNKNOWN-PROGRAMME-EN",
+      "scenario": "unknown_programme_safety",
+      "sequence": 1,
+      "language": "en",
+      "student_email": "maya@example.com",
+      "subject": "Question about an unknown programme",
+      "thread_id": "mm-unknown-thread-001",
+      "email_id": "mm-002",
+      "top_k": 6,
+      "email_text": "Dear Admissions Team,\n\nI am interested in the Master of Quantum Business Analytics. What is the deadline and which documents are required?\n\nKind regards,\nMaya",
+      "expected_route": "HANS",
+      "expected_programme": null,
+      "expected_topics": [],
+      "expected_generation": false,
+      "notes": "Unknown programme safety case; retrieval/model generation should be skipped."
+    },
+    {
+      "case_id": "MM-003-MPMD-GERMAN",
+      "scenario": "german_known_programme",
+      "sequence": 1,
+      "language": "de",
+      "student_email": "lena@example.com",
+      "subject": "Fragen zur Bewerbung",
+      "thread_id": "mm-german-thread-001",
+      "email_id": "mm-003",
+      "top_k": 6,
+      "email_text": "Guten Tag,\n\nich interessiere mich f?r den Masterstudiengang Project Management and Data Science. Welche Bewerbungsfrist gilt und welche Unterlagen muss ich einreichen?\n\nMit freundlichen Gr??en\nLena",
+      "expected_route": "HANS",
+      "expected_programme": "Project Management and Data Science",
+      "expected_topics": [
+        "deadline",
+        "required_documents"
+      ],
+      "expected_generation": true
+    },
+    {
+      "case_id": "MM-004-FOLLOWUP-FIRST",
+      "scenario": "followup_sequence",
+      "sequence": 1,
+      "language": "en",
+      "student_email": "sam@example.com",
+      "subject": "MPMD application",
+      "thread_id": "mm-followup-thread-001",
+      "email_id": "mm-004",
+      "top_k": 6,
+      "email_text": "Dear Admissions Team,\n\nWhat is the application deadline for Project Management and Data Science?\n\nKind regards,\nSam",
+      "expected_route": "HANS",
+      "expected_programme": "Project Management and Data Science",
+      "expected_topics": [
+        "deadline"
+      ],
+      "expected_generation": true
+    },
+    {
+      "case_id": "MM-005-FOLLOWUP-SECOND",
+      "scenario": "followup_sequence",
+      "sequence": 2,
+      "language": "en",
+      "student_email": "sam@example.com",
+      "subject": "Re: MPMD application",
+      "thread_id": "mm-followup-thread-001",
+      "email_id": "mm-005",
+      "top_k": 6,
+      "email_text": "Thank you. Is proof of English also required?",
+      "expected_route": "HANS",
+      "expected_programme": "Project Management and Data Science",
+      "expected_topics": [
+        "english_language_requirements"
+      ],
+      "expected_generation": true,
+      "notes": "Must be executed after MM-004 using the same thread_id."
+    },
+    {
+      "case_id": "MM-006-OUT-OF-SCOPE",
+      "scenario": "hop_skip",
+      "sequence": 1,
+      "language": "en",
+      "student_email": "cafeteria@example.com",
+      "subject": "Cafeteria question",
+      "thread_id": "mm-skip-thread-001",
+      "email_id": "mm-006",
+      "top_k": 6,
+      "email_text": "What time does the cafeteria close?",
+      "expected_route": "SKIP",
+      "expected_programme": null,
+      "expected_topics": [],
+      "expected_generation": false,
+      "notes": "Apache Hop routing case; not an LLM quality comparison case."
+    },
+    {
+      "case_id": "MM-007-IB-PENDING-GRADUATION",
+      "scenario": "hard_multitopic_pending_graduation",
+      "sequence": 1,
+      "language": "en",
+      "student_email": "ananya@example.com",
+      "subject": "Application for International Business Master",
+      "thread_id": "mm-ib-graduation-thread-001",
+      "email_id": "mm-007",
+      "top_k": 6,
+      "email_text": "Dear Student Services, my name is Ananya and I am completing my Bachelor's degree in Business Administration in India. I would like to apply for the Master's in International Business for the winter semester. Can I apply before I receive my final transcript, do I need English language proof, and are there any application fees?",
+      "expected_route": "HANS",
+      "expected_programme": "International Business",
+      "expected_topics": [
+        "application_before_graduation",
+        "english_language_requirements",
+        "application_fee"
+      ],
+      "expected_generation": true
+    },
+    {
+      "case_id": "MM-008-DUAL-CITIZEN-ROUTE",
+      "scenario": "hard_application_route_and_recognition",
+      "sequence": 1,
+      "language": "en",
+      "student_email": "dual.citizen@example.com",
+      "subject": "Business Bachelor application route and diploma recognition",
+      "thread_id": "mm-dual-citizen-thread-001",
+      "email_id": "mm-008",
+      "top_k": 6,
+      "email_text": "Dear Admissions Team, I am a dual citizen (French and Moroccan), currently residing in Morocco and holding a French Baccalaur?at diploma. I want to apply for the English-taught Bachelor?s in Business but am unsure whether I should apply as an EU applicant or international. Also, would my French diploma fulfill the general university entrance requirements, or would I need to obtain a VPD from Uni-Assist?",
+      "expected_route": "HANS",
+      "expected_programme": null,
+      "expected_topics": [
+        "application_route",
+        "qualification_recognition"
+      ],
+      "expected_generation": true,
+      "notes": "QA004-style hard case. Application route and qualification recognition must remain separate."
+    }
+  ]
+}
