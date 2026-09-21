@@ -351,6 +351,46 @@ var hans_draft_url = base_url + "/v1/drafts";</jsScript_script>
     <attributes/>
   </transform>
   <transform>
+    <type>SuperScript</type>
+    <name>08A - Calculate Response Seconds</name>
+    <scriptLanguage>Groovy</scriptLanguage>
+    <scripts>
+      <script>
+        <scriptType>0</scriptType>
+        <scriptName>script1</scriptName>
+        <scriptBody>if (hans_response_ms == null) {
+    hans_response_seconds = null
+}
+else {
+    hans_response_seconds =
+        ((Number) hans_response_ms).doubleValue() / 1000.0d
+}</scriptBody>
+      </script>
+    </scripts>
+    <fields>
+      <field>
+        <name>hans_response_seconds</name>
+        <rename>hans_response_seconds</rename>
+        <type>Number</type>
+        <length>-1</length>
+        <precision>3</precision>
+        <replace>N</replace>
+        <scriptResult>N</scriptResult>
+      </field>
+    </fields>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1248</xloc>
+      <yloc>480</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
     <type>TextFileOutput</type>
     <name>09 - Save HANS Results</name>
     <compression>None</compression>
@@ -749,12 +789,25 @@ var hans_draft_url = base_url + "/v1/drafts";</jsScript_script>
         <trim_type>none</trim_type>
         <roundingType>half_even</roundingType>
       </field>
+      <field>
+        <name>hans_response_seconds</name>
+        <type>Number</type>
+        <format>0.000</format>
+        <length>-1</length>
+        <precision>3</precision>
+        <currency/>
+        <decimal>.</decimal>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <roundingType>half_even</roundingType>
+      </field>
     </fields>
     <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
       <xloc>1248</xloc>
-      <yloc>544</yloc>
+      <yloc>576</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -1816,6 +1869,11 @@ draft_process_command =
     </hop>
     <hop>
       <from>08 - Parse HANS Response</from>
+      <to>08A - Calculate Response Seconds</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>08A - Calculate Response Seconds</from>
       <to>09 - Save HANS Results</to>
       <enabled>Y</enabled>
     </hop>
