@@ -409,7 +409,7 @@ else {
     <schema_definition/>
     <ignore_fields>N</ignore_fields>
     <file>
-      <name>C:\Working_Student\HTW\HANS_Project\hans-hop-e2e-finalization\runtime_data\filename.txt</name>
+      <name>C:\Working_Student\HTW\HANS_Project\hans-hop-e2e-finalization\runtime_data\hans_results</name>
       <do_not_open_new_file_init>N</do_not_open_new_file_init>
       <extension>csv</extension>
       <append>N</append>
@@ -802,6 +802,45 @@ else {
         <trim_type>none</trim_type>
         <roundingType>half_even</roundingType>
       </field>
+      <field>
+        <name>load_seconds</name>
+        <type>Number</type>
+        <format>0.000</format>
+        <length>-1</length>
+        <precision>3</precision>
+        <currency/>
+        <decimal>.</decimal>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <roundingType>half_even</roundingType>
+      </field>
+      <field>
+        <name>prompt_eval_seconds</name>
+        <type>Number</type>
+        <format>0.000</format>
+        <length>-1</length>
+        <precision>3</precision>
+        <currency/>
+        <decimal>.</decimal>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <roundingType>half_even</roundingType>
+      </field>
+      <field>
+        <name>completion_eval_seconds</name>
+        <type>Number</type>
+        <format>0.000</format>
+        <length>-1</length>
+        <precision>3</precision>
+        <currency/>
+        <decimal>.</decimal>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <roundingType>half_even</roundingType>
+      </field>
     </fields>
     <distribute>Y</distribute>
     <copies>1</copies>
@@ -834,7 +873,7 @@ else {
     <schema_definition/>
     <ignore_fields>N</ignore_fields>
     <file>
-      <name>C:\Working_Student\HTW\HANS_Project\hans-hop-e2e-finalization\runtime_data\filename.txt</name>
+      <name>C:\Working_Student\HTW\HANS_Project\hans-hop-e2e-finalization\runtime_data\skipped_emails</name>
       <do_not_open_new_file_init>N</do_not_open_new_file_init>
       <extension>csv</extension>
       <append>N</append>
@@ -1435,6 +1474,45 @@ var recipient_email =
         <group/>
         <repeat>N</repeat>
         <path>$.observability.generation.generation_total_seconds</path>
+      </field>
+      <field>
+        <name>load_seconds</name>
+        <length>-1</length>
+        <type>Number</type>
+        <format>0.000</format>
+        <trim_type>none</trim_type>
+        <precision>3</precision>
+        <currency/>
+        <decimal>.</decimal>
+        <group/>
+        <repeat>N</repeat>
+        <path>$.observability.generation.load_seconds</path>
+      </field>
+      <field>
+        <name>prompt_eval_seconds</name>
+        <length>-1</length>
+        <type>Number</type>
+        <format>0.000</format>
+        <trim_type>none</trim_type>
+        <precision>3</precision>
+        <currency/>
+        <decimal>.</decimal>
+        <group/>
+        <repeat>N</repeat>
+        <path>$.observability.generation.prompt_eval_seconds</path>
+      </field>
+      <field>
+        <name>completion_eval_seconds</name>
+        <length>-1</length>
+        <type>Number</type>
+        <format>0.000</format>
+        <trim_type>none</trim_type>
+        <precision>3</precision>
+        <currency/>
+        <decimal>.</decimal>
+        <group/>
+        <repeat>N</repeat>
+        <path>$.observability.generation.completion_eval_seconds</path>
       </field>
     </fields>
     <distribute>N</distribute>
