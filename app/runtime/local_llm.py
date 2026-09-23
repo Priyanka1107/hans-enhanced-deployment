@@ -576,7 +576,31 @@ def build_email_user_prompt(
             )
         )
 
+    reply_language = str(
+        email_context.get("reply_language")
+        or email_context.get("input_language")
+        or "en"
+    ).lower()
+
+    if reply_language.startswith("de"):
+        language_label = "German (de)"
+        language_instruction = (
+            "Write the entire staff email draft in German. "
+            "Do not switch to English except for official programme names, "
+            "URLs, source titles, or [Doc N] citations."
+        )
+    else:
+        language_label = "English (en)"
+        language_instruction = (
+            "Write the entire staff email draft in English."
+        )
+
     return f"""
+REPLY LANGUAGE
+--------------
+{language_label}
+{language_instruction}
+
 INTERPRETED CONTEXT
 -------------------
 {chr(10).join(profile_lines) if profile_lines else "- No reliable profile details detected."}
