@@ -1211,9 +1211,14 @@ def detect_topics(email_text: str, context: Dict[str, Optional[str]], max_topics
             r"what documents|which documents|what application documents|which application documents|"
             r"documents (are )?needed|documents should i prepare|documents i should prepare|"
             r"required documents|document requirements|application documents|"
-            r"what documentation|which documentation|documentation (is )?(needed|required)"
+            r"what documentation|which documentation|documentation (is )?(needed|required)|"
+            r"welche unterlagen|welche dokumente|"
+            r"unterlagen.{0,40}(einreichen|ben\u00f6tig|brauche|erforderlich)|"
+            r"dokumente.{0,40}(einreichen|ben\u00f6tig|brauche|erforderlich)|"
+            r"erforderliche unterlagen"
             r")\b",
             text,
+            flags=re.IGNORECASE,
         )
         if not explicit_required:
             found_set.discard("required_documents")
