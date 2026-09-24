@@ -2070,6 +2070,77 @@ SOURCE-TO-CLAIM RULES:
     )
 
 
+def _build_topic_evidence_map(
+    *,
+    topics: List[Dict[str, Any]],
+    topic_document_groups: List[List[Dict[str, Any]]],
+    final_documents: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    """Map each topic's retrieved evidence to final public [Doc N] numbers."""
+
+    final_number_by_key: Dict[str, int] = {}
+
+    for number, document in enumerate(
+        final_documents,
+        start=1,
+    ):
+        document_key = _document_key(document)
+
+        if (
+            document_key
+            and document_key not in final_number_by_key
+        ):
+            final_number_by_key[document_key] = number
+
+    topic_evidence: List[Dict[str, Any]] = []
+
+    for index, topic in enumerate(topics):
+        document_group = (
+            topic_document_groups[index]
+            if index < len(topic_document_groups)
+            else []
+        )
+
+        doc_numbers: List[int] = []
+        seen_numbers: set[int] = set()
+
+        for document in document_group:
+            document_key = _document_key(document)
+            document_number = final_number_by_key.get(
+                document_key
+            )
+
+            if (
+                document_number is None
+                or document_number in seen_numbers
+            ):
+                continue
+
+            doc_numbers.append(document_number)
+            seen_numbers.add(document_number)
+
+        topic_id = str(
+            topic.get("topic_id")
+            or ""
+        ).strip()
+
+        label = str(
+            topic.get("label")
+            or topic_id
+            or "Topic"
+        ).strip()
+
+        topic_evidence.append(
+            {
+                "topic_id": topic_id,
+                "label": label,
+                "doc_numbers": doc_numbers,
+            }
+        )
+
+    return topic_evidence
+
+
 class EmailAssistantService:
     def __init__(self, connection: psycopg.Connection) -> None:
         self.connection = connection
