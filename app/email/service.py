@@ -2835,11 +2835,18 @@ class EmailAssistantService:
         generation_start = time.perf_counter()
 
         if final_documents:
+            topic_evidence = _build_topic_evidence_map(
+                topics=topic_results,
+                topic_document_groups=topic_document_groups,
+                final_documents=final_documents,
+            )
+
             user_prompt = build_email_user_prompt(
                 original_email=email_text,
                 email_context=email_context,
                 topics=topic_results,
                 documents=final_documents,
+                topic_evidence=topic_evidence,
             )
 
             temporal_guidance = (
