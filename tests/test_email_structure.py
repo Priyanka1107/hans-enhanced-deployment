@@ -37,6 +37,30 @@ HTW Berlin Student Services"""
     )
 
 
+def test_staff_cleanup_removes_invented_german_model_greeting():
+    raw_model_draft = """Sehr geehrter Herr Cardenas,
+
+Vielen Dank fuer Ihre Anfrage.
+"""
+
+    context = {
+        "student_name": None,
+        "input_language": "de",
+        "reply_language": "de",
+    }
+
+    final_draft = _clean_email_structure(
+        clean_staff_draft(
+            raw_model_draft,
+            context,
+        )
+    )
+
+    assert final_draft.startswith("Sehr geehrte/r Bewerber/in,")
+    assert "Sehr geehrter Herr Cardenas" not in final_draft
+    assert final_draft.count("Sehr geehrte/r Bewerber/in,") == 1
+
+
 def test_staff_cleanup_replaces_placeholder_signature_with_canonical_closing():
     raw_model_draft = """Dear Admissions Team,
 

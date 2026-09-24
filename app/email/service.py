@@ -915,7 +915,7 @@ def _clean_email_structure(draft: str) -> str:
         r"^\s*("
         r"dear\s+[^,]+,?|"
         r"guten\s+tag\s+[^,]+,?|"
-        r"sehr\s+geehrte[rn]?\s+.+"
+        r"sehr\s+geehrte(?:[rn]|/[rn])?\s+.+"
         r")\s*$",
         flags=re.IGNORECASE,
     )
