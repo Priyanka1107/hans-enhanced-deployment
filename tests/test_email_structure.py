@@ -198,3 +198,27 @@ HTW Berlin Student Services"""
     issues = _find_audience_issues(draft)
 
     assert issues == []
+
+
+
+def test_email_structure_removes_german_betreff_line():
+    raw_draft = """Sehr geehrte/r Bewerber/in,
+
+Betreff: Ihre Anfrage zum Master-Studiengang Project Management and Data Science
+
+Vielen Dank fuer Ihre Anfrage.
+
+Mit freundlichen Gruessen
+Studierendenservice der HTW Berlin"""
+
+    cleaned = _clean_email_structure(raw_draft)
+
+    assert "Betreff:" not in cleaned
+    assert cleaned.startswith(
+        "Sehr geehrte/r Bewerber/in,"
+    )
+    assert "Vielen Dank fuer Ihre Anfrage." in cleaned
+    assert cleaned.endswith(
+        "Mit freundlichen Gruessen\n"
+        "Studierendenservice der HTW Berlin"
+    )

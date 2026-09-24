@@ -905,7 +905,7 @@ def _clean_email_structure(draft: str) -> str:
         line
         for line in lines
         if not re.match(
-            r"^\s*subject\s*:",
+            r"^\s*(?:subject|betreff)\s*:",
             line,
             flags=re.IGNORECASE,
         )
