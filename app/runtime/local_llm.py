@@ -664,6 +664,10 @@ Create one complete staff-ready email draft.
 
 Important:
 - Cover every listed topic.
+- Answer only the topics listed under TOPICS THAT MUST BE ANSWERED.
+- Evidence documents may contain information about other topics.
+- Do not add separate programme-duration, curriculum, language-of-instruction, study-format, admission-requirements, scholarship, or application-route information unless that topic is listed.
+- For required_documents, document requirements and their directly necessary qualifiers are allowed.
 - Use programme-specific evidence first.
 - Use [Doc N] citations after factual claims.
 - Do not make unsupported assumptions.
