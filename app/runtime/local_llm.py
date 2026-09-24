@@ -496,6 +496,7 @@ def build_email_user_prompt(
     email_context: Dict[str, Any],
     topics: List[Dict[str, Any]],
     documents: List[Dict[str, Any]],
+    topic_evidence: List[Dict[str, Any]] | None = None,
 ) -> str:
     profile_lines: List[str] = []
 
@@ -534,6 +535,52 @@ def build_email_user_prompt(
         topic_lines.append(
             f"- {topic.get('label')}: "
             f"{_neutralize_applicant_anchor(topic_text)}"
+        )
+
+    topic_evidence_lines: List[str] = []
+
+    for mapping in topic_evidence or []:
+        label = str(
+            mapping.get("label")
+            or mapping.get("topic_id")
+            or "Topic"
+        ).strip()
+
+        doc_numbers = [
+            number
+            for number in mapping.get("doc_numbers", [])
+            if isinstance(number, int) and number > 0
+        ]
+
+        if doc_numbers:
+            citations = ", ".join(
+                f"[Doc {number}]"
+                for number in doc_numbers
+            )
+
+            topic_evidence_lines.append(
+                f"- {label}: {citations}"
+            )
+        else:
+            topic_evidence_lines.append(
+                f"- {label}: no final evidence document assigned"
+            )
+
+    topic_evidence_section = ""
+
+    if topic_evidence_lines:
+        topic_evidence_section = "\n".join(
+            [
+                "TOPIC-SPECIFIC EVIDENCE",
+                "-----------------------",
+                *topic_evidence_lines,
+                "",
+                (
+                    "Use the evidence assigned to each topic when "
+                    "supporting that topic's factual claims."
+                ),
+                "",
+            ]
         )
 
     evidence_blocks: List[str] = []
@@ -609,7 +656,7 @@ TOPICS THAT MUST BE ANSWERED
 ----------------------------
 {chr(10).join(topic_lines)}
 
-OFFICIAL EVIDENCE
+{topic_evidence_section}OFFICIAL EVIDENCE
 -----------------
 {chr(10).join(evidence_blocks)}
 
