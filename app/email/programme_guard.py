@@ -183,6 +183,13 @@ def extract_unmatched_programme_name(email_text: str) -> str:
         if normalised in generic_exact:
             continue
 
+        # Descriptive degree wording is not an explicit programme title.
+        if re.fullmatch(
+            r"(?:the\s+)?english\s+taught\s+(?:bachelor|master)",
+            normalised,
+        ):
+            continue
+
         word_count = len(value.split())
 
         if word_count < 2 or word_count > 12:

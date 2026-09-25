@@ -31,3 +31,13 @@ def test_generic_programme_overview_is_not_named_programme():
     )
 
     assert extract_unmatched_programme_name(text) == ""
+
+
+def test_descriptive_english_taught_bachelor_is_not_programme_title():
+    text = (
+        "I want to apply for the English-taught Bachelor?s in Business "
+        "but am unsure whether I should apply as an EU applicant "
+        "or international."
+    )
+
+    assert extract_unmatched_programme_name(text) == ""
