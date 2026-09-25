@@ -25,3 +25,5 @@ data/postgres/
 .idea/
 
 runtime_data/evaluation/ui_runs/
+
+.env.local
