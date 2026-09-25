@@ -522,6 +522,15 @@ def build_email_user_prompt(
                 f"- {label}: {value}"
             )
 
+    if str(email_context.get("programme_status") or "").strip() == "not_provided":
+        profile_lines.append(
+            "- Programme confirmation: No confirmed HTW programme has been identified."
+        )
+        profile_lines.append(
+            "- Programme naming rule: Do not present descriptive wording from the student's email "
+            "as an official or confirmed programme title."
+        )
+
     topic_lines: List[str] = []
 
     for topic in topics:
@@ -666,6 +675,7 @@ Important:
 - Cover every listed topic.
 - Answer only the topics listed under TOPICS THAT MUST BE ANSWERED.
 - Evidence documents may contain information about other topics.
+- Do not add application deadlines or application periods unless application_deadline is a listed topic.
 - Do not add separate programme-duration, curriculum, language-of-instruction, study-format, admission-requirements, scholarship, or application-route information unless that topic is listed.
 - For required_documents, document requirements and their directly necessary qualifiers are allowed.
 - Use programme-specific evidence first.

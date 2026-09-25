@@ -143,3 +143,112 @@ def test_prompt_explicitly_limits_generation_to_detected_topics():
         "directly necessary qualifiers are allowed."
         in prompt
     )
+
+
+def test_prompt_guards_unconfirmed_programme_framing():
+    prompt = build_email_user_prompt(
+        original_email=(
+            "I want to apply for the English-taught Bachelor?s in Business "
+            "and need to know whether I apply as EU or international."
+        ),
+        email_context={
+            "reply_language": "en",
+            "requested_language": "en",
+            "target_degree": "Bachelor",
+            "programme_status": "not_provided",
+            "citizenship_group": "EU/EEA",
+            "residence_country": "Morocco",
+        },
+        topics=[
+            {
+                "topic_id": "application_route",
+                "label": "Application route / uni-assist",
+                "query": "Which application route should the applicant use?",
+            },
+        ],
+        documents=[
+            {
+                "id": "route-doc",
+                "title": "Bachelor",
+                "content": "EU/EEA application route information.",
+            },
+        ],
+        topic_evidence=[
+            {
+                "topic_id": "application_route",
+                "label": "Application route / uni-assist",
+                "doc_numbers": [1],
+            },
+        ],
+    )
+
+    assert (
+        "No confirmed HTW programme has been identified."
+        in prompt
+    )
+    assert (
+        "Do not present descriptive wording from the student's email "
+        "as an official or confirmed programme title."
+        in prompt
+    )
+
+
+def test_prompt_explicitly_forbids_unasked_application_deadlines():
+    prompt = build_email_user_prompt(
+        original_email=(
+            "Should I apply as an EU applicant, and how is my "
+            "French school qualification recognised?"
+        ),
+        email_context={
+            "reply_language": "en",
+            "requested_language": "en",
+            "target_degree": "Bachelor",
+            "programme_status": "not_provided",
+            "citizenship_group": "EU/EEA",
+        },
+        topics=[
+            {
+                "topic_id": "application_route",
+                "label": "Application route / uni-assist",
+                "query": "Which application route should the applicant use?",
+            },
+            {
+                "topic_id": "qualification_recognition",
+                "label": "Qualification recognition",
+                "query": "How is the school qualification recognised?",
+            },
+        ],
+        documents=[
+            {
+                "id": "route-doc",
+                "title": "Application periods",
+                "content": (
+                    "Application route information. "
+                    "Winter deadline 30 June."
+                ),
+            },
+            {
+                "id": "recognition-doc",
+                "title": "Admission requirements",
+                "content": "Recognition requirements.",
+            },
+        ],
+        topic_evidence=[
+            {
+                "topic_id": "application_route",
+                "label": "Application route / uni-assist",
+                "doc_numbers": [1],
+            },
+            {
+                "topic_id": "qualification_recognition",
+                "label": "Qualification recognition",
+                "doc_numbers": [2],
+            },
+        ],
+    )
+
+    assert (
+        "Do not add application deadlines or application periods "
+        "unless application_deadline is a listed topic."
+        in prompt
+    )
