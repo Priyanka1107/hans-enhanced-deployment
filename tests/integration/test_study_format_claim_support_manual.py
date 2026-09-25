@@ -117,3 +117,93 @@ print()
 print(
     "STUDY-FORMAT CLAIM-SUPPORT REGRESSION PASSED."
 )
+
+
+# ---------------------------------------------------------------------
+# Regression 4:
+# A generic admission requirement must not be treated as proof that a
+# specific named foreign qualification is recognised.
+# ---------------------------------------------------------------------
+
+generic_qualification_doc = {
+    "title": "Bachelor admission requirements",
+    "source_url": "https://example.invalid/bachelor",
+    "content": (
+        "To apply for a Bachelor's degree programme, applicants require "
+        "a recognised higher education entrance qualification."
+    ),
+}
+
+unsupported_specific_qualification_claim = """
+Regarding your French Baccalaureat diploma, we would like to
+inform you that it is a recognised foreign higher education
+entry qualification in Germany [Doc 1].
+""".strip()
+
+qualification_issues = _find_claim_support_issues(
+    unsupported_specific_qualification_claim,
+    [generic_qualification_doc],
+)
+
+assert any(
+    issue.startswith("qualification_recognition:")
+    for issue in qualification_issues
+), (
+    "Safety regression: a generic admission requirement was "
+    "incorrectly accepted as proof that a specific qualification "
+    f"is recognised. Issues: {qualification_issues}"
+)
+
+
+# ---------------------------------------------------------------------
+# Regression 5:
+# An explicit specific-qualification claim remains valid when the
+# cited evidence actually names and supports that qualification.
+# ---------------------------------------------------------------------
+
+specific_qualification_doc = {
+    "title": "Qualification recognition",
+    "source_url": "https://example.invalid/qualification",
+    "content": (
+        "The French Baccalaureat is recognised as a higher education "
+        "entrance qualification."
+    ),
+}
+
+supported_qualification_issues = _find_claim_support_issues(
+    unsupported_specific_qualification_claim,
+    [specific_qualification_doc],
+)
+
+assert not any(
+    issue.startswith("qualification_recognition:")
+    for issue in supported_qualification_issues
+), (
+    "Explicitly supported qualification recognition was "
+    f"incorrectly rejected. Issues: {supported_qualification_issues}"
+)
+
+
+# ---------------------------------------------------------------------
+# Regression 6:
+# Cautious wording that says recognition still needs to be checked
+# must not be treated as an affirmative recognition claim.
+# ---------------------------------------------------------------------
+
+cautious_qualification_statement = """
+Whether your French Baccalaureat fulfils the applicable higher
+education entrance requirements must still be checked [Doc 1].
+""".strip()
+
+cautious_qualification_issues = _find_claim_support_issues(
+    cautious_qualification_statement,
+    [generic_qualification_doc],
+)
+
+assert not any(
+    issue.startswith("qualification_recognition:")
+    for issue in cautious_qualification_issues
+), (
+    "Cautious qualification wording was incorrectly treated as "
+    f"an affirmative recognition claim. Issues: {cautious_qualification_issues}"
+)

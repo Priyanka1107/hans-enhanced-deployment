@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import re
 import time
+import unicodedata
 from typing import Any, Dict, List
 from urllib.parse import urlparse
 
@@ -1577,7 +1578,60 @@ def _find_claim_support_issues(
     Regex patterns are used so wording variations cannot bypass the
     language-of-instruction and study-format checks.
     """
+    def _normalise_claim_text(value: str) -> str:
+        normalised = unicodedata.normalize(
+            "NFKD",
+            str(value or ""),
+        )
+        normalised = "".join(
+            char
+            for char in normalised
+            if not unicodedata.combining(char)
+        )
+        return re.sub(
+            r"\s+",
+            " ",
+            normalised.lower(),
+        ).strip()
+
+    def _specific_qualification_name(
+        paragraph: str,
+    ) -> str:
+        normalised = _normalise_claim_text(paragraph)
+
+        match = re.search(
+            r"\byour\s+("
+            r"[a-z0-9][a-z0-9 /'&()+.\-]{1,80}?"
+            r"(?:baccalaureat|baccalaureate|diploma|"
+            r"certificate|qualification))\b",
+            normalised,
+            flags=re.IGNORECASE,
+        )
+
+        if not match:
+            return ""
+
+        name = match.group(1).strip()
+        name = re.sub(
+            r"\s+(?:diploma|certificate|qualification)$",
+            "",
+            name,
+        ).strip()
+
+        return name
+
     rules = [
+        {
+            "claim_name": "qualification_recognition",
+            "claim_regexes": (
+                r"\bis\s+(?:a\s+)?recogn(?:ised|ized)\b"
+
+                r".*?\b(?:higher education|university)\b"
+
+                r".*?\b(?:entry|entrance)\s+qualification\b",
+            ),
+            "support_patterns": (),
+        },
         {
             "claim_name": "language_of_instruction",
             "claim_regexes": (
@@ -1729,6 +1783,25 @@ def _find_claim_support_issues(
                 cited_text = _document_text(
                     documents[index]
                 )
+
+                if rule["claim_name"] == "qualification_recognition":
+                    qualification_name = (
+                        _specific_qualification_name(
+                            lower_paragraph
+                        )
+                    )
+
+                    if not qualification_name:
+                        supported = True
+                        break
+
+                    if qualification_name in (
+                        _normalise_claim_text(cited_text)
+                    ):
+                        supported = True
+                        break
+
+                    continue
 
                 if any(
                     support_pattern in cited_text
