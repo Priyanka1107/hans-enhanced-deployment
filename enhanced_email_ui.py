@@ -607,12 +607,22 @@ class EnhancedHANSEmailUI:
         self.subject_var.set(
             str(case.get("subject") or "")
         )
-        self.thread_id_var.set(
-            str(case.get("thread_id") or "")
-        )
-        self.email_id_var.set(
-            str(case.get("email_id") or "")
-        )
+        if case.get("fresh_ids"):
+            fresh_suffix = uuid.uuid4().hex[:8]
+
+            self.thread_id_var.set(
+                f"ui-demo-thread-{fresh_suffix}"
+            )
+            self.email_id_var.set(
+                f"ui-demo-email-{fresh_suffix}"
+            )
+        else:
+            self.thread_id_var.set(
+                str(case.get("thread_id") or "")
+            )
+            self.email_id_var.set(
+                str(case.get("email_id") or "")
+            )
         self.language_var.set(
             str(case.get("language") or "en")
         )
@@ -931,6 +941,7 @@ class EnhancedHANSEmailUI:
             ),
             "quality": result.get("quality"),
             "sources": result.get("sources"),
+            "observability": result.get("observability"),
             "timing": result.get("timing"),
             "ui_client": result.get("_ui_client"),
         }
@@ -939,9 +950,49 @@ class EnhancedHANSEmailUI:
             "1.0",
             tk.END,
         )
+        observability = result.get("observability") or {}
+        generation = observability.get("generation") or {}
+
+        generation_seconds = generation.get(
+            "generation_total_seconds"
+        )
+
+        if isinstance(generation_seconds, (int, float)):
+            generation_time_text = (
+                f"{generation_seconds:.3f} s"
+            )
+        elif generation_seconds is None:
+            generation_time_text = "n/a"
+        else:
+            generation_time_text = str(
+                generation_seconds
+            )
+
+        def display_value(value: Any) -> str:
+            if value is None:
+                return "n/a"
+            return str(value)
+
+        observability_text = (
+            "GENERATION OBSERVABILITY\n"
+            f"Provider: "
+            f"{display_value(generation.get('provider'))}\n"
+            f"Model: "
+            f"{display_value(generation.get('model'))}\n"
+            f"Prompt tokens: "
+            f"{display_value(generation.get('prompt_tokens'))}\n"
+            f"Completion tokens: "
+            f"{display_value(generation.get('completion_tokens'))}\n"
+            f"Total tokens: "
+            f"{display_value(generation.get('total_tokens'))}\n"
+            f"Generation time: {generation_time_text}\n\n"
+            "TECHNICAL DETAILS\n"
+        )
+
         self.details_text.insert(
             "1.0",
-            json.dumps(
+            observability_text
+            + json.dumps(
                 summary,
                 ensure_ascii=False,
                 indent=2,

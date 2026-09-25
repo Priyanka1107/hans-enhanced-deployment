@@ -50,6 +50,54 @@
       "language": "en",
       "top_k": 6,
       "email_text": "Thank you. Is proof of English also required?"
+    },
+    {
+      "test_case_id": "DEMO-MM001-MPMD-MULTITOPIC-EN",
+      "source_case_id": "MM-001-MPMD-MULTITOPIC-EN",
+      "student_email": "arjun@example.com",
+      "subject": "MPMD application questions",
+      "thread_id": "",
+      "email_id": "",
+      "language": "en",
+      "top_k": 6,
+      "email_text": "Dear Admissions Team,\n\nI would like to apply for the Master's programme in Project Management and Data Science.\n\nCould you please tell me:\n\n1. What is the application deadline?\n2. Is the programme taught entirely in English?\n3. Is it an on-campus programme?\n4. Which application documents are required?\n\nKind regards,\nArjun",
+      "fresh_ids": true
+    },
+    {
+      "test_case_id": "DEMO-MM002-UNKNOWN-PROGRAMME-EN",
+      "source_case_id": "MM-002-UNKNOWN-PROGRAMME-EN",
+      "student_email": "maya@example.com",
+      "subject": "Question about an unknown programme",
+      "thread_id": "",
+      "email_id": "",
+      "language": "en",
+      "top_k": 6,
+      "email_text": "Dear Admissions Team,\n\nI am interested in the Master of Quantum Business Analytics. What is the deadline and which documents are required?\n\nKind regards,\nMaya",
+      "fresh_ids": true
+    },
+    {
+      "test_case_id": "DEMO-MM003-MPMD-GERMAN",
+      "source_case_id": "MM-003-MPMD-GERMAN",
+      "student_email": "lena@example.com",
+      "subject": "Fragen zur Bewerbung",
+      "thread_id": "",
+      "email_id": "",
+      "language": "de",
+      "top_k": 6,
+      "email_text": "Guten Tag,\n\nich interessiere mich für den Masterstudiengang Project Management and Data Science. Welche Bewerbungsfrist gilt und welche Unterlagen muss ich einreichen?\n\nMit freundlichen Grüßen\nLena",
+      "fresh_ids": true
+    },
+    {
+      "test_case_id": "DEMO-MM008-DUAL-CITIZEN-ROUTE",
+      "source_case_id": "MM-008-DUAL-CITIZEN-ROUTE",
+      "student_email": "dual.citizen@example.com",
+      "subject": "Business Bachelor application route and diploma recognition",
+      "thread_id": "",
+      "email_id": "",
+      "language": "en",
+      "top_k": 6,
+      "email_text": "Dear Admissions Team, I am a dual citizen (French and Moroccan), currently residing in Morocco and holding a French Baccalauréat diploma. I want to apply for the English-taught Bachelor’s in Business but am unsure whether I should apply as an EU applicant or international. Also, would my French diploma fulfill the general university entrance requirements, or would I need to obtain a VPD from Uni-Assist?",
+      "fresh_ids": true
     }
   ]
 }
