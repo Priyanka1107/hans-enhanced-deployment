@@ -1219,7 +1219,7 @@ class EnhancedHANSEmailUI:
         link_index = 0
 
         for match in re.finditer(
-            r"https?://[^\\s<>\\\"']+",
+            r"https?://[^\s<>\"']+",
             text,
         ):
             start, end = match.span()
