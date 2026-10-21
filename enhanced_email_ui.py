@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import threading
 import time
 import uuid
+import webbrowser
 from pathlib import Path
 from typing import Any, Dict
 
@@ -916,8 +918,8 @@ class EnhancedHANSEmailUI:
             "1.0",
             tk.END,
         )
-        self.draft_text.insert(
-            "1.0",
+        self._insert_clickable_text(
+            self.draft_text,
             draft,
         )
 
@@ -950,8 +952,42 @@ class EnhancedHANSEmailUI:
             "1.0",
             tk.END,
         )
+
+        # Staff-facing summary: keep the most important review signals visible
+        # without requiring staff to search through the raw JSON.
+        email_context = result.get("email_context") or {}
+        validation = result.get("validation") or {}
+        quality = result.get("quality") or {}
+        topics = result.get("detected_topics") or []
+        sources = result.get("sources") or []
         observability = result.get("observability") or {}
         generation = observability.get("generation") or {}
+
+        programme = (
+            email_context.get("matched_programme")
+            or email_context.get("target_program")
+            or email_context.get("target_programme")
+            or "n/a"
+        )
+
+        topic_labels = [
+            str(topic.get("label") or topic.get("topic_id"))
+            for topic in topics
+            if isinstance(topic, dict)
+            and (topic.get("label") or topic.get("topic_id"))
+        ]
+
+        def yes_no(value: Any) -> str:
+            if value is True:
+                return "Yes"
+            if value is False:
+                return "No"
+            return "n/a"
+
+        def display_value(value: Any) -> str:
+            if value is None:
+                return "n/a"
+            return str(value)
 
         generation_seconds = generation.get(
             "generation_total_seconds"
@@ -968,35 +1004,191 @@ class EnhancedHANSEmailUI:
                 generation_seconds
             )
 
-        def display_value(value: Any) -> str:
-            if value is None:
-                return "n/a"
-            return str(value)
-
-        observability_text = (
-            "GENERATION OBSERVABILITY\n"
-            f"Provider: "
-            f"{display_value(generation.get('provider'))}\n"
-            f"Model: "
-            f"{display_value(generation.get('model'))}\n"
-            f"Prompt tokens: "
-            f"{display_value(generation.get('prompt_tokens'))}\n"
-            f"Completion tokens: "
-            f"{display_value(generation.get('completion_tokens'))}\n"
-            f"Total tokens: "
-            f"{display_value(generation.get('total_tokens'))}\n"
-            f"Generation time: {generation_time_text}\n\n"
-            "TECHNICAL DETAILS\n"
+        self.details_text.tag_configure(
+            "section",
+            font=("Segoe UI", 10, "bold"),
+        )
+        self.details_text.tag_configure(
+            "label",
+            font=("Segoe UI", 9, "bold"),
+        )
+        self.details_text.tag_configure(
+            "ok",
+            foreground="darkgreen",
+            font=("Segoe UI", 9, "bold"),
+        )
+        self.details_text.tag_configure(
+            "warn",
+            foreground="darkorange",
+            font=("Segoe UI", 9, "bold"),
+        )
+        self.details_text.tag_configure(
+            "technical",
+            font=("Consolas", 8),
+        )
+        self.details_text.tag_configure(
+            "link",
+            foreground="blue",
+            underline=True,
         )
 
         self.details_text.insert(
-            "1.0",
-            observability_text
-            + json.dumps(
+            tk.END,
+            "STAFF REVIEW SUMMARY\n",
+            "section",
+        )
+
+        def add_summary_line(
+            label: str,
+            value: Any,
+            value_tag: str | None = None,
+        ) -> None:
+            self.details_text.insert(
+                tk.END,
+                f"{label}: ",
+                "label",
+            )
+            self.details_text.insert(
+                tk.END,
+                f"{display_value(value)}\n",
+                value_tag or (),
+            )
+
+        add_summary_line("Programme", programme)
+        add_summary_line(
+            "Topics detected",
+            ", ".join(topic_labels) if topic_labels else "n/a",
+        )
+        add_summary_line(
+            "Grounded",
+            yes_no(validation.get("is_grounded")),
+            "ok" if validation.get("is_grounded") is True else "warn",
+        )
+        add_summary_line(
+            "Citations valid",
+            yes_no(validation.get("citations_valid")),
+            "ok" if validation.get("citations_valid") is True else "warn",
+        )
+        add_summary_line(
+            "Hallucinations detected",
+            yes_no(validation.get("has_hallucinations")),
+            "ok" if validation.get("has_hallucinations") is False else "warn",
+        )
+
+        review_required = quality.get("review_required")
+        add_summary_line(
+            "Review required",
+            yes_no(review_required),
+            "warn" if review_required is True else "ok",
+        )
+        add_summary_line(
+            "Review reason",
+            quality.get("review_reason") or "n/a",
+            "warn" if review_required is True else None,
+        )
+        add_summary_line(
+            "Automatic sending",
+            "Disabled" if result.get("automatic_send") is False else display_value(
+                result.get("automatic_send")
+            ),
+            "ok" if result.get("automatic_send") is False else "warn",
+        )
+        add_summary_line("Sources used", len(sources))
+        add_summary_line(
+            "Model",
+            generation.get("model"),
+        )
+        add_summary_line(
+            "Generation time",
+            generation_time_text,
+        )
+
+        self.details_text.insert(
+            tk.END,
+            "\nOFFICIAL SOURCES\n",
+            "section",
+        )
+
+        seen_urls = set()
+        source_index = 0
+        for source in sources:
+            if not isinstance(source, dict):
+                continue
+            url = str(source.get("url") or "").strip()
+            if not url or url in seen_urls:
+                continue
+            seen_urls.add(url)
+            source_index += 1
+            title = str(source.get("title") or f"Source {source_index}")
+
+            self.details_text.insert(
+                tk.END,
+                f"{source_index}. {title}\n",
+                "label",
+            )
+            tag_name = f"source_link_{source_index}"
+            self.details_text.insert(
+                tk.END,
+                f"   {url}\n",
+                (tag_name, "link"),
+            )
+            self.details_text.tag_bind(
+                tag_name,
+                "<Button-1>",
+                lambda _event, target=url: webbrowser.open_new_tab(target),
+            )
+            self.details_text.tag_bind(
+                tag_name,
+                "<Enter>",
+                lambda _event: self.details_text.configure(cursor="hand2"),
+            )
+            self.details_text.tag_bind(
+                tag_name,
+                "<Leave>",
+                lambda _event: self.details_text.configure(cursor=""),
+            )
+
+        if source_index == 0:
+            self.details_text.insert(
+                tk.END,
+                "No source links returned.\n",
+            )
+
+        self.details_text.insert(
+            tk.END,
+            "\nGENERATION OBSERVABILITY\n",
+            "section",
+        )
+        add_summary_line(
+            "Provider",
+            generation.get("provider"),
+        )
+        add_summary_line(
+            "Prompt tokens",
+            generation.get("prompt_tokens"),
+        )
+        add_summary_line(
+            "Completion tokens",
+            generation.get("completion_tokens"),
+        )
+        add_summary_line(
+            "Total tokens",
+            generation.get("total_tokens"),
+        )
+
+        self.details_text.insert(
+            tk.END,
+            "\nTECHNICAL DETAILS (raw JSON)\n",
+            "section",
+        )
+        self.details_text.insert(
+            tk.END,
+            json.dumps(
                 summary,
                 ensure_ascii=False,
                 indent=2,
             ),
+            "technical",
         )
 
         if saved_path is not None:
@@ -1009,6 +1201,74 @@ class EnhancedHANSEmailUI:
                 "Response received. "
                 "Evaluation logging is disabled."
             )
+
+    @staticmethod
+    def _insert_clickable_text(
+        widget: tk.Text,
+        text: str,
+    ) -> None:
+        """Insert text and make http/https URLs open in the default browser."""
+        widget.delete("1.0", tk.END)
+        widget.tag_configure(
+            "url_link",
+            foreground="blue",
+            underline=True,
+        )
+
+        last_end = 0
+        link_index = 0
+
+        for match in re.finditer(
+            r"https?://[^\\s<>\\\"']+",
+            text,
+        ):
+            start, end = match.span()
+            url = match.group(0).rstrip(".,;:)")
+
+            widget.insert(
+                tk.END,
+                text[last_end:start],
+            )
+
+            tag_name = f"url_link_{link_index}"
+            widget.insert(
+                tk.END,
+                url,
+                (tag_name, "url_link"),
+            )
+            widget.tag_bind(
+                tag_name,
+                "<Button-1>",
+                lambda _event, target=url: webbrowser.open_new_tab(target),
+            )
+            widget.tag_bind(
+                tag_name,
+                "<Enter>",
+                lambda _event, target_widget=widget: target_widget.configure(
+                    cursor="hand2"
+                ),
+            )
+            widget.tag_bind(
+                tag_name,
+                "<Leave>",
+                lambda _event, target_widget=widget: target_widget.configure(
+                    cursor=""
+                ),
+            )
+
+            # Preserve any punctuation stripped from the clickable URL.
+            widget.insert(
+                tk.END,
+                match.group(0)[len(url):],
+            )
+
+            last_end = end
+            link_index += 1
+
+        widget.insert(
+            tk.END,
+            text[last_end:],
+        )
 
     def _display_error(
         self,
@@ -1089,8 +1349,8 @@ class EnhancedHANSEmailUI:
             fill=tk.BOTH,
             expand=True,
         )
-        full_draft_text.insert(
-            "1.0",
+        self._insert_clickable_text(
+            full_draft_text,
             draft,
         )
 
