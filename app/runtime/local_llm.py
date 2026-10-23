@@ -497,6 +497,7 @@ def build_email_user_prompt(
     topics: List[Dict[str, Any]],
     documents: List[Dict[str, Any]],
     topic_evidence: List[Dict[str, Any]] | None = None,
+    evidence_char_limit: int = 1800,
 ) -> str:
     profile_lines: List[str] = []
 
@@ -627,7 +628,7 @@ def build_email_user_prompt(
                     f"Type: {object_type}",
                     f"Last updated: {last_updated}",
                     "Content:",
-                    str(content)[:1800],
+                    str(content)[:max(1, int(evidence_char_limit))],
                 ]
             )
         )
