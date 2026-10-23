@@ -25,3 +25,6 @@ tokenizers==0.21.0
 huggingface-hub==0.28.1
 
 torch==2.5.1
+
+# Optional LLM observability (disabled unless LANGFUSE_ENABLED=true)
+langfuse>=5,<6
