@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import json
 import logging
 import os
+import re
 from typing import Any, Dict
 
 
@@ -24,6 +26,59 @@ def _configured() -> bool:
 
 def langfuse_enabled() -> bool:
     return _enabled("LANGFUSE_ENABLED", False) and _configured()
+
+
+def _metadata_key(value: Any) -> str:
+    """
+    Convert metadata keys to Langfuse-safe alphanumeric camelCase.
+    """
+    parts = [
+        part
+        for part in re.split(r"[^A-Za-z0-9]+", str(value or ""))
+        if part
+    ]
+
+    if not parts:
+        return "value"
+
+    return parts[0].lower() + "".join(
+        part[:1].upper() + part[1:]
+        for part in parts[1:]
+    )
+
+
+def _metadata_value(value: Any) -> str:
+    """
+    Langfuse Python SDK v4 propagated/filterable metadata values should be
+    strings no longer than 200 characters. Keep them compact and deterministic.
+    """
+    if isinstance(value, bool):
+        text = "true" if value else "false"
+    elif isinstance(value, (dict, list, tuple, set)):
+        try:
+            text = json.dumps(
+                value,
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+                default=str,
+            )
+        except Exception:
+            text = str(value)
+    else:
+        text = str(value)
+
+    return text[:200]
+
+
+def _normalise_metadata(
+    metadata: Dict[str, Any] | None,
+) -> Dict[str, str]:
+    return {
+        _metadata_key(key): _metadata_value(value)
+        for key, value in dict(metadata or {}).items()
+        if value is not None
+    }
 
 
 def start_generation_observation(
@@ -81,7 +136,7 @@ def start_generation_observation(
             as_type="generation",
             name="hans-email-draft-generation",
             input=trace_input,
-            metadata=dict(metadata or {}),
+            metadata=_normalise_metadata(metadata),
         )
     except Exception:
         logger.exception(
@@ -153,7 +208,7 @@ def finish_generation_observation(
 
     update_kwargs: Dict[str, Any] = {
         "output": trace_output,
-        "metadata": metadata_payload,
+        "metadata": _normalise_metadata(metadata_payload),
     }
 
     model = metrics.get("model")
