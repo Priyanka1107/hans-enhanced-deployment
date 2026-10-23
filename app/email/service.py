@@ -92,29 +92,67 @@ def _experiment_int(name: str, default: int) -> int:
         return default
 
 
+def _normalised_experiment_url(
+    document: Dict[str, Any],
+) -> str:
+    return str(
+        document.get("source_url")
+        or document.get("url")
+        or ""
+    ).strip().lower().rstrip("/")
+
+
 def _deduplicate_by_url(
     documents: List[Dict[str, Any]],
 ) -> List[Dict[str, Any]]:
-    """Experiment-only URL-level deduplication preserving first occurrence."""
+    """
+    Experiment-only URL-level deduplication.
+
+    Duplicate URL entries are merged rather than blindly discarded so the
+    retained evidence block can preserve complementary excerpts that entered
+    through different detected topics.
+    """
     output: List[Dict[str, Any]] = []
-    seen: set[str] = set()
+    index_by_key: Dict[str, int] = {}
 
     for document in documents:
-        url = str(
-            document.get("source_url")
-            or document.get("url")
-            or ""
-        ).strip().lower().rstrip("/")
-
+        url = _normalised_experiment_url(document)
         key = url or _document_key(document)
 
-        if key and key in seen:
+        if not key or key not in index_by_key:
+            copied = dict(document)
+            output.append(copied)
+
+            if key:
+                index_by_key[key] = len(output) - 1
+
             continue
 
-        if key:
-            seen.add(key)
+        existing = output[index_by_key[key]]
 
-        output.append(document)
+        existing_content = str(
+            existing.get("content")
+            or existing.get("chunk_text")
+            or ""
+        ).strip()
+        incoming_content = str(
+            document.get("content")
+            or document.get("chunk_text")
+            or ""
+        ).strip()
+
+        if (
+            incoming_content
+            and incoming_content not in existing_content
+        ):
+            merged_content = (
+                existing_content
+                + "\n\n"
+                + incoming_content
+            ).strip()
+
+            existing["content"] = merged_content
+            existing["chunk_text"] = merged_content
 
     return output
 
@@ -2207,6 +2245,7 @@ def _build_topic_evidence_map(
     """Map each topic's retrieved evidence to final public [Doc N] numbers."""
 
     final_number_by_key: Dict[str, int] = {}
+    final_number_by_url: Dict[str, int] = {}
 
     for number, document in enumerate(
         final_documents,
@@ -2219,6 +2258,16 @@ def _build_topic_evidence_map(
             and document_key not in final_number_by_key
         ):
             final_number_by_key[document_key] = number
+
+        document_url = _normalised_experiment_url(
+            document
+        )
+
+        if (
+            document_url
+            and document_url not in final_number_by_url
+        ):
+            final_number_by_url[document_url] = number
 
     topic_evidence: List[Dict[str, Any]] = []
 
@@ -2237,6 +2286,11 @@ def _build_topic_evidence_map(
             document_number = final_number_by_key.get(
                 document_key
             )
+
+            if document_number is None:
+                document_number = final_number_by_url.get(
+                    _normalised_experiment_url(document)
+                )
 
             if (
                 document_number is None
