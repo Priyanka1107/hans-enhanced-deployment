@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import re
 import time
 import unicodedata
@@ -42,6 +43,10 @@ from app.knowledge.programme_context import (
 from app.knowledge.programme_official_evidence import (
     get_official_programme_docs,
 )
+from app.langfuse_observability import (
+    finish_generation_observation,
+    start_generation_observation,
+)
 from app.retrieval.baseline_adapter import (
     deduplicate_documents,
     retrieve_for_topic,
@@ -62,6 +67,56 @@ from app.validation.email_validator import (
 
 
 logger = logging.getLogger(__name__)
+
+
+def _experiment_bool(name: str, default: bool = False) -> bool:
+    raw = os.getenv(name)
+    if raw is None:
+        return default
+    return raw.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _experiment_int(name: str, default: int) -> int:
+    raw = os.getenv(name)
+    if raw is None:
+        return default
+    try:
+        return int(raw)
+    except ValueError:
+        logger.warning(
+            "Invalid %s=%r; using %s.",
+            name,
+            raw,
+            default,
+        )
+        return default
+
+
+def _deduplicate_by_url(
+    documents: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    """Experiment-only URL-level deduplication preserving first occurrence."""
+    output: List[Dict[str, Any]] = []
+    seen: set[str] = set()
+
+    for document in documents:
+        url = str(
+            document.get("source_url")
+            or document.get("url")
+            or ""
+        ).strip().lower().rstrip("/")
+
+        key = url or _document_key(document)
+
+        if key and key in seen:
+            continue
+
+        if key:
+            seen.add(key)
+
+        output.append(document)
+
+    return output
 
 
 PROGRAMME_DIRECT_SOURCE_TOPICS = {
@@ -2236,6 +2291,44 @@ class EmailAssistantService:
         # Observability only. Does not affect HANS decision logic.
         generation_metrics: Dict[str, Any] = {}
 
+        # Experiment controls are OFF by default and exist only on this
+        # isolated observability branch.
+        experiment_mode = _experiment_bool(
+            "HANS_EXPERIMENT_MODE",
+            False,
+        )
+        experiment_label = os.getenv(
+            "HANS_EXPERIMENT_LABEL",
+            "control",
+        ).strip() or "control"
+        experiment_exact_top_k = (
+            experiment_mode
+            and _experiment_bool(
+                "HANS_EXPERIMENT_ALLOW_EXACT_TOP_K",
+                False,
+            )
+        )
+        experiment_dedupe_urls = (
+            experiment_mode
+            and _experiment_bool(
+                "HANS_EXPERIMENT_DEDUPE_URLS",
+                False,
+            )
+        )
+        evidence_char_limit = (
+            max(
+                1,
+                _experiment_int(
+                    "HANS_EXPERIMENT_EVIDENCE_CHAR_LIMIT",
+                    1800,
+                ),
+            )
+            if experiment_mode
+            else 1800
+        )
+        effective_top_k_by_topic: Dict[str, int] = {}
+        langfuse_observation = None
+
         if not email_text or not email_text.strip():
             raise ValueError("email_text must not be empty")
 
@@ -2664,14 +2757,19 @@ class EmailAssistantService:
                 email_context,
             )
 
-            retrieval_top_k = (
-                max(top_k, 8)
-                if topic_id in {
-                    "application_route",
-                    "qualification_recognition",
-                }
-                else max(top_k, 5)
-            )
+            if experiment_exact_top_k:
+                retrieval_top_k = max(1, int(top_k))
+            else:
+                retrieval_top_k = (
+                    max(top_k, 8)
+                    if topic_id in {
+                        "application_route",
+                        "qualification_recognition",
+                    }
+                    else max(top_k, 5)
+                )
+
+            effective_top_k_by_topic[topic_id] = retrieval_top_k
 
             retrieved_documents = retrieve_for_topic(
                 connection=self.connection,
@@ -2897,6 +2995,11 @@ class EmailAssistantService:
             : settings.final_source_limit
         ]
 
+        if experiment_dedupe_urls:
+            final_documents = _deduplicate_by_url(
+                final_documents
+            )
+
         timing["retrieval"] = (
             time.perf_counter() - retrieval_start
         )
@@ -2920,6 +3023,7 @@ class EmailAssistantService:
                 topics=topic_results,
                 documents=final_documents,
                 topic_evidence=topic_evidence,
+                evidence_char_limit=evidence_char_limit,
             )
 
             temporal_guidance = (
@@ -2937,13 +3041,59 @@ class EmailAssistantService:
                     + temporal_guidance
                 )
 
+            system_prompt = _build_strengthened_system_prompt()
+
+            langfuse_observation = start_generation_observation(
+                system_prompt=system_prompt,
+                user_prompt=user_prompt,
+                metadata={
+                    "experiment_mode": experiment_mode,
+                    "experiment_label": experiment_label,
+                    "requested_top_k": int(top_k),
+                    "effective_top_k_by_topic": dict(
+                        effective_top_k_by_topic
+                    ),
+                    "evidence_char_limit": evidence_char_limit,
+                    "dedupe_urls": experiment_dedupe_urls,
+                    "final_source_count": len(final_documents),
+                    "detected_topic_ids": [
+                        str(topic.get("topic_id") or "")
+                        for topic in topic_results
+                    ],
+                    "programme_status": str(
+                        email_context.get("programme_status")
+                        or ""
+                    ),
+                    "programme": str(
+                        email_context.get("target_program")
+                        or email_context.get("target_programme")
+                        or ""
+                    ),
+                },
+            )
+
             generation_start = time.perf_counter()
 
-            draft = await self.llm.generate(
-                system_prompt=_build_strengthened_system_prompt(),
-                user_prompt=user_prompt,
-                temperature=0.1,
-            )
+            try:
+                draft = await self.llm.generate(
+                    system_prompt=system_prompt,
+                    user_prompt=user_prompt,
+                    temperature=0.1,
+                )
+            except Exception as exc:
+                finish_generation_observation(
+                    langfuse_observation,
+                    metrics=generation_metrics,
+                    metadata={
+                        "experiment_label": experiment_label,
+                        "requested_top_k": int(top_k),
+                        "effective_top_k_by_topic": dict(
+                            effective_top_k_by_topic
+                        ),
+                    },
+                    error=str(exc),
+                )
+                raise
 
             generation_total_seconds = round(
                 time.perf_counter() - generation_start,
@@ -3180,6 +3330,46 @@ class EmailAssistantService:
             ),
         }
 
+        finish_generation_observation(
+            langfuse_observation,
+            output_text=draft,
+            metrics=generation_metrics,
+            metadata={
+                "experiment_mode": experiment_mode,
+                "experiment_label": experiment_label,
+                "requested_top_k": int(top_k),
+                "effective_top_k_by_topic": dict(
+                    effective_top_k_by_topic
+                ),
+                "evidence_char_limit": evidence_char_limit,
+                "dedupe_urls": experiment_dedupe_urls,
+                "final_source_count": len(final_documents),
+                "display_source_count": len(display_documents),
+                "retrieval_seconds": round(
+                    float(timing.get("retrieval", 0.0)),
+                    3,
+                ),
+                "validation_seconds": round(
+                    float(timing.get("validation", 0.0)),
+                    3,
+                ),
+                "failure_type": validation.get("failure_type"),
+                "review_reason": review_reason,
+            },
+            scores={
+                "grounded": bool(
+                    validation.get("is_grounded", False)
+                ),
+                "citations_valid": bool(
+                    validation.get("citations_valid", False)
+                ),
+                "hallucinations_detected": bool(
+                    validation.get("has_hallucinations", False)
+                ),
+                "quality_score": quality_score,
+            },
+        )
+
         # -------------------------------------------------------------
         # Thread-memory update
         # -------------------------------------------------------------
@@ -3292,6 +3482,17 @@ class EmailAssistantService:
             "timing": timing,
             "observability": {
                 "generation": generation_metrics,
+                "experiment": {
+                    "enabled": experiment_mode,
+                    "label": experiment_label,
+                    "requested_top_k": int(top_k),
+                    "effective_top_k_by_topic": dict(
+                        effective_top_k_by_topic
+                    ),
+                    "evidence_char_limit": evidence_char_limit,
+                    "dedupe_urls": experiment_dedupe_urls,
+                    "final_source_count": len(final_documents),
+                },
             },
             "automatic_send": False,
         }
