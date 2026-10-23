@@ -137,7 +137,7 @@ def _result_row(
     quality = response.get("quality", {}) or {}
     timing = response.get("timing", {}) or {}
 
-    return {
+    row = {
         "phase": phase,
         "variant": variant["label"],
         "repeat": repeat_index,
@@ -185,6 +185,25 @@ def _result_row(
             ]
         ),
     }
+
+    # Local-only review material. This is written to a separate JSON file
+    # and is never added to Langfuse metadata/content.
+    row["_review_detail"] = {
+        "staff_draft": str(response.get("staff_draft") or ""),
+        "sources": [
+            {
+                "title": str(source.get("title") or ""),
+                "url": str(
+                    source.get("source_url")
+                    or source.get("url")
+                    or ""
+                ),
+            }
+            for source in (response.get("sources", []) or [])
+        ],
+    }
+
+    return row
 
 
 async def _run_variant(
@@ -234,6 +253,18 @@ async def main() -> None:
         default="all",
     )
     parser.add_argument(
+        "--variant",
+        choices=[
+            variant["label"]
+            for variant in (K_SWEEP + PROMPT_VARIANTS)
+        ],
+        default=None,
+        help=(
+            "Optional single variant label. Useful for a one-call "
+            "human-review capture without running the whole phase."
+        ),
+    )
+    parser.add_argument(
         "--output-dir",
         default="evaluation_outputs/token_efficiency",
     )
@@ -253,6 +284,18 @@ async def main() -> None:
             ("prompt_variants", variant)
             for variant in PROMPT_VARIANTS
         )
+
+    if args.variant:
+        plan = [
+            (phase, variant)
+            for phase, variant in plan
+            if variant["label"] == args.variant
+        ]
+
+        if not plan:
+            raise SystemExit(
+                f"Variant {args.variant!r} is not part of phase {args.phase!r}."
+            )
 
     rows: List[Dict[str, Any]] = []
 
@@ -294,16 +337,47 @@ async def main() -> None:
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     json_path = output_dir / f"dual_citizen_token_study_{stamp}.json"
     csv_path = output_dir / f"dual_citizen_token_study_{stamp}.csv"
+    details_path = (
+        output_dir
+        / f"dual_citizen_token_study_{stamp}_review_details.json"
+    )
+
+    metrics_rows: List[Dict[str, Any]] = []
+    review_details: List[Dict[str, Any]] = []
+
+    for row in rows:
+        metrics_row = {
+            key: value
+            for key, value in row.items()
+            if key != "_review_detail"
+        }
+        metrics_rows.append(metrics_row)
+
+        review_detail = row.get("_review_detail")
+        if review_detail:
+            review_details.append(
+                {
+                    "phase": row.get("phase"),
+                    "variant": row.get("variant"),
+                    "repeat": row.get("repeat"),
+                    **dict(review_detail),
+                }
+            )
 
     json_path.write_text(
-        json.dumps(rows, indent=2, ensure_ascii=False),
+        json.dumps(metrics_rows, indent=2, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+    details_path.write_text(
+        json.dumps(review_details, indent=2, ensure_ascii=False),
         encoding="utf-8",
     )
 
     fieldnames = sorted(
         {
             key
-            for row in rows
+            for row in metrics_rows
             for key in row.keys()
         }
     )
@@ -318,13 +392,14 @@ async def main() -> None:
             fieldnames=fieldnames,
         )
         writer.writeheader()
-        writer.writerows(rows)
+        writer.writerows(metrics_rows)
 
     flush_langfuse()
 
     print()
-    print(f"JSON: {json_path}")
-    print(f"CSV:  {csv_path}")
+    print(f"JSON:    {json_path}")
+    print(f"CSV:     {csv_path}")
+    print(f"DETAILS: {details_path}")
 
 
 if __name__ == "__main__":
