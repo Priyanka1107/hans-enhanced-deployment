@@ -154,7 +154,7 @@ def _response_error_text(
 
         return str(payload)
 
-    except Exception:
+    except ValueError:
         return response.text[:500]
 
 
@@ -172,6 +172,20 @@ class HTWLiteLLMClient:
             "LITELLM_BASE_URL",
             "",
         ).rstrip("/")
+
+        configured_chat_url = os.getenv(
+            "LITELLM_CHAT_URL",
+            "",
+        ).strip()
+
+        self.chat_url = (
+            configured_chat_url
+            or (
+                f"{self.base_url}/chat/completions"
+                if self.base_url
+                else ""
+            )
+        )
 
         self.api_key = os.getenv(
             "LITELLM_API_KEY",
@@ -221,8 +235,10 @@ class HTWLiteLLMClient:
         """Fail early with a clear message when required settings are missing."""
         missing_settings = []
 
-        if not self.base_url:
-            missing_settings.append("LITELLM_BASE_URL")
+        if not self.chat_url:
+            missing_settings.append(
+                "LITELLM_CHAT_URL or LITELLM_BASE_URL"
+            )
 
         if not self.api_key:
             missing_settings.append("LITELLM_API_KEY")
@@ -240,10 +256,9 @@ class HTWLiteLLMClient:
         self,
         *,
         client: httpx.AsyncClient,
-        url: str,
         payload: Dict[str, Any],
         headers: Dict[str, str],
-    ) -> tuple[httpx.Response, float]:
+    ) -> httpx.Response:
         """
         Send one generation request with bounded retries for temporary failures.
 
@@ -265,7 +280,7 @@ class HTWLiteLLMClient:
 
             try:
                 response = await client.post(
-                    url,
+                    self.chat_url,
                     json=payload,
                     headers=headers,
                 )
@@ -304,7 +319,7 @@ class HTWLiteLLMClient:
                     self.model,
                 )
 
-                return response, elapsed
+                return response
 
             logger.warning(
                 "HTW LiteLLM returned retryable HTTP %s "
@@ -380,10 +395,6 @@ class HTWLiteLLMClient:
 
         self._validate_configuration()
 
-        url = (
-            f"{self.base_url}/chat/completions"
-        )
-
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
@@ -430,13 +441,10 @@ class HTWLiteLLMClient:
                 trust_env=self.trust_env,
                 follow_redirects=True,
             ) as client:
-                response, elapsed_seconds = (
-                    await self._post_with_retry(
-                        client=client,
-                        url=url,
-                        payload=payload,
-                        headers=headers,
-                    )
+                response = await self._post_with_retry(
+                    client=client,
+                    payload=payload,
+                    headers=headers,
                 )
 
         try:
@@ -503,12 +511,10 @@ class HTWLiteLLMClient:
             "completion_tokens": completion_tokens,
             "total_tokens": total_tokens,
 
-            # OpenAI-compatible usage does not expose the same native timing
-            # breakdown as the existing Ollama response.
-            "model_total_seconds": round(
-                elapsed_seconds,
-                3,
-            ),
+            # The OpenAI-compatible response does not expose Ollama-style
+            # native model timing. HANS records end-to-end generation time
+            # separately in the email service.
+            "model_total_seconds": None,
             "load_seconds": None,
             "prompt_eval_seconds": None,
             "completion_eval_seconds": None,
