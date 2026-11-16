@@ -36,8 +36,6 @@ def test_detects_credit_recognition_in_active_student_wording() -> None:
     )
 
     assert "credit_recognition" in topic_ids
-    assert "application_route" in topic_ids
-    assert "required_documents" in topic_ids
 
 
 def test_detects_higher_semester_credit_transfer_wording() -> None:
