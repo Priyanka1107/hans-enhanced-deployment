@@ -9,8 +9,13 @@ import psycopg
 from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from starlette.concurrency import run_in_threadpool
 
 from app.email.service import EmailAssistantService
+from app.mailbox.factory import (
+    build_mailbox_client,
+    mailbox_enabled,
+)
 from app.runtime.generation import (
     selected_generation_model,
     selected_generation_provider,
@@ -189,6 +194,86 @@ async def health() -> Dict[str, Any]:
             else "unavailable"
         ),
         "automatic_send": False,
+    }
+
+
+@app.get(
+    "/mailbox/status",
+    dependencies=[Depends(verify_internal_api_key)],
+)
+async def mailbox_status() -> Dict[str, Any]:
+    """Report whether read-only mailbox integration is enabled."""
+    return {
+        "enabled": mailbox_enabled(),
+        "automatic_send": False,
+        "read_only": True,
+    }
+
+
+@app.get(
+    "/mailbox/messages",
+    dependencies=[Depends(verify_internal_api_key)],
+)
+async def mailbox_messages(
+    limit: int = 20,
+    unread_only: bool = True,
+) -> Dict[str, Any]:
+    """
+    Return normalized incoming mailbox messages for the staff UI.
+
+    Mailbox access is read-only. Fetching messages does not call the HANS
+    generation pipeline and therefore consumes no model tokens.
+    """
+    if not mailbox_enabled():
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "Mailbox integration is disabled. "
+                "Set HANS_MAILBOX_ENABLED=true to enable it."
+            ),
+        )
+
+    if limit < 1 or limit > 100:
+        raise HTTPException(
+            status_code=400,
+            detail="Mailbox message limit must be between 1 and 100.",
+        )
+
+    try:
+        client = build_mailbox_client()
+
+        messages = await run_in_threadpool(
+            client.list_messages,
+            limit=limit,
+            unread_only=unread_only,
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail=str(exc),
+        ) from exc
+    except Exception as exc:
+        logger.exception(
+            "Mailbox message retrieval failed"
+        )
+
+        raise HTTPException(
+            status_code=502,
+            detail=(
+                "HANS could not read the configured mailbox. "
+                "Check mailbox configuration and connectivity."
+            ),
+        ) from exc
+
+    return {
+        "count": len(messages),
+        "unread_only": unread_only,
+        "messages": [
+            message.to_dict()
+            for message in messages
+        ],
+        "automatic_send": False,
+        "read_only": True,
     }
 
 
