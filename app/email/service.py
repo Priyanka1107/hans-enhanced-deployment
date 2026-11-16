@@ -10,6 +10,10 @@ from urllib.parse import urlparse
 import psycopg
 
 from app.email.disclaimer import append_disclaimer_to_draft
+from app.email.review_flags import (
+    build_manual_verification_reasons,
+)
+from app.email.scope_router import classify_email_scope
 from app.email.deadline_temporal import (
     determine_application_timeline,
 )
@@ -2252,6 +2256,89 @@ class EmailAssistantService:
             subject=subject,
         )
 
+        # -------------------------------------------------------------
+        # Scope routing
+        # -------------------------------------------------------------
+        # Classify clearly unsupported messages before retrieval or model
+        # generation. The router is deliberately conservative: uncertain
+        # messages go to staff review instead of being silently discarded.
+        scope_start = time.perf_counter()
+
+        scope_decision = classify_email_scope(
+            subject=subject or "",
+            email_text=email_text,
+        )
+
+        timing["scope_routing"] = (
+            time.perf_counter() - scope_start
+        )
+
+        if scope_decision.route != "HANS":
+            timing["total"] = (
+                time.perf_counter() - overall_start
+            )
+
+            if scope_decision.route == "SKIP":
+                staff_message = (
+                    "No HANS draft was generated because this enquiry "
+                    "appears outside the currently supported HANS "
+                    "Student Services scope. Please route the message "
+                    "to the appropriate service."
+                )
+                failure_type = "out_of_scope"
+                quality_label = "skipped"
+            else:
+                staff_message = (
+                    "No HANS draft was generated because this enquiry "
+                    "could not be confidently classified within the "
+                    "supported HANS Student Services scope. Please "
+                    "review and route it manually."
+                )
+                failure_type = "scope_review_required"
+                quality_label = "review"
+
+            scope_context = {
+                "scope_route": scope_decision.route,
+                "scope_reason": scope_decision.reason,
+                "original_subject": subject or "",
+                "student_email": student_email or "",
+                "requested_language": language or "",
+            }
+
+            return {
+                "is_followup": False,
+                "followup_type": "new_enquiry",
+                "flagged_for_human": True,
+                "thread_id": thread_key,
+                "email_id": email_id,
+                "email_context": scope_context,
+                "detected_topics": [],
+                "staff_draft": staff_message,
+                "citations": [],
+                "sources": [],
+                "validation": {
+                    "is_grounded": False,
+                    "citations_valid": False,
+                    "has_hallucinations": False,
+                    "confidence": 0.0,
+                    "failure_type": failure_type,
+                },
+                "quality": {
+                    "quality_score": 0,
+                    "quality_label": quality_label,
+                    "review_required": True,
+                    "review_reason": scope_decision.reason,
+                    "citation_count": 0,
+                    "citations": [],
+                },
+                "conflicts": [],
+                "timing": timing,
+                "observability": {
+                    "generation": {},
+                },
+                "automatic_send": False,
+            }
+
         previous_context = (
             load_thread_context(thread_key)
             if settings.thread_memory_enabled
@@ -2524,6 +2611,13 @@ class EmailAssistantService:
             email_context["programme_status"] = "not_provided"
             email_context["programme_mentioned"] = None
 
+        manual_verification_reasons = (
+            build_manual_verification_reasons(
+                email_text=email_text,
+                email_context=email_context,
+            )
+        )
+
         topics = detect_topics(
             email_text,
             email_context,
@@ -2568,13 +2662,22 @@ class EmailAssistantService:
                 safe_topic["source_count"] = 0
                 safe_topics.append(safe_topic)
 
+            unknown_review_reasons = [
+                (
+                    "Programme named by the student was not "
+                    "confirmed in the HTW programme catalogue"
+                ),
+                *manual_verification_reasons,
+            ]
+
             quality = {
                 "quality_score": 75,
                 "quality_label": "review",
                 "review_required": True,
-                "review_reason": (
-                    "Programme named by the student was not "
-                    "confirmed in the HTW programme catalogue"
+                "review_reason": "; ".join(
+                    dict.fromkeys(
+                        unknown_review_reasons
+                    )
                 ),
                 "citation_count": 0,
                 "citations": [],
@@ -3142,6 +3245,10 @@ class EmailAssistantService:
                 "All HANS drafts require staff review "
                 "before sending"
             )
+
+        review_reasons.extend(
+            manual_verification_reasons
+        )
 
         # Remove duplicate review reasons while preserving order.
         review_reason = "; ".join(
