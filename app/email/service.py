@@ -1425,10 +1425,9 @@ def _find_topic_coverage_issues(
     """
     Check whether selected detected topics received a direct answer.
 
-    Parity 3C-1 intentionally restores only study-format coverage.
-    The requested study-format dimension is taken from the student's
-    original email so that, for example, "full-time" does not count
-    as answering a specific "online or on-campus?" question.
+    The checks are intentionally narrow and deterministic. They verify that
+    a detected high-value topic is either answered directly or explicitly
+    left unresolved when the available official evidence is insufficient.
     """
     answer = str(draft or "")
 
@@ -1453,9 +1452,6 @@ def _find_topic_coverage_issues(
 
     issues: List[str] = []
 
-    if "study_format" not in topic_ids:
-        return issues
-
     uncertainty_phrases = (
         "could not be confirmed",
         "cannot be confirmed",
@@ -1465,108 +1461,154 @@ def _find_topic_coverage_issues(
         "not stated in the available sources",
         "available official sources do not confirm",
         "available evidence is not sufficient",
+        "could not confirm",
+        "cannot confirm",
+        "not confirmed",
+        "official application review determines",
     )
 
-    asks_delivery_mode = bool(
-        re.search(
-            r"\bon[- ]campus\b"
-            r"|\bon campus\b"
-            r"|\bonline\b"
-            r"|\bhybrid\b"
-            r"|\bdistance learning\b",
-            question,
-            flags=re.IGNORECASE,
-        )
-    )
-
-    asks_time_mode = bool(
-        re.search(
-            r"\bfull[- ]time\b"
-            r"|\bpart[- ]time\b",
-            question,
-            flags=re.IGNORECASE,
-        )
-    )
-
-    delivery_mode_answer = bool(
-        re.search(
-            r"\b(?:programme|program|course|study programme)\b"
-            r"[^.!?\n]{0,120}"
-            r"\b(?:is|offered|delivered|held)\b"
-            r"[^.!?\n]{0,80}"
-            r"\b(?:on[- ]campus|online|hybrid|distance learning)\b",
-            answer,
-            flags=re.IGNORECASE,
-        )
-        or re.search(
-            r"\b(?:on[- ]campus|online|hybrid|distance learning)\b"
-            r"\s+(?:programme|program|format|study)\b",
-            answer,
-            flags=re.IGNORECASE,
-        )
-    )
-
-    time_mode_answer = bool(
-        re.search(
-            r"\b(?:programme|program|course|study programme)\b"
-            r"[^.!?\n]{0,120}"
-            r"\b(?:is|offered)\b"
-            r"[^.!?\n]{0,60}"
-            r"\b(?:full[- ]time|part[- ]time)\b",
-            answer,
-            flags=re.IGNORECASE,
-        )
-        or re.search(
-            r"\b(?:full[- ]time|part[- ]time)\b"
-            r"\s+(?:programme|program|format|study)\b",
-            answer,
-            flags=re.IGNORECASE,
-        )
-    )
-
-    uncertainty_answer = (
-        any(
-            phrase in answer
-            for phrase in uncertainty_phrases
-        )
-        and bool(
+    if "study_format" in topic_ids:
+        asks_delivery_mode = bool(
             re.search(
                 r"\bon[- ]campus\b"
                 r"|\bon campus\b"
                 r"|\bonline\b"
                 r"|\bhybrid\b"
-                r"|\bdistance learning\b"
-                r"|\bfull[- ]time\b"
-                r"|\bpart[- ]time\b"
-                r"|\bstudy format\b",
+                r"|\bdistance learning\b",
+                question,
+                flags=re.IGNORECASE,
+            )
+        )
+
+        asks_time_mode = bool(
+            re.search(
+                r"\bfull[- ]time\b"
+                r"|\bpart[- ]time\b",
+                question,
+                flags=re.IGNORECASE,
+            )
+        )
+
+        delivery_mode_answer = bool(
+            re.search(
+                r"\b(?:programme|program|course|study programme)\b"
+                r"[^.!?\n]{0,120}"
+                r"\b(?:is|offered|delivered|held)\b"
+                r"[^.!?\n]{0,80}"
+                r"\b(?:on[- ]campus|online|hybrid|distance learning)\b",
+                answer,
+                flags=re.IGNORECASE,
+            )
+            or re.search(
+                r"\b(?:on[- ]campus|online|hybrid|distance learning)\b"
+                r"\s+(?:programme|program|format|study)\b",
                 answer,
                 flags=re.IGNORECASE,
             )
         )
-    )
 
-    answered = False
-
-    if uncertainty_answer:
-        answered = True
-    elif asks_delivery_mode:
-        answered = delivery_mode_answer
-    elif asks_time_mode:
-        answered = time_mode_answer
-    else:
-        # General study-format question: either recognised dimension
-        # is a substantive answer.
-        answered = (
-            delivery_mode_answer
-            or time_mode_answer
+        time_mode_answer = bool(
+            re.search(
+                r"\b(?:programme|program|course|study programme)\b"
+                r"[^.!?\n]{0,120}"
+                r"\b(?:is|offered)\b"
+                r"[^.!?\n]{0,60}"
+                r"\b(?:full[- ]time|part[- ]time)\b",
+                answer,
+                flags=re.IGNORECASE,
+            )
+            or re.search(
+                r"\b(?:full[- ]time|part[- ]time)\b"
+                r"\s+(?:programme|program|format|study)\b",
+                answer,
+                flags=re.IGNORECASE,
+            )
         )
 
-    if not answered:
-        issues.append(
-            "topic_not_answered: study_format was detected "
-            "but the requested study-format dimension "
-            "was not directly answered"
+        uncertainty_answer = (
+            any(
+                phrase in answer
+                for phrase in uncertainty_phrases
+            )
+            and bool(
+                re.search(
+                    r"\bon[- ]campus\b"
+                    r"|\bon campus\b"
+                    r"|\bonline\b"
+                    r"|\bhybrid\b"
+                    r"|\bdistance learning\b"
+                    r"|\bfull[- ]time\b"
+                    r"|\bpart[- ]time\b"
+                    r"|\bstudy format\b",
+                    answer,
+                    flags=re.IGNORECASE,
+                )
+            )
         )
+
+        answered = False
+
+        if uncertainty_answer:
+            answered = True
+        elif asks_delivery_mode:
+            answered = delivery_mode_answer
+        elif asks_time_mode:
+            answered = time_mode_answer
+        else:
+            answered = (
+                delivery_mode_answer
+                or time_mode_answer
+            )
+
+        if not answered:
+            issues.append(
+                "topic_not_answered: study_format was detected "
+                "but the requested study-format dimension "
+                "was not directly answered"
+            )
+
+    if "credit_recognition" in topic_ids:
+        credit_answer = bool(
+            re.search(
+                r"\b(?:credit|credits|module|modules)\b"
+                r"[^.!?\n]{0,180}"
+                r"\b(?:recognis|recogniz|accredit|transfer|assess|evaluat)"
+                r"[a-z]*\b",
+                answer,
+                flags=re.IGNORECASE,
+            )
+            or re.search(
+                r"\b(?:recognis|recogniz|accredit|transfer|assess|evaluat)"
+                r"[a-z]*\b"
+                r"[^.!?\n]{0,180}"
+                r"\b(?:credit|credits|module|modules)\b",
+                answer,
+                flags=re.IGNORECASE,
+            )
+        )
+
+        credit_uncertainty_answer = (
+            any(
+                phrase in answer
+                for phrase in uncertainty_phrases
+            )
+            and bool(
+                re.search(
+                    r"\b(?:credit|credits|module|modules|higher semester)\b",
+                    answer,
+                    flags=re.IGNORECASE,
+                )
+            )
+        )
+
+        if not (
+            credit_answer
+            or credit_uncertainty_answer
+        ):
+            issues.append(
+                "topic_not_answered: credit_recognition was detected "
+                "but credit transfer/recognition was not directly answered"
+            )
 
     return issues
 
