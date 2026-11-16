@@ -2256,89 +2256,6 @@ class EmailAssistantService:
             subject=subject,
         )
 
-        # -------------------------------------------------------------
-        # Scope routing
-        # -------------------------------------------------------------
-        # Classify clearly unsupported messages before retrieval or model
-        # generation. The router is deliberately conservative: uncertain
-        # messages go to staff review instead of being silently discarded.
-        scope_start = time.perf_counter()
-
-        scope_decision = classify_email_scope(
-            subject=subject or "",
-            email_text=email_text,
-        )
-
-        timing["scope_routing"] = (
-            time.perf_counter() - scope_start
-        )
-
-        if scope_decision.route != "HANS":
-            timing["total"] = (
-                time.perf_counter() - overall_start
-            )
-
-            if scope_decision.route == "SKIP":
-                staff_message = (
-                    "No HANS draft was generated because this enquiry "
-                    "appears outside the currently supported HANS "
-                    "Student Services scope. Please route the message "
-                    "to the appropriate service."
-                )
-                failure_type = "out_of_scope"
-                quality_label = "skipped"
-            else:
-                staff_message = (
-                    "No HANS draft was generated because this enquiry "
-                    "could not be confidently classified within the "
-                    "supported HANS Student Services scope. Please "
-                    "review and route it manually."
-                )
-                failure_type = "scope_review_required"
-                quality_label = "review"
-
-            scope_context = {
-                "scope_route": scope_decision.route,
-                "scope_reason": scope_decision.reason,
-                "original_subject": subject or "",
-                "student_email": student_email or "",
-                "requested_language": language or "",
-            }
-
-            return {
-                "is_followup": False,
-                "followup_type": "new_enquiry",
-                "flagged_for_human": True,
-                "thread_id": thread_key,
-                "email_id": email_id,
-                "email_context": scope_context,
-                "detected_topics": [],
-                "staff_draft": staff_message,
-                "citations": [],
-                "sources": [],
-                "validation": {
-                    "is_grounded": False,
-                    "citations_valid": False,
-                    "has_hallucinations": False,
-                    "confidence": 0.0,
-                    "failure_type": failure_type,
-                },
-                "quality": {
-                    "quality_score": 0,
-                    "quality_label": quality_label,
-                    "review_required": True,
-                    "review_reason": scope_decision.reason,
-                    "citation_count": 0,
-                    "citations": [],
-                },
-                "conflicts": [],
-                "timing": timing,
-                "observability": {
-                    "generation": {},
-                },
-                "automatic_send": False,
-            }
-
         previous_context = (
             load_thread_context(thread_key)
             if settings.thread_memory_enabled
@@ -2403,6 +2320,101 @@ class EmailAssistantService:
                 },
                 "conflicts": [],
                 "timing": timing,
+                "automatic_send": False,
+            }
+
+        # -------------------------------------------------------------
+        # Scope routing
+        # -------------------------------------------------------------
+        # Classify clearly unsupported messages before retrieval or model
+        # generation. The router is deliberately conservative: uncertain
+        # messages go to staff review instead of being silently discarded.
+        scope_start = time.perf_counter()
+
+        scope_decision = classify_email_scope(
+            subject=subject or "",
+            email_text=email_text,
+        )
+
+        timing["scope_routing"] = (
+            time.perf_counter() - scope_start
+        )
+
+        # Supported follow-ups may be short and rely on prior thread context.
+        # Preserve the existing follow-up workflow instead of requiring every
+        # follow-up message to repeat an admissions keyword.
+        effective_scope_route = scope_decision.route
+
+        if (
+            followup_type != "new_enquiry"
+            and previous_context
+            and scope_decision.route == "REVIEW"
+        ):
+            effective_scope_route = "HANS"
+
+        if effective_scope_route != "HANS":
+            timing["total"] = (
+                time.perf_counter() - overall_start
+            )
+
+            if effective_scope_route == "SKIP":
+                staff_message = (
+                    "No HANS draft was generated because this enquiry "
+                    "appears outside the currently supported HANS "
+                    "Student Services scope. Please route the message "
+                    "to the appropriate service."
+                )
+                failure_type = "out_of_scope"
+                quality_label = "skipped"
+            else:
+                staff_message = (
+                    "No HANS draft was generated because this enquiry "
+                    "could not be confidently classified within the "
+                    "supported HANS Student Services scope. Please "
+                    "review and route it manually."
+                )
+                failure_type = "scope_review_required"
+                quality_label = "review"
+
+            scope_context = {
+                "scope_route": effective_scope_route,
+                "scope_reason": scope_decision.reason,
+                "original_subject": subject or "",
+                "student_email": student_email or "",
+                "requested_language": language or "",
+            }
+
+            return {
+                "is_followup": False,
+                "followup_type": "new_enquiry",
+                "flagged_for_human": True,
+                "thread_id": thread_key,
+                "email_id": email_id,
+                "email_context": scope_context,
+                "detected_topics": [],
+                "staff_draft": staff_message,
+                "citations": [],
+                "sources": [],
+                "validation": {
+                    "is_grounded": False,
+                    "citations_valid": False,
+                    "has_hallucinations": False,
+                    "confidence": 0.0,
+                    "failure_type": failure_type,
+                },
+                "quality": {
+                    "quality_score": 0,
+                    "quality_label": quality_label,
+                    "review_required": True,
+                    "review_reason": scope_decision.reason,
+                    "citation_count": 0,
+                    "citations": [],
+                },
+                "conflicts": [],
+                "timing": timing,
+                "observability": {
+                    "generation": {},
+                },
                 "automatic_send": False,
             }
 
