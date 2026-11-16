@@ -530,7 +530,7 @@ def main() -> None:
 
         self.details_text.insert(
             "1.0",
-            "\n".join(details),
+            "\\n".join(details),
         )
 
         self.last_result = None
