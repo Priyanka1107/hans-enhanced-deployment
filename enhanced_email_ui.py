@@ -104,7 +104,7 @@ class EnhancedHANSEmailUI:
     def __init__(self, root: tk.Tk) -> None:
         self.root = root
         self.root.title(
-            "HANS Enhanced Email Assistant"
+            "HANS Email Assistant"
         )
         self.root.geometry("1450x900")
         self.root.minsize(1000, 720)
@@ -137,10 +137,7 @@ class EnhancedHANSEmailUI:
 
         title = ttk.Label(
             main,
-            text=(
-                "HANS Enhanced Email Assistant "
-                "(Draft Only)"
-            ),
+            text="HANS Email Assistant",
             font=("Segoe UI", 16, "bold"),
         )
         title.pack(
@@ -684,8 +681,8 @@ class EnhancedHANSEmailUI:
 
         self.footer_var = tk.StringVar(
             value=(
-                "Draft-only workflow: "
-                "automatic sending is disabled."
+                "Staff review required before sending. "
+                "Automatic sending is disabled."
             )
         )
 
