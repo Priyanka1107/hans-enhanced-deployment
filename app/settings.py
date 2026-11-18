@@ -85,6 +85,18 @@ class Settings:
         os.getenv("RETRIEVAL_TOP_K_PER_TOPIC", "6")
     )
 
+    retrieval_standard_top_k: int = int(
+        os.getenv("HANS_RETRIEVAL_STANDARD_TOP_K", "5")
+    )
+
+    retrieval_high_risk_top_k: int = int(
+        os.getenv("HANS_RETRIEVAL_HIGH_RISK_TOP_K", "8")
+    )
+
+    evidence_chars_per_document: int = int(
+        os.getenv("HANS_EVIDENCE_CHARS_PER_DOC", "1800")
+    )
+
     final_source_limit: int = int(
         os.getenv("FINAL_SOURCE_LIMIT", "8")
     )
