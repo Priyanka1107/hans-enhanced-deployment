@@ -155,7 +155,7 @@ class EnhancedHANSEmailUI:
             foreground="#24495F",
         )
         title.pack(
-            anchor=tk.W,
+            anchor=tk.CENTER,
             pady=(0, 4),
         )
 
