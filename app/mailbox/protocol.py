@@ -15,3 +15,11 @@ class MailboxClient(Protocol):
         unread_only: bool = True,
     ) -> list[MailboxMessage]:
         ...
+
+    def get_attachment(
+        self,
+        *,
+        email_id: str,
+        attachment_index: int,
+    ) -> tuple[bytes, str, str]:
+        ...
