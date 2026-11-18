@@ -135,24 +135,55 @@ class EnhancedHANSEmailUI:
             expand=True,
         )
 
+        # Restrained visual hierarchy for the staff-facing UI.
+        ui_style = ttk.Style()
+        ui_style.configure(
+            "Section.TLabelframe.Label",
+            font=("Segoe UI", 11, "bold"),
+            foreground="#315F7D",
+        )
+        ui_style.configure(
+            "Backend.TLabel",
+            font=("Segoe UI", 9),
+            foreground="#5B6570",
+        )
+
         title = ttk.Label(
             main,
             text="HANS Email Assistant",
             font=("Segoe UI", 16, "bold"),
+            foreground="#24495F",
         )
         title.pack(
             anchor=tk.W,
             pady=(0, 8),
         )
 
-        # API health is still checked in the background, but development/API
-        # controls are intentionally not shown in the staff-facing UI.
+        # Compact operational status: useful for staff without exposing
+        # development controls such as Test API or evaluation toggles.
+        status_row = ttk.Frame(main)
+        status_row.pack(
+            fill=tk.X,
+            pady=(0, 8),
+        )
+
+        ttk.Label(
+            status_row,
+            text=f"Backend: {API_BASE}",
+            style="Backend.TLabel",
+        ).pack(side=tk.LEFT)
+
         self.status_var = tk.StringVar(
             value="Checking..."
         )
         self.status_label = ttk.Label(
-            main,
+            status_row,
             textvariable=self.status_var,
+            style="Backend.TLabel",
+        )
+        self.status_label.pack(
+            side=tk.LEFT,
+            padx=(14, 0),
         )
 
         # Main vertical workspace. Each child pane can be resized by
@@ -173,6 +204,7 @@ class EnhancedHANSEmailUI:
             self.main_pane,
             text="Incoming mailbox",
             padding=8,
+            style="Section.TLabelframe",
         )
         self.main_pane.add(
             mailbox_frame,
@@ -260,6 +292,7 @@ class EnhancedHANSEmailUI:
         self.mailbox_tree.heading(
             "attachments",
             text="Attachments",
+            anchor=tk.CENTER,
         )
 
         self.mailbox_tree.column(
@@ -280,7 +313,7 @@ class EnhancedHANSEmailUI:
         self.mailbox_tree.column(
             "attachments",
             width=180,
-            anchor=tk.W,
+            anchor=tk.CENTER,
         )
 
         mailbox_scrollbar = ttk.Scrollbar(
@@ -363,6 +396,7 @@ class EnhancedHANSEmailUI:
             self.main_pane,
             text="Incoming email metadata",
             padding=8,
+            style="Section.TLabelframe",
         )
         self.main_pane.add(
             metadata_frame,
@@ -434,6 +468,7 @@ class EnhancedHANSEmailUI:
             input_section,
             text="Incoming student email",
             padding=8,
+            style="Section.TLabelframe",
         )
         email_frame.pack(
             fill=tk.BOTH,
@@ -545,12 +580,14 @@ class EnhancedHANSEmailUI:
             output_pane,
             text="Staff draft",
             padding=8,
+            style="Section.TLabelframe",
         )
 
         details_frame = ttk.LabelFrame(
             output_pane,
             text="Validation, quality and sources",
             padding=8,
+            style="Section.TLabelframe",
         )
 
         output_pane.add(
@@ -761,11 +798,9 @@ class EnhancedHANSEmailUI:
             data = response.json()
 
             message = (
-                "Online"
-                f" | database={data.get('database')}"
-                f" | provider={data.get('generation_provider')}"
-                f" | model={data.get('generation_model')}"
-                f" | automatic_send={data.get('automatic_send')}"
+                "Status: Online"
+                f" | DB: {data.get('database')}"
+                f" | Model: {data.get('generation_model')}"
             )
 
             self.root.after(
