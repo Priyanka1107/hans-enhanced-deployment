@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Optional
 
 import psycopg
 from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi.responses import Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from starlette.concurrency import run_in_threadpool
@@ -287,6 +288,79 @@ async def mailbox_messages(
         "automatic_send": False,
         "read_only": True,
     }
+
+
+@app.get(
+    "/mailbox/messages/{email_id}/attachments/{attachment_index}",
+    dependencies=[Depends(verify_internal_api_key)],
+)
+async def mailbox_attachment(
+    email_id: str,
+    attachment_index: int,
+) -> Response:
+    """Return one mailbox attachment for explicit staff viewing only."""
+    if not mailbox_enabled():
+        raise HTTPException(
+            status_code=503,
+            detail="Mailbox integration is disabled.",
+        )
+
+    if attachment_index < 0:
+        raise HTTPException(
+            status_code=400,
+            detail="attachment_index must be zero or greater.",
+        )
+
+    try:
+        client = build_mailbox_client()
+        content, filename, content_type = await run_in_threadpool(
+            client.get_attachment,
+            email_id=email_id,
+            attachment_index=attachment_index,
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=400,
+            detail=str(exc),
+        ) from exc
+    except IndexError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=str(exc),
+        ) from exc
+    except Exception as exc:
+        logger.exception(
+            "Mailbox attachment retrieval failed"
+        )
+        raise HTTPException(
+            status_code=502,
+            detail=(
+                "HANS could not retrieve the requested attachment "
+                "from the configured mailbox."
+            ),
+        ) from exc
+
+    safe_filename = filename.replace(
+        "\r",
+        " ",
+    ).replace(
+        "\n",
+        " ",
+    ).replace(
+        '"',
+        "",
+    )
+
+    return Response(
+        content=content,
+        media_type=content_type,
+        headers={
+            "Content-Disposition": (
+                f'inline; filename="{safe_filename}"'
+            ),
+            "X-HANS-Attachment-Filename": safe_filename,
+        },
+    )
 
 
 @app.post(
