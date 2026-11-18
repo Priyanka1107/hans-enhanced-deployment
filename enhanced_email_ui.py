@@ -156,34 +156,34 @@ class EnhancedHANSEmailUI:
         )
         title.pack(
             anchor=tk.W,
-            pady=(0, 8),
+            pady=(0, 4),
         )
 
-        # Compact operational status: useful for staff without exposing
-        # development controls such as Test API or evaluation toggles.
+        # Compact operational status aligned to the top-right.
         status_row = ttk.Frame(main)
         status_row.pack(
             fill=tk.X,
-            pady=(0, 8),
+            pady=(0, 4),
         )
-
-        ttk.Label(
-            status_row,
-            text=f"Backend: {API_BASE}",
-            style="Backend.TLabel",
-        ).pack(side=tk.LEFT)
 
         self.status_var = tk.StringVar(
             value="Checking..."
         )
+
+        ttk.Label(
+            status_row,
+            text=API_BASE,
+            style="Backend.TLabel",
+        ).pack(side=tk.RIGHT)
+
         self.status_label = ttk.Label(
             status_row,
             textvariable=self.status_var,
             style="Backend.TLabel",
         )
         self.status_label.pack(
-            side=tk.LEFT,
-            padx=(14, 0),
+            side=tk.RIGHT,
+            padx=(0, 12),
         )
 
         # Main vertical workspace. Each child pane can be resized by
@@ -195,7 +195,7 @@ class EnhancedHANSEmailUI:
         self.main_pane.pack(
             fill=tk.BOTH,
             expand=True,
-            pady=(0, 8),
+            pady=(0, 4),
         )
 
         # HANS_RESIZABLE_LAYOUT_V1
@@ -203,7 +203,7 @@ class EnhancedHANSEmailUI:
         mailbox_frame = ttk.LabelFrame(
             self.main_pane,
             text="Incoming mailbox",
-            padding=8,
+            padding=6,
             style="Section.TLabelframe",
         )
         self.main_pane.add(
@@ -395,7 +395,7 @@ class EnhancedHANSEmailUI:
         metadata_frame = ttk.LabelFrame(
             self.main_pane,
             text="Incoming email metadata",
-            padding=8,
+            padding=6,
             style="Section.TLabelframe",
         )
         self.main_pane.add(
@@ -467,7 +467,7 @@ class EnhancedHANSEmailUI:
         email_frame = ttk.LabelFrame(
             input_section,
             text="Incoming student email",
-            padding=8,
+            padding=6,
             style="Section.TLabelframe",
         )
         email_frame.pack(
@@ -579,14 +579,14 @@ class EnhancedHANSEmailUI:
         draft_frame = ttk.LabelFrame(
             output_pane,
             text="Staff draft",
-            padding=8,
+            padding=6,
             style="Section.TLabelframe",
         )
 
         details_frame = ttk.LabelFrame(
             output_pane,
             text="Validation, quality and sources",
-            padding=8,
+            padding=6,
             style="Section.TLabelframe",
         )
 
@@ -797,11 +797,7 @@ class EnhancedHANSEmailUI:
             response.raise_for_status()
             data = response.json()
 
-            message = (
-                "Status: Online"
-                f" | DB: {data.get('database')}"
-                f" | Model: {data.get('generation_model')}"
-            )
+            message = "Online"
 
             self.root.after(
                 0,
