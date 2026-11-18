@@ -340,6 +340,14 @@ async def mailbox_attachment(
             ),
         ) from exc
 
+    if len(content) > 25 * 1024 * 1024:
+        raise HTTPException(
+            status_code=413,
+            detail=(
+                "Attachment is larger than the 25 MB viewing limit."
+            ),
+        )
+
     safe_filename = filename.replace(
         "\r",
         " ",
