@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
 import pytest
@@ -15,7 +16,11 @@ def run(coro):
 
 
 def test_api_key_rejects_request_when_server_key_is_not_configured(monkeypatch):
-    monkeypatch.setattr(api.settings, "api_key", "")
+    monkeypatch.setattr(
+        api,
+        "settings",
+        SimpleNamespace(api_key=""),
+    )
 
     with pytest.raises(HTTPException) as exc:
         run(api.verify_internal_api_key("anything"))
@@ -24,7 +29,11 @@ def test_api_key_rejects_request_when_server_key_is_not_configured(monkeypatch):
 
 
 def test_api_key_rejects_wrong_key(monkeypatch):
-    monkeypatch.setattr(api.settings, "api_key", "correct-key")
+    monkeypatch.setattr(
+        api,
+        "settings",
+        SimpleNamespace(api_key="correct-key"),
+    )
 
     with pytest.raises(HTTPException) as exc:
         run(api.verify_internal_api_key("wrong-key"))
@@ -33,7 +42,11 @@ def test_api_key_rejects_wrong_key(monkeypatch):
 
 
 def test_api_key_accepts_matching_key(monkeypatch):
-    monkeypatch.setattr(api.settings, "api_key", "correct-key")
+    monkeypatch.setattr(
+        api,
+        "settings",
+        SimpleNamespace(api_key="correct-key"),
+    )
 
     assert run(api.verify_internal_api_key("correct-key")) is None
 
