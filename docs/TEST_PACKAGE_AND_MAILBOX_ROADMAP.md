@@ -46,46 +46,42 @@ The package intentionally excludes:
 
 The PostgreSQL/pgvector database is not embedded in the ZIP and must be provided/configured separately.
 
-## 4. Mail write strategy
+## 4. Mail write implementation
 
-Do not jump directly from read-only mailbox access to automatic sending.
+The mailbox write capability is implemented on the development branch
+`feature/2026-11-mailbox-drafts`.
 
-Recommended rollout:
+Current staff workflow:
 
-### Phase A — Save draft to mailbox
+1. Staff loads an incoming email.
+2. HANS generates a proposed response.
+3. Staff edits the response in the UI.
+4. Staff may choose **Save to mailbox drafts**.
+5. Staff may choose **Send email** only when sending is explicitly enabled.
+6. Direct sending always displays a confirmation dialog before the API call.
 
-Staff loads an incoming email, HANS generates a proposed response, staff edits it in the UI, then clicks **Save to mailbox drafts**.
+Configuration gates:
 
-No email is sent automatically.
+- `HANS_MAILBOX_WRITE_ENABLED=false` by default
+- `HANS_MAILBOX_SEND_ENABLED=false` by default
+- `automatic_send` remains false
 
-Provider interface:
+The current controlled Gmail test implementation uses:
 
-- MailboxReader
-- DraftWriter
+- IMAP for reading
+- IMAP APPEND with the Draft flag for saving drafts
+- SMTP for explicit sending
 
-For Microsoft 365/Outlook production, implement DraftWriter with Microsoft Graph.
+The provider-facing design separates read and write responsibilities so a
+Microsoft Graph implementation can replace IMAP/SMTP for production without
+changing the HANS RAG/generation pipeline.
 
-For Gmail testing, implement DraftWriter with the Gmail API where practical.
+Before production deployment, add/verify:
 
-### Phase B — Explicit send
-
-After draft-saving is stable and audited, optionally add a **Send email** button.
-
-Requirements:
-
-- explicit staff click
-- confirmation dialog
-- exact sender/recipient/subject/body preview
-- no background or automatic sending
-- idempotency protection against duplicate sends
-- audit record of message ID, staff action, timestamp and provider response
-- clear error handling
-
-Provider interface then becomes:
-
-- MailboxReader
-- DraftWriter
-- MailSender
+- duplicate-send/idempotency protection
+- persistent audit logging of staff send actions
+- organization-approved identity and permissions
+- Microsoft Graph implementation for HTW Microsoft 365 if selected
 
 ## 5. Microsoft Outlook / production
 
