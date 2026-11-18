@@ -57,3 +57,14 @@ def test_routes_required_documents_question_to_hans() -> None:
     )
 
     assert decision.route == "HANS"
+
+
+def test_routes_higher_semester_credit_recognition_to_hans() -> None:
+    decision = classify_email_scope(
+        email_text=(
+            "Can my completed modules be recognised so that I can "
+            "enter a higher semester?"
+        ),
+    )
+
+    assert decision.route == "HANS"

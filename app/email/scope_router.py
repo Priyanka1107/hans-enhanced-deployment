@@ -29,6 +29,9 @@ _HANS_PATTERNS = (
     r"\bmaster(?:'s)?\b",
     r"\bcredit\s+(?:transfer|recognition)\b",
     r"\btransfer\s+(?:student|credits?)\b",
+    r"\bhigher\s+semester\b",
+    r"\b(?:credits?|modules?|ects)\b.{0,40}\b"
+    r"(?:recognis(?:e|ed|ing)|recogniz(?:e|ed|ing))\b",
     r"\bqualification\s+recognition\b",
     r"\blanguage\s+(?:requirement|proof|certificate)\b",
     r"\bproof\s+of\s+english\b",
