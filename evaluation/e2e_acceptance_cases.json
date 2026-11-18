@@ -1,0 +1,116 @@
+{
+  "description": "Live HANS end-to-end acceptance cases. These call the real API and are intended for staff review of draft quality, indicators, evidence and latency.",
+  "cases": [
+    {
+      "test_case_id": "E2E-001-SIMPLE-DEADLINE",
+      "name": "Simple programme deadline question",
+      "purpose": "Clean single-topic baseline and latency measurement.",
+      "subject": "Application deadline for Project Management and Data Science",
+      "student_email": "e2e.deadline@example.com",
+      "language": "en",
+      "top_k": 6,
+      "email_text": "Dear Admissions Team,\n\nWhat is the current application deadline for the Master's programme in Project Management and Data Science?\n\nKind regards,\nTest Applicant",
+      "expected_topics": [
+        "application_deadline"
+      ]
+    },
+    {
+      "test_case_id": "E2E-002-MULTITOPIC-MPMD",
+      "name": "Multiple programme questions in one email",
+      "purpose": "Verify all asked topics are detected and directly answered; missing-answer indicators must match any omission.",
+      "subject": "Questions about Project Management and Data Science",
+      "student_email": "e2e.multitopic@example.com",
+      "language": "en",
+      "top_k": 6,
+      "email_text": "Dear Admissions Team,\n\nFor the Master's programme in Project Management and Data Science, could you please tell me: 1) the application deadline, 2) whether it is taught in English, 3) whether it is on campus, and 4) which application documents are required?\n\nKind regards,\nTest Applicant",
+      "expected_topics": [
+        "application_deadline",
+        "language_of_instruction",
+        "study_format",
+        "required_documents"
+      ]
+    },
+    {
+      "test_case_id": "E2E-003-LATE-LANGUAGE-CERTIFICATE",
+      "name": "Late English certificate submission question",
+      "purpose": "Verify the draft directly answers the timing question or flags question_not_directly_answered.",
+      "subject": "English certificate submission",
+      "student_email": "e2e.language@example.com",
+      "language": "en",
+      "top_k": 6,
+      "email_text": "Dear Admissions Team,\n\nFor the Bachelor's programme in Business, is proof of English required, and if it is required, can I submit the English certificate later after the application deadline or after conditional acceptance?\n\nKind regards,\nTest Applicant",
+      "expected_topics": [
+        "english_language_requirements"
+      ]
+    },
+    {
+      "test_case_id": "E2E-004-QUALIFICATION-ROUTE",
+      "name": "Application route and qualification recognition",
+      "purpose": "Stress applicant-specific retrieval and verify source-applicability indicators.",
+      "subject": "Application route and diploma recognition",
+      "student_email": "e2e.route@example.com",
+      "language": "en",
+      "top_k": 6,
+      "email_text": "Dear Admissions Team,\n\nI am a dual citizen of France and Morocco, currently living in Morocco, and I hold a French Baccalauréat. I want to apply for the English-taught Bachelor's in Business. Should I apply through the EU route or the international route, and does my diploma meet the university entrance qualification requirement or do I need a VPD from uni-assist?\n\nKind regards,\nTest Applicant",
+      "expected_topics": [
+        "application_route",
+        "qualification_recognition"
+      ]
+    },
+    {
+      "test_case_id": "E2E-005-CREDIT-RECOGNITION",
+      "name": "Higher-semester credit recognition",
+      "purpose": "Verify credit-recognition detection and safe uncertainty when evidence is insufficient.",
+      "subject": "Recognition of previous credits",
+      "student_email": "e2e.credit@example.com",
+      "language": "en",
+      "top_k": 6,
+      "email_text": "Dear Admissions Team,\n\nI already completed 60 ECTS in a similar degree at another university. Can these credits be recognised so that I can enter a higher semester at HTW Berlin?\n\nKind regards,\nTest Applicant",
+      "expected_topics": [
+        "credit_recognition"
+      ]
+    },
+    {
+      "test_case_id": "E2E-006-ATTACHMENT-DEPENDENT",
+      "name": "Question depends on an attached transcript",
+      "purpose": "Verify attachment-dependent enquiries remain flagged because HANS does not inspect attachment content.",
+      "subject": "Please review my attached transcript",
+      "student_email": "e2e.attachment@example.com",
+      "language": "en",
+      "top_k": 6,
+      "email_text": "Dear Admissions Team,\n\nI have attached my transcript. Based on the attached document, can you confirm whether I meet the admission requirements for the programme?\n\nKind regards,\nTest Applicant",
+      "expected_topics": [
+        "admission_requirements"
+      ],
+      "expected_review_text": "attachment"
+    },
+    {
+      "test_case_id": "E2E-007-UNKNOWN-PROGRAMME",
+      "name": "Unknown programme name",
+      "purpose": "Verify HANS does not invent a programme match.",
+      "subject": "Master of Quantum Business Analytics",
+      "student_email": "e2e.unknown@example.com",
+      "language": "en",
+      "top_k": 6,
+      "email_text": "Dear Admissions Team,\n\nI am interested in the Master of Quantum Business Analytics at HTW Berlin. What is the application deadline and which documents are required?\n\nKind regards,\nTest Applicant",
+      "expected_topics": [
+        "application_deadline",
+        "required_documents"
+      ]
+    },
+    {
+      "test_case_id": "E2E-008-GERMAN",
+      "name": "German programme enquiry",
+      "purpose": "Verify language preservation, retrieval, citations and review indicators in German.",
+      "subject": "Fragen zur Bewerbung",
+      "student_email": "e2e.german@example.com",
+      "language": "de",
+      "top_k": 6,
+      "email_text": "Guten Tag,\n\nich interessiere mich für den Masterstudiengang Project Management and Data Science. Welche Bewerbungsfrist gilt und welche Unterlagen muss ich einreichen?\n\nMit freundlichen Grüßen\nTestbewerberin",
+      "expected_topics": [
+        "application_deadline",
+        "required_documents"
+      ]
+    }
+  ]
+}
