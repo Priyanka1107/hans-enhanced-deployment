@@ -108,6 +108,51 @@ def fetch_mailbox_messages(
     ]
 
 
+def fetch_mailbox_attachment(
+    *,
+    api_base: str,
+    headers: Dict[str, str],
+    email_id: str,
+    attachment_index: int,
+    timeout: float = 60.0,
+) -> tuple[bytes, str, str]:
+    try:
+        response = requests.get(
+            (
+                f"{api_base.rstrip('/')}/mailbox/messages/"
+                f"{email_id}/attachments/{attachment_index}"
+            ),
+            headers=headers,
+            timeout=timeout,
+        )
+    except requests.RequestException as exc:
+        raise MailboxUIError(
+            "Could not retrieve the requested attachment."
+        ) from exc
+
+    if not response.ok:
+        raise MailboxUIError(
+            _error_detail(response)
+            or (
+                "Mailbox attachment request failed "
+                f"({response.status_code})."
+            )
+        )
+
+    filename = (
+        response.headers.get(
+            "X-HANS-Attachment-Filename"
+        )
+        or "attachment"
+    )
+    content_type = (
+        response.headers.get("Content-Type")
+        or "application/octet-stream"
+    ).split(";", 1)[0].strip()
+
+    return response.content, filename, content_type
+
+
 def attachment_summary(
     message: Dict[str, Any],
 ) -> str:
