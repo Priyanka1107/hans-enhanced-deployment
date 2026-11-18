@@ -20,6 +20,8 @@ from app.ui.mailbox_client import (
     attachment_summary,
     fetch_mailbox_messages,
     fetch_mailbox_status,
+    save_mailbox_draft,
+    send_mailbox_message,
 )
 # HANS_MAILBOX_UI_INTEGRATION_V1
 
@@ -585,6 +587,26 @@ class EnhancedHANSEmailUI:
             text="Open full draft",
             command=self._open_full_draft,
         ).pack(
+            side=tk.LEFT,
+            padx=(8, 0),
+        )
+
+        self.save_draft_button = ttk.Button(
+            button_row,
+            text="Save to mailbox drafts",
+            command=self._save_mailbox_draft_async,
+        )
+        self.save_draft_button.pack(
+            side=tk.LEFT,
+            padx=(8, 0),
+        )
+
+        self.send_button = ttk.Button(
+            button_row,
+            text="Send email",
+            command=self._confirm_and_send_mailbox_message,
+        )
+        self.send_button.pack(
             side=tk.LEFT,
             padx=(8, 0),
         )
@@ -1775,6 +1797,204 @@ class EnhancedHANSEmailUI:
             state="normal",
             text="Generate staff draft",
         )
+
+    def _mailbox_write_payload(self) -> Dict[str, Any]:
+        recipient = self.student_email_var.get().strip()
+        subject = self.subject_var.get().strip()
+        body = self.draft_text.get(
+            "1.0",
+            tk.END,
+        ).strip()
+        in_reply_to = self.email_id_var.get().strip() or None
+
+        if not recipient:
+            raise ValueError(
+                "Student email address is required."
+            )
+        if not body:
+            raise ValueError(
+                "There is no staff draft to save or send."
+            )
+
+        return {
+            "to_email": recipient,
+            "subject": subject,
+            "body": body,
+            "in_reply_to": in_reply_to,
+        }
+
+    def _save_mailbox_draft_async(self) -> None:
+        try:
+            payload = self._mailbox_write_payload()
+            headers = _request_headers()
+        except Exception as exc:
+            messagebox.showerror(
+                "Cannot save draft",
+                str(exc),
+            )
+            return
+
+        self.save_draft_button.configure(
+            state="disabled",
+            text="Saving...",
+        )
+        self.footer_var.set(
+            "Saving staff-edited reply to mailbox Drafts..."
+        )
+
+        threading.Thread(
+            target=self._save_mailbox_draft,
+            args=(headers, payload),
+            daemon=True,
+        ).start()
+
+    def _save_mailbox_draft(
+        self,
+        headers: Dict[str, str],
+        payload: Dict[str, Any],
+    ) -> None:
+        try:
+            result = save_mailbox_draft(
+                api_base=API_BASE,
+                headers=headers,
+                **payload,
+            )
+            self.root.after(
+                0,
+                self._mailbox_write_success,
+                "Draft saved",
+                (
+                    "The edited response was saved to the configured "
+                    "mailbox Drafts folder."
+                ),
+                result,
+            )
+        except Exception as exc:
+            self.root.after(
+                0,
+                self._mailbox_write_error,
+                "Draft save failed",
+                str(exc),
+            )
+        finally:
+            self.root.after(
+                0,
+                self.save_draft_button.configure,
+                {
+                    "state": "normal",
+                    "text": "Save to mailbox drafts",
+                },
+            )
+
+    def _confirm_and_send_mailbox_message(self) -> None:
+        try:
+            payload = self._mailbox_write_payload()
+            headers = _request_headers()
+        except Exception as exc:
+            messagebox.showerror(
+                "Cannot send email",
+                str(exc),
+            )
+            return
+
+        preview = payload["body"]
+        if len(preview) > 700:
+            preview = preview[:700] + "\n..."
+
+        confirmed = messagebox.askyesno(
+            "Confirm email send",
+            (
+                "This will send an email from the configured mailbox.\n\n"
+                f"To: {payload['to_email']}\n"
+                f"Subject: {payload['subject'] or '(no subject)'}\n\n"
+                f"{preview}\n\n"
+                "Send this email now?"
+            ),
+            icon="warning",
+        )
+
+        if not confirmed:
+            return
+
+        self.send_button.configure(
+            state="disabled",
+            text="Sending...",
+        )
+        self.footer_var.set(
+            "Sending staff-approved email..."
+        )
+
+        threading.Thread(
+            target=self._send_mailbox_message,
+            args=(headers, payload),
+            daemon=True,
+        ).start()
+
+    def _send_mailbox_message(
+        self,
+        headers: Dict[str, str],
+        payload: Dict[str, Any],
+    ) -> None:
+        try:
+            result = send_mailbox_message(
+                api_base=API_BASE,
+                headers=headers,
+                **payload,
+            )
+            self.root.after(
+                0,
+                self._mailbox_write_success,
+                "Email sent",
+                "The staff-approved email was sent successfully.",
+                result,
+            )
+        except Exception as exc:
+            self.root.after(
+                0,
+                self._mailbox_write_error,
+                "Email send failed",
+                str(exc),
+            )
+        finally:
+            self.root.after(
+                0,
+                self.send_button.configure,
+                {
+                    "state": "normal",
+                    "text": "Send email",
+                },
+            )
+
+    def _mailbox_write_success(
+        self,
+        title: str,
+        message: str,
+        result: Dict[str, Any],
+    ) -> None:
+        message_id = str(
+            result.get("message_id") or ""
+        ).strip()
+
+        detail = message
+        if message_id:
+            detail += f"\n\nMessage ID: {message_id}"
+
+        messagebox.showinfo(
+            title,
+            detail,
+        )
+        self.footer_var.set(message)
+
+    def _mailbox_write_error(
+        self,
+        title: str,
+        error: str,
+    ) -> None:
+        messagebox.showerror(
+            title,
+            error,
+        )
+        self.footer_var.set(error)
 
     def _open_full_draft(self) -> None:
         """Open the current staff draft in a larger scrollable window."""
