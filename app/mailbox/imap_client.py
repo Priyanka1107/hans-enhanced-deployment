@@ -227,6 +227,121 @@ class IMAPMailboxClient:
                 "Unable to connect or authenticate to the configured mailbox."
             ) from exc
 
+    def get_attachment(
+        self,
+        *,
+        email_id: str,
+        attachment_index: int,
+    ) -> tuple[bytes, str, str]:
+        """
+        Fetch one attachment by Message-ID and zero-based attachment index.
+
+        The message is opened read-only and BODY.PEEK is used so viewing an
+        attachment does not intentionally alter mailbox state.
+        """
+        if not email_id.strip():
+            raise ValueError("email_id is required")
+
+        if attachment_index < 0:
+            raise ValueError("attachment_index must be zero or greater")
+
+        connection = self._connect()
+
+        try:
+            status, _ = connection.select(
+                self.folder,
+                readonly=True,
+            )
+            if status != "OK":
+                raise IMAPMailboxError(
+                    "Unable to open the configured mailbox folder."
+                )
+
+            status, data = connection.search(
+                None,
+                "HEADER",
+                "Message-ID",
+                email_id.strip(),
+            )
+            if status != "OK":
+                raise IMAPMailboxError(
+                    "Unable to search for the requested mailbox message."
+                )
+
+            message_numbers = (
+                data[0].split()
+                if data and data[0]
+                else []
+            )
+            if not message_numbers:
+                raise IMAPMailboxError(
+                    "The requested mailbox message was not found."
+                )
+
+            status, payload = connection.fetch(
+                message_numbers[-1],
+                "(BODY.PEEK[])",
+            )
+            if status != "OK" or not payload:
+                raise IMAPMailboxError(
+                    "Unable to read the requested mailbox message."
+                )
+
+            raw_message = next(
+                (
+                    item[1]
+                    for item in payload
+                    if (
+                        isinstance(item, tuple)
+                        and len(item) >= 2
+                        and isinstance(item[1], bytes)
+                    )
+                ),
+                None,
+            )
+            if raw_message is None:
+                raise IMAPMailboxError(
+                    "The requested mailbox message had no readable payload."
+                )
+
+            parsed = BytesParser(
+                policy=policy.default,
+            ).parsebytes(raw_message)
+
+            parts = [
+                part
+                for part in parsed.walk()
+                if part.get_content_disposition() == "attachment"
+            ]
+            if attachment_index >= len(parts):
+                raise IndexError(
+                    "The requested attachment does not exist."
+                )
+
+            part = parts[attachment_index]
+            content = part.get_payload(decode=True)
+            if content is None:
+                content = b""
+
+            filename = _decode_header_value(
+                part.get_filename()
+            ) or "attachment"
+            content_type = (
+                part.get_content_type()
+                or "application/octet-stream"
+            )
+
+            return content, filename, content_type
+        finally:
+            try:
+                connection.close()
+            except Exception:
+                pass
+            try:
+                connection.logout()
+            except Exception:
+                pass
+
     def list_messages(
         self,
         *,
