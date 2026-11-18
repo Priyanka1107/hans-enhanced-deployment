@@ -145,51 +145,14 @@ class EnhancedHANSEmailUI:
             pady=(0, 8),
         )
 
-        status_row = ttk.Frame(main)
-        status_row.pack(
-            fill=tk.X,
-            pady=(0, 8),
-        )
-
-        ttk.Label(
-            status_row,
-            text="API status:",
-        ).pack(side=tk.LEFT)
-
+        # API health is still checked in the background, but development/API
+        # controls are intentionally not shown in the staff-facing UI.
         self.status_var = tk.StringVar(
             value="Checking..."
         )
-
         self.status_label = ttk.Label(
-            status_row,
+            main,
             textvariable=self.status_var,
-        )
-        self.status_label.pack(
-            side=tk.LEFT,
-            padx=(8, 16),
-        )
-
-        ttk.Button(
-            status_row,
-            text="Test API",
-            command=self._check_api_async,
-        ).pack(side=tk.LEFT)
-
-        self.evaluation_toggle_button = ttk.Button(
-            status_row,
-            text="Show evaluation tools",
-            command=self._toggle_evaluation_tools,
-        )
-        self.evaluation_toggle_button.pack(
-            side=tk.LEFT,
-            padx=(8, 0),
-        )
-
-        ttk.Label(
-            status_row,
-            text=f"Backend: {API_BASE}",
-        ).pack(
-            side=tk.RIGHT,
         )
 
         # Main vertical workspace. Each child pane can be resized by
@@ -208,7 +171,7 @@ class EnhancedHANSEmailUI:
 
         mailbox_frame = ttk.LabelFrame(
             self.main_pane,
-            text="Incoming mailbox (read-only)",
+            text="Incoming mailbox",
             padding=8,
         )
         self.main_pane.add(
@@ -403,15 +366,21 @@ class EnhancedHANSEmailUI:
         )
         self.main_pane.add(
             metadata_frame,
-            weight=1,
+            weight=0,
         )
 
-        for column in range(4):
-            metadata_frame.columnconfigure(
-                column,
-                weight=1,
-            )
+        metadata_frame.columnconfigure(
+            1,
+            weight=1,
+        )
+        metadata_frame.columnconfigure(
+            3,
+            weight=2,
+        )
 
+        # Keep all metadata values internally because the backend, thread
+        # handling, reply headers and evaluation logic still use them.
+        # Only Student email and Subject are staff-facing fields.
         self.student_email_var = tk.StringVar()
         self.subject_var = tk.StringVar()
         self.thread_id_var = tk.StringVar()
@@ -439,70 +408,6 @@ class EnhancedHANSEmailUI:
             variable=self.subject_var,
             label_column=2,
             entry_column=3,
-        )
-
-        self._add_entry(
-            metadata_frame,
-            row=1,
-            label="Thread ID",
-            variable=self.thread_id_var,
-            label_column=0,
-            entry_column=1,
-        )
-
-        self._add_entry(
-            metadata_frame,
-            row=1,
-            label="Email ID",
-            variable=self.email_id_var,
-            label_column=2,
-            entry_column=3,
-        )
-
-        ttk.Label(
-            metadata_frame,
-            text="Language",
-        ).grid(
-            row=2,
-            column=0,
-            sticky=tk.W,
-            pady=(8, 0),
-        )
-
-        ttk.Combobox(
-            metadata_frame,
-            textvariable=self.language_var,
-            values=("en", "de"),
-            state="readonly",
-            width=8,
-        ).grid(
-            row=2,
-            column=1,
-            sticky=tk.W,
-            pady=(8, 0),
-        )
-
-        ttk.Label(
-            metadata_frame,
-            text="Top K",
-        ).grid(
-            row=2,
-            column=2,
-            sticky=tk.W,
-            pady=(8, 0),
-        )
-
-        ttk.Spinbox(
-            metadata_frame,
-            from_=3,
-            to=10,
-            textvariable=self.top_k_var,
-            width=8,
-        ).grid(
-            row=2,
-            column=3,
-            sticky=tk.W,
-            pady=(8, 0),
         )
 
         # -----------------------------------------------------------------
@@ -893,9 +798,10 @@ class EnhancedHANSEmailUI:
         """Show or hide development-only evaluation controls."""
         if self.test_frame.winfo_manager():
             self.test_frame.pack_forget()
-            self.evaluation_toggle_button.configure(
-                text="Show evaluation tools",
-            )
+            if hasattr(self, "evaluation_toggle_button"):
+                self.evaluation_toggle_button.configure(
+                    text="Show evaluation tools",
+                )
             return
 
         self.test_frame.pack(
@@ -903,9 +809,10 @@ class EnhancedHANSEmailUI:
             pady=(0, 8),
             before=self.main_pane,
         )
-        self.evaluation_toggle_button.configure(
-            text="Hide evaluation tools",
-        )
+        if hasattr(self, "evaluation_toggle_button"):
+            self.evaluation_toggle_button.configure(
+                text="Hide evaluation tools",
+            )
 
     def _refresh_mailbox_async(self) -> None:
         if self.processing:
