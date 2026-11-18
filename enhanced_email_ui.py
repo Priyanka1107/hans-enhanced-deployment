@@ -595,6 +595,7 @@ class EnhancedHANSEmailUI:
             button_row,
             text="Save to mailbox drafts",
             command=self._save_mailbox_draft_async,
+            state="disabled",
         )
         self.save_draft_button.pack(
             side=tk.LEFT,
@@ -605,6 +606,7 @@ class EnhancedHANSEmailUI:
             button_row,
             text="Send email",
             command=self._confirm_and_send_mailbox_message,
+            state="disabled",
         )
         self.send_button.pack(
             side=tk.LEFT,
@@ -967,6 +969,11 @@ class EnhancedHANSEmailUI:
 
             self.root.after(
                 0,
+                self._apply_mailbox_capabilities,
+                status,
+            )
+            self.root.after(
+                0,
                 self._display_mailbox_messages,
                 messages,
             )
@@ -976,6 +983,32 @@ class EnhancedHANSEmailUI:
                 self._display_mailbox_error,
                 str(exc),
             )
+
+    def _apply_mailbox_capabilities(
+        self,
+        status: Dict[str, Any],
+    ) -> None:
+        write_enabled = bool(
+            status.get("write_enabled")
+        )
+        send_enabled = bool(
+            status.get("send_enabled")
+        )
+
+        self.save_draft_button.configure(
+            state=(
+                "normal"
+                if write_enabled
+                else "disabled"
+            )
+        )
+        self.send_button.configure(
+            state=(
+                "normal"
+                if send_enabled
+                else "disabled"
+            )
+        )
 
     def _display_mailbox_messages(
         self,
