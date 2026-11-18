@@ -220,6 +220,18 @@ class HTWLiteLLMClient:
             ),
         )
 
+        thinking_raw = os.getenv(
+            "LITELLM_ENABLE_THINKING",
+            "",
+        ).strip().lower()
+
+        if thinking_raw in {"1", "true", "yes", "on"}:
+            self.enable_thinking: bool | None = True
+        elif thinking_raw in {"0", "false", "no", "off"}:
+            self.enable_thinking = False
+        else:
+            self.enable_thinking = None
+
         self.backoff_seconds = (
             5.0,
             10.0,
@@ -416,6 +428,9 @@ class HTWLiteLLMClient:
             ],
         }
 
+        if self.enable_thinking is not None:
+            payload["enable_thinking"] = self.enable_thinking
+
         timeout = httpx.Timeout(
             connect=30.0,
             read=max(
@@ -510,6 +525,7 @@ class HTWLiteLLMClient:
             "prompt_tokens": prompt_tokens,
             "completion_tokens": completion_tokens,
             "total_tokens": total_tokens,
+            "enable_thinking": self.enable_thinking,
 
             # The OpenAI-compatible response does not expose Ollama-style
             # native model timing. HANS records end-to-end generation time
