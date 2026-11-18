@@ -133,3 +133,91 @@ def attachment_summary(
         )
 
     return ", ".join(names)
+
+
+
+def _post_mailbox_write(
+    *,
+    api_base: str,
+    endpoint: str,
+    headers: Dict[str, str],
+    to_email: str,
+    subject: str,
+    body: str,
+    in_reply_to: str | None,
+    timeout: float = 60.0,
+) -> Dict[str, Any]:
+    try:
+        response = requests.post(
+            f"{api_base.rstrip('/')}{endpoint}",
+            headers=headers,
+            json={
+                "to_email": to_email,
+                "subject": subject,
+                "body": body,
+                "in_reply_to": in_reply_to,
+            },
+            timeout=timeout,
+        )
+    except requests.RequestException as exc:
+        raise MailboxUIError(
+            "Could not reach the HANS mailbox write endpoint."
+        ) from exc
+
+    if not response.ok:
+        raise MailboxUIError(
+            _error_detail(response)
+            or f"Mailbox write request failed ({response.status_code})."
+        )
+
+    payload = response.json()
+    if not isinstance(payload, dict):
+        raise MailboxUIError(
+            "Mailbox write response has an unexpected format."
+        )
+
+    return payload
+
+
+def save_mailbox_draft(
+    *,
+    api_base: str,
+    headers: Dict[str, str],
+    to_email: str,
+    subject: str,
+    body: str,
+    in_reply_to: str | None = None,
+    timeout: float = 60.0,
+) -> Dict[str, Any]:
+    return _post_mailbox_write(
+        api_base=api_base,
+        endpoint="/mailbox/drafts",
+        headers=headers,
+        to_email=to_email,
+        subject=subject,
+        body=body,
+        in_reply_to=in_reply_to,
+        timeout=timeout,
+    )
+
+
+def send_mailbox_message(
+    *,
+    api_base: str,
+    headers: Dict[str, str],
+    to_email: str,
+    subject: str,
+    body: str,
+    in_reply_to: str | None = None,
+    timeout: float = 60.0,
+) -> Dict[str, Any]:
+    return _post_mailbox_write(
+        api_base=api_base,
+        endpoint="/mailbox/send",
+        headers=headers,
+        to_email=to_email,
+        subject=subject,
+        body=body,
+        in_reply_to=in_reply_to,
+        timeout=timeout,
+    )
