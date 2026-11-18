@@ -31,6 +31,15 @@ E2E_PROFILE = os.getenv(
     "default",
 ).strip() or "default"
 
+E2E_CASE_FILTER = {
+    value.strip()
+    for value in os.getenv(
+        "HANS_E2E_CASES",
+        "",
+    ).split(",")
+    if value.strip()
+}
+
 
 def main() -> int:
     if not API_KEY:
@@ -42,6 +51,34 @@ def main() -> int:
         CASES_PATH.read_text(encoding="utf-8")
     )
     cases = payload.get("cases") or []
+
+    if E2E_CASE_FILTER:
+        cases = [
+            case
+            for case in cases
+            if str(
+                case.get("test_case_id") or ""
+            ) in E2E_CASE_FILTER
+        ]
+
+        missing_case_ids = (
+            E2E_CASE_FILTER
+            - {
+                str(
+                    case.get("test_case_id")
+                    or ""
+                )
+                for case in cases
+            }
+        )
+
+        if missing_case_ids:
+            raise RuntimeError(
+                "Unknown HANS E2E case ID(s): "
+                + ", ".join(
+                    sorted(missing_case_ids)
+                )
+            )
 
     RESULTS_DIR.mkdir(
         parents=True,
@@ -222,6 +259,7 @@ def main() -> int:
                     if E2E_TOP_K_OVERRIDE
                     else None
                 ),
+                "case_filter": sorted(E2E_CASE_FILTER),
                 "cases": run_results,
             },
             ensure_ascii=False,
