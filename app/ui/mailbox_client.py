@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Any, Dict, List
+from urllib.parse import quote
 
 import requests
 
@@ -120,7 +121,7 @@ def fetch_mailbox_attachment(
         response = requests.get(
             (
                 f"{api_base.rstrip('/')}/mailbox/messages/"
-                f"{email_id}/attachments/{attachment_index}"
+                f"{quote(email_id, safe='')}/attachments/{attachment_index}"
             ),
             headers=headers,
             timeout=timeout,
