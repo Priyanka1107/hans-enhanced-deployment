@@ -1610,6 +1610,122 @@ def _find_topic_coverage_issues(
                 "but credit transfer/recognition was not directly answered"
             )
 
+    # A common language-proof follow-up asks whether a certificate may be
+    # submitted after the application deadline or after conditional admission.
+    # The general language requirement alone is not a direct answer to that
+    # procedural question.
+    if (
+        "english_language_requirements" in topic_ids
+        or "german_language_requirements" in topic_ids
+    ):
+        asks_late_language_submission = bool(
+            re.search(
+                r"\b(?:submit|provide|hand\s+in|upload)\b"
+                r"[^.!?\n]{0,160}"
+                r"\b(?:language|certificate|proof|toefl|ielts|duolingo)\b"
+                r"[^.!?\n]{0,160}"
+                r"\b(?:later|after\s+the\s+application\s+deadline|"
+                r"conditional\s+(?:acceptance|admission))\b",
+                question,
+                flags=re.IGNORECASE,
+            )
+            or re.search(
+                r"\b(?:later|after\s+the\s+application\s+deadline|"
+                r"conditional\s+(?:acceptance|admission))\b"
+                r"[^.!?\n]{0,160}"
+                r"\b(?:language|certificate|proof|toefl|ielts|duolingo)\b",
+                question,
+                flags=re.IGNORECASE,
+            )
+        )
+
+        late_submission_answer = bool(
+            re.search(
+                r"\b(?:later|after\s+the\s+application\s+deadline|"
+                r"conditional\s+(?:acceptance|admission)|"
+                r"submit(?:ted)?\s+at\s+a\s+later\s+date|"
+                r"not\s+applicable|does\s+not\s+apply)\b",
+                answer,
+                flags=re.IGNORECASE,
+            )
+        )
+
+        if (
+            asks_late_language_submission
+            and not late_submission_answer
+        ):
+            issues.append(
+                "question_not_directly_answered: the applicant asked "
+                "whether language proof may be submitted later or after "
+                "conditional admission, but the draft does not directly "
+                "address that question"
+            )
+
+    return issues
+
+
+def _find_source_applicability_issues(
+    topics: List[Dict[str, Any]],
+) -> List[str]:
+    """
+    Flag topics where retrieval produced material but no direct official
+    programme evidence was available.
+
+    This is deliberately a review signal, not a hallucination judgement:
+    generic HTW evidence can still be correct, but staff should verify that
+    it is administratively applicable to the applicant's exact programme
+    and question.
+    """
+    sensitive_topics = {
+        "application_route",
+        "application_deadline",
+        "admission_requirements",
+        "required_documents",
+        "qualification_recognition",
+        "credit_recognition",
+        "english_language_requirements",
+        "german_language_requirements",
+        "language_of_instruction",
+        "study_format",
+    }
+
+    issues: List[str] = []
+
+    for topic in topics or []:
+        topic_id = str(
+            topic.get("topic_id") or ""
+        ).strip()
+
+        if topic_id not in sensitive_topics:
+            continue
+
+        official_count = int(
+            topic.get("official_source_count") or 0
+        )
+        retrieved_count = int(
+            topic.get("retrieved_source_count") or 0
+        )
+        source_count = int(
+            topic.get("source_count") or 0
+        )
+
+        if (
+            official_count == 0
+            and retrieved_count > 0
+            and source_count > 0
+        ):
+            label = str(
+                topic.get("label")
+                or topic_id
+            ).strip()
+
+            issues.append(
+                "source_applicability_review: no direct official "
+                f"programme source was available for '{label}'; "
+                "staff should verify that the retrieved general evidence "
+                "applies to this programme and applicant"
+            )
+
     return issues
 
 
@@ -3215,10 +3331,17 @@ class EmailAssistantService:
             email_text,
         )
 
+        source_applicability_issues = (
+            _find_source_applicability_issues(
+                topic_results
+            )
+        )
+
         deterministic_issues = (
             claim_support_issues
             + audience_issues
             + topic_coverage_issues
+            + source_applicability_issues
         )
 
         if deterministic_issues:
@@ -3253,6 +3376,12 @@ class EmailAssistantService:
                     0.7,
                 )
 
+            if source_applicability_issues:
+                confidence_cap = min(
+                    confidence_cap,
+                    0.75,
+                )
+
             validation["confidence"] = min(
                 float(validation.get("confidence", 0.0)),
                 confidence_cap,
@@ -3265,6 +3394,10 @@ class EmailAssistantService:
             elif topic_coverage_issues:
                 validation["failure_type"] = (
                     "topic_not_answered"
+                )
+            elif source_applicability_issues:
+                validation["failure_type"] = (
+                    "source_applicability_review"
                 )
             else:
                 validation["failure_type"] = (
