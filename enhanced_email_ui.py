@@ -3,6 +3,9 @@ from __future__ import annotations
 import json
 import os
 import re
+import subprocess
+import sys
+import tempfile
 import threading
 import time
 import uuid
@@ -13,11 +16,12 @@ from typing import Any, Dict
 import requests
 import tkinter as tk
 from dotenv import load_dotenv
-from tkinter import messagebox, scrolledtext, ttk
+from tkinter import messagebox, scrolledtext, simpledialog, ttk
 
 from app.ui.mailbox_client import (
     MailboxUIError,
     attachment_summary,
+    fetch_mailbox_attachment,
     fetch_mailbox_messages,
     fetch_mailbox_status,
     save_mailbox_draft,
@@ -63,6 +67,24 @@ TEST_CASES_PATH = (
 )
 
 CUSTOM_CASE_ID = "CUSTOM-MANUAL"
+
+VIEWABLE_ATTACHMENT_EXTENSIONS = {
+    ".pdf",
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".gif",
+    ".bmp",
+    ".webp",
+    ".doc",
+    ".docx",
+    ".xls",
+    ".xlsx",
+    ".ppt",
+    ".pptx",
+    ".txt",
+    ".csv",
+}
 
 try:
     from evaluation.ui_eval_logger import (
@@ -251,6 +273,17 @@ class EnhancedHANSEmailUI:
             state="disabled",
         )
         self.mailbox_load_button.pack(
+            side=tk.RIGHT,
+            padx=(0, 8),
+        )
+
+        self.view_attachment_button = ttk.Button(
+            mailbox_toolbar,
+            text="View attachment",
+            command=self._view_selected_attachment_async,
+            state="disabled",
+        )
+        self.view_attachment_button.pack(
             side=tk.RIGHT,
             padx=(0, 8),
         )
@@ -986,6 +1019,9 @@ class EnhancedHANSEmailUI:
         self.mailbox_load_button.configure(
             state="disabled",
         )
+        self.view_attachment_button.configure(
+            state="disabled",
+        )
 
         if messages:
             self.mailbox_info_var.set(
@@ -1006,6 +1042,9 @@ class EnhancedHANSEmailUI:
             text="Refresh inbox",
         )
         self.mailbox_load_button.configure(
+            state="disabled",
+        )
+        self.view_attachment_button.configure(
             state="disabled",
         )
         self.mailbox_info_var.set(
@@ -1032,13 +1071,30 @@ class EnhancedHANSEmailUI:
         )
 
         if not selection:
+            self.view_attachment_button.configure(
+                state="disabled",
+            )
             return
 
         try:
             index = int(selection[0])
             message = self.mailbox_messages[index]
         except (ValueError, IndexError):
+            self.view_attachment_button.configure(
+                state="disabled",
+            )
             return
+
+        supported_attachments = self._supported_attachments(
+            message
+        )
+        self.view_attachment_button.configure(
+            state=(
+                "normal"
+                if supported_attachments
+                else "disabled"
+            )
+        )
 
         self.mailbox_info_var.set(
             "Selected: "
@@ -1046,6 +1102,214 @@ class EnhancedHANSEmailUI:
             " | "
             + attachment_summary(message)
         )
+
+    @staticmethod
+    def _supported_attachments(
+        message: Dict[str, Any],
+    ) -> list[tuple[int, Dict[str, Any]]]:
+        supported: list[tuple[int, Dict[str, Any]]] = []
+
+        for index, attachment in enumerate(
+            message.get("attachments") or []
+        ):
+            if not isinstance(attachment, dict):
+                continue
+
+            filename = str(
+                attachment.get("filename")
+                or ""
+            ).strip()
+
+            if (
+                Path(filename).suffix.lower()
+                in VIEWABLE_ATTACHMENT_EXTENSIONS
+            ):
+                supported.append(
+                    (index, attachment)
+                )
+
+        return supported
+
+    def _view_selected_attachment_async(self) -> None:
+        selection = self.mailbox_tree.selection()
+
+        if not selection:
+            messagebox.showinfo(
+                "No email selected",
+                "Select an inbox message first.",
+            )
+            return
+
+        try:
+            message = self.mailbox_messages[
+                int(selection[0])
+            ]
+        except (ValueError, IndexError):
+            messagebox.showerror(
+                "Mailbox selection error",
+                "Refresh the inbox and select the email again.",
+            )
+            return
+
+        supported = self._supported_attachments(
+            message
+        )
+
+        if not supported:
+            messagebox.showinfo(
+                "No viewable attachment",
+                (
+                    "This email has no attachment type that HANS "
+                    "allows to be opened from the UI."
+                ),
+            )
+            return
+
+        selected_index = 0
+
+        if len(supported) > 1:
+            choices = "\n".join(
+                (
+                    f"{position}. "
+                    f"{attachment.get('filename') or 'attachment'}"
+                )
+                for position, (_, attachment)
+                in enumerate(
+                    supported,
+                    start=1,
+                )
+            )
+            choice = simpledialog.askinteger(
+                "Select attachment",
+                (
+                    "Choose the attachment to view:\n\n"
+                    f"{choices}"
+                ),
+                minvalue=1,
+                maxvalue=len(supported),
+                parent=self.root,
+            )
+            if choice is None:
+                return
+            selected_index = choice - 1
+
+        attachment_index, attachment = (
+            supported[selected_index]
+        )
+
+        expected_size = int(
+            attachment.get("size_bytes")
+            or 0
+        )
+        if expected_size > 25 * 1024 * 1024:
+            messagebox.showwarning(
+                "Attachment too large",
+                (
+                    "This attachment is larger than the "
+                    "25 MB viewing limit."
+                ),
+            )
+            return
+
+        self.view_attachment_button.configure(
+            state="disabled",
+            text="Opening...",
+        )
+        self.footer_var.set(
+            "Retrieving attachment for staff viewing. "
+            "HANS is not analysing its contents."
+        )
+
+        threading.Thread(
+            target=self._view_attachment,
+            args=(
+                str(message.get("email_id") or ""),
+                attachment_index,
+            ),
+            daemon=True,
+        ).start()
+
+    def _view_attachment(
+        self,
+        email_id: str,
+        attachment_index: int,
+    ) -> None:
+        try:
+            content, filename, _content_type = (
+                fetch_mailbox_attachment(
+                    api_base=API_BASE,
+                    headers=_request_headers(),
+                    email_id=email_id,
+                    attachment_index=attachment_index,
+                    timeout=60,
+                )
+            )
+
+            suffix = Path(filename).suffix.lower()
+            if suffix not in VIEWABLE_ATTACHMENT_EXTENSIONS:
+                raise MailboxUIError(
+                    "This attachment type is not allowed for viewing."
+                )
+
+            safe_name = Path(filename).name
+            safe_name = re.sub(
+                r'[<>:"/\\|?*\x00-\x1F]',
+                "_",
+                safe_name,
+            )
+            if not safe_name:
+                safe_name = f"attachment{suffix}"
+
+            target = (
+                Path(tempfile.gettempdir())
+                / (
+                    "hans-view-"
+                    f"{uuid.uuid4().hex[:8]}-"
+                    f"{safe_name}"
+                )
+            )
+            target.write_bytes(content)
+
+            if os.name == "nt":
+                os.startfile(str(target))  # type: ignore[attr-defined]
+            elif sys.platform == "darwin":
+                subprocess.Popen(
+                    ["open", str(target)]
+                )
+            else:
+                subprocess.Popen(
+                    ["xdg-open", str(target)]
+                )
+
+            self.root.after(
+                0,
+                self.footer_var.set,
+                (
+                    "Attachment opened for staff viewing. "
+                    "HANS has not analysed its contents."
+                ),
+            )
+        except Exception as exc:
+            self.root.after(
+                0,
+                messagebox.showerror,
+                "Attachment could not be opened",
+                str(exc),
+            )
+            self.root.after(
+                0,
+                self.footer_var.set,
+                "Attachment viewing failed.",
+            )
+        finally:
+            self.root.after(
+                0,
+                self.view_attachment_button.configure,
+                {
+                    "state": "normal",
+                    "text": "View attachment",
+                },
+            )
 
     def _load_selected_mailbox_email(self) -> None:
         selection = self.mailbox_tree.selection()
