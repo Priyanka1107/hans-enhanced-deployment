@@ -16,7 +16,7 @@ from typing import Any, Dict
 import requests
 import tkinter as tk
 from dotenv import load_dotenv
-from tkinter import messagebox, scrolledtext, simpledialog, ttk
+from tkinter import messagebox, scrolledtext, ttk
 
 from app.ui.mailbox_client import (
     MailboxUIError,
@@ -1168,30 +1168,11 @@ class EnhancedHANSEmailUI:
         selected_index = 0
 
         if len(supported) > 1:
-            choices = "\n".join(
-                (
-                    f"{position}. "
-                    f"{attachment.get('filename') or 'attachment'}"
-                )
-                for position, (_, attachment)
-                in enumerate(
-                    supported,
-                    start=1,
-                )
+            selected_index = self._choose_attachment(
+                supported
             )
-            choice = simpledialog.askinteger(
-                "Select attachment",
-                (
-                    "Choose the attachment to view:\n\n"
-                    f"{choices}"
-                ),
-                minvalue=1,
-                maxvalue=len(supported),
-                parent=self.root,
-            )
-            if choice is None:
+            if selected_index is None:
                 return
-            selected_index = choice - 1
 
         attachment_index, attachment = (
             supported[selected_index]
@@ -1228,6 +1209,137 @@ class EnhancedHANSEmailUI:
             ),
             daemon=True,
         ).start()
+
+    def _choose_attachment(
+        self,
+        supported: list[tuple[int, Dict[str, Any]]],
+    ) -> int | None:
+        dialog = tk.Toplevel(self.root)
+        dialog.title("Select attachment")
+        dialog.transient(self.root)
+        dialog.grab_set()
+        dialog.resizable(False, False)
+
+        container = ttk.Frame(
+            dialog,
+            padding=12,
+        )
+        container.pack(
+            fill=tk.BOTH,
+            expand=True,
+        )
+
+        ttk.Label(
+            container,
+            text="Choose the attachment to view:",
+            font=("Segoe UI", 10, "bold"),
+        ).pack(
+            anchor=tk.W,
+            pady=(0, 8),
+        )
+
+        listbox = tk.Listbox(
+            container,
+            height=min(8, len(supported)),
+            width=55,
+            exportselection=False,
+        )
+        listbox.pack(
+            fill=tk.BOTH,
+            expand=True,
+        )
+
+        for _, attachment in supported:
+            listbox.insert(
+                tk.END,
+                str(
+                    attachment.get("filename")
+                    or "attachment"
+                ),
+            )
+
+        listbox.selection_set(0)
+        listbox.activate(0)
+        listbox.focus_set()
+
+        result: dict[str, int | None] = {
+            "index": None
+        }
+
+        def confirm() -> None:
+            selection = listbox.curselection()
+            if not selection:
+                return
+            result["index"] = int(selection[0])
+            dialog.destroy()
+
+        def cancel() -> None:
+            dialog.destroy()
+
+        button_row = ttk.Frame(container)
+        button_row.pack(
+            fill=tk.X,
+            pady=(10, 0),
+        )
+
+        ttk.Button(
+            button_row,
+            text="Open",
+            command=confirm,
+        ).pack(
+            side=tk.RIGHT,
+        )
+
+        ttk.Button(
+            button_row,
+            text="Cancel",
+            command=cancel,
+        ).pack(
+            side=tk.RIGHT,
+            padx=(0, 8),
+        )
+
+        listbox.bind(
+            "<Double-1>",
+            lambda _event: confirm(),
+        )
+        listbox.bind(
+            "<Return>",
+            lambda _event: confirm(),
+        )
+        dialog.protocol(
+            "WM_DELETE_WINDOW",
+            cancel,
+        )
+
+        dialog.update_idletasks()
+        x = (
+            self.root.winfo_rootx()
+            + max(
+                0,
+                (
+                    self.root.winfo_width()
+                    - dialog.winfo_width()
+                )
+                // 2,
+            )
+        )
+        y = (
+            self.root.winfo_rooty()
+            + max(
+                0,
+                (
+                    self.root.winfo_height()
+                    - dialog.winfo_height()
+                )
+                // 2,
+            )
+        )
+        dialog.geometry(f"+{x}+{y}")
+
+        self.root.wait_window(dialog)
+
+        return result["index"]
 
     def _view_attachment(
         self,
