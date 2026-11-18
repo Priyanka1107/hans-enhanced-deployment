@@ -627,7 +627,9 @@ def build_email_user_prompt(
                     f"Type: {object_type}",
                     f"Last updated: {last_updated}",
                     "Content:",
-                    str(content)[:1800],
+                    str(content)[
+                        :settings.evidence_chars_per_document
+                    ],
                 ]
             )
         )
