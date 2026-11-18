@@ -26,6 +26,8 @@ INCLUDE_PATHS = (
     "tests/test_credit_recognition_topic.py",
     "tests/test_mailbox_integration.py",
     "tests/test_mailbox_ui_client.py",
+    "tests/test_mailbox_writer.py",
+    "tests/test_mailbox_write_ui_client.py",
     "docs/mailbox_integration.md",
     "docs/checkpoints/2026-11-16-pre-email-ui-integration.md",
     "docs/checkpoints/2026-11-17-email-ui-working.md",
@@ -122,6 +124,7 @@ def build_package() -> Path:
         "IMPORTANT:\n"
         "- No real .env or mailbox credentials are included.\n"
         "- Automatic sending remains disabled.\n"
+        "- Direct sending requires HANS_MAILBOX_SEND_ENABLED=true and an explicit staff confirmation.\n"
         "- Apache Hop and n8n are not required for this test package.\n"
         "- The database itself is not embedded in this ZIP.\n",
         encoding="utf-8",
