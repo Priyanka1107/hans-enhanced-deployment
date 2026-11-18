@@ -22,6 +22,15 @@ API_KEY = os.getenv("HANS_INTERNAL_API_KEY", "").strip()
 CASES_PATH = ROOT / "evaluation" / "e2e_acceptance_cases.json"
 RESULTS_DIR = ROOT / "evaluation" / "results"
 
+E2E_TOP_K_OVERRIDE = os.getenv(
+    "HANS_E2E_TOP_K",
+    "",
+).strip()
+E2E_PROFILE = os.getenv(
+    "HANS_E2E_PROFILE",
+    "default",
+).strip() or "default"
+
 
 def main() -> int:
     if not API_KEY:
@@ -56,7 +65,11 @@ def main() -> int:
                 f"e2e-email-{uuid.uuid4().hex[:8]}"
             ),
             "language": case.get("language"),
-            "top_k": int(case.get("top_k") or 6),
+            "top_k": (
+                int(E2E_TOP_K_OVERRIDE)
+                if E2E_TOP_K_OVERRIDE
+                else int(case.get("top_k") or 6)
+            ),
         }
 
         started = time.perf_counter()
@@ -193,7 +206,9 @@ def main() -> int:
     )
     output_path = (
         RESULTS_DIR
-        / f"hans_e2e_acceptance_{timestamp}.json"
+        / (
+            f"hans_e2e_acceptance_{E2E_PROFILE}_{timestamp}.json"
+        )
     )
 
     output_path.write_text(
@@ -201,6 +216,12 @@ def main() -> int:
             {
                 "created_at": datetime.now().isoformat(),
                 "api_base": API_BASE,
+                "profile": E2E_PROFILE,
+                "requested_top_k_override": (
+                    int(E2E_TOP_K_OVERRIDE)
+                    if E2E_TOP_K_OVERRIDE
+                    else None
+                ),
                 "cases": run_results,
             },
             ensure_ascii=False,
