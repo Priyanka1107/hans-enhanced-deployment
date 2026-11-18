@@ -2938,12 +2938,18 @@ class EmailAssistantService:
             )
 
             retrieval_top_k = (
-                max(top_k, 8)
+                max(
+                    top_k,
+                    settings.retrieval_high_risk_top_k,
+                )
                 if topic_id in {
                     "application_route",
                     "qualification_recognition",
                 }
-                else max(top_k, 5)
+                else max(
+                    top_k,
+                    settings.retrieval_standard_top_k,
+                )
             )
 
             retrieved_documents = retrieve_for_topic(
