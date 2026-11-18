@@ -14,7 +14,10 @@ from starlette.concurrency import run_in_threadpool
 from app.email.service import EmailAssistantService
 from app.mailbox.factory import (
     build_mailbox_client,
+    build_mailbox_writer,
     mailbox_enabled,
+    mailbox_send_enabled,
+    mailbox_write_enabled,
 )
 from app.runtime.generation import (
     selected_generation_model,
@@ -113,6 +116,13 @@ class EmailRequest(BaseModel):
     top_k: int = Field(default=6, ge=3, le=10)
 
 
+class MailboxWriteRequest(BaseModel):
+    to_email: str = Field(min_length=3, max_length=320)
+    subject: str = Field(default="", max_length=500)
+    body: str = Field(min_length=1, max_length=settings.max_email_characters)
+    in_reply_to: Optional[str] = None
+
+
 class SourceResponse(BaseModel):
     id: str
     title: str
@@ -202,11 +212,13 @@ async def health() -> Dict[str, Any]:
     dependencies=[Depends(verify_internal_api_key)],
 )
 async def mailbox_status() -> Dict[str, Any]:
-    """Report whether read-only mailbox integration is enabled."""
+    """Report mailbox capabilities exposed to the staff UI."""
     return {
         "enabled": mailbox_enabled(),
+        "write_enabled": mailbox_write_enabled(),
+        "send_enabled": mailbox_send_enabled(),
         "automatic_send": False,
-        "read_only": True,
+        "read_only": not mailbox_write_enabled(),
     }
 
 
@@ -274,6 +286,110 @@ async def mailbox_messages(
         ],
         "automatic_send": False,
         "read_only": True,
+    }
+
+
+@app.post(
+    "/mailbox/drafts",
+    dependencies=[Depends(verify_internal_api_key)],
+)
+async def mailbox_save_draft(
+    request: MailboxWriteRequest,
+) -> Dict[str, Any]:
+    """Save a staff-reviewed reply to the configured mailbox Drafts folder."""
+    if not mailbox_write_enabled():
+        raise HTTPException(
+            status_code=403,
+            detail=(
+                "Mailbox draft writing is disabled. "
+                "Set HANS_MAILBOX_WRITE_ENABLED=true to enable it."
+            ),
+        )
+
+    try:
+        writer = build_mailbox_writer()
+        message_id = await run_in_threadpool(
+            writer.save_draft,
+            to_email=request.to_email.strip(),
+            subject=request.subject.strip(),
+            body=request.body.strip(),
+            in_reply_to=(
+                request.in_reply_to.strip()
+                if request.in_reply_to
+                else None
+            ),
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=400,
+            detail=str(exc),
+        ) from exc
+    except Exception as exc:
+        logger.exception("Mailbox draft creation failed")
+        raise HTTPException(
+            status_code=502,
+            detail=(
+                "HANS could not save the message to the configured "
+                "mailbox Drafts folder."
+            ),
+        ) from exc
+
+    return {
+        "status": "saved",
+        "message_id": message_id,
+        "automatic_send": False,
+    }
+
+
+@app.post(
+    "/mailbox/send",
+    dependencies=[Depends(verify_internal_api_key)],
+)
+async def mailbox_send(
+    request: MailboxWriteRequest,
+) -> Dict[str, Any]:
+    """Send one message only after an explicit staff action in the UI."""
+    if not mailbox_send_enabled():
+        raise HTTPException(
+            status_code=403,
+            detail=(
+                "Mailbox sending is disabled. "
+                "Set HANS_MAILBOX_SEND_ENABLED=true to enable it."
+            ),
+        )
+
+    try:
+        writer = build_mailbox_writer()
+        message_id = await run_in_threadpool(
+            writer.send_message,
+            to_email=request.to_email.strip(),
+            subject=request.subject.strip(),
+            body=request.body.strip(),
+            in_reply_to=(
+                request.in_reply_to.strip()
+                if request.in_reply_to
+                else None
+            ),
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=400,
+            detail=str(exc),
+        ) from exc
+    except Exception as exc:
+        logger.exception("Mailbox send failed")
+        raise HTTPException(
+            status_code=502,
+            detail=(
+                "HANS could not send the message through the "
+                "configured mailbox provider."
+            ),
+        ) from exc
+
+    return {
+        "status": "sent",
+        "message_id": message_id,
+        "automatic_send": False,
     }
 
 
