@@ -139,7 +139,7 @@ class EnhancedHANSEmailUI:
         ui_style = ttk.Style()
         ui_style.configure(
             "Section.TLabelframe.Label",
-            font=("Segoe UI", 11, "bold"),
+            font=("Segoe UI", 10, "bold"),
             foreground="#315F7D",
         )
         ui_style.configure(
