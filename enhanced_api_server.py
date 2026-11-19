@@ -25,7 +25,7 @@ from app.runtime.generation import (
     selected_generation_provider,
 )
 from app.settings import settings
-from hansdb.conn import ensure_schema
+from hansdb.conn import ensure_schema, get_db_connection
 
 
 logging.basicConfig(
@@ -50,10 +50,8 @@ async def lifespan(app: FastAPI):
 
     logger.info("Starting enhanced HANS email API")
 
-    database_connection = psycopg.connect(
-        settings.database_url,
-        autocommit=True,
-    )
+    database_connection = get_db_connection()
+    database_connection.autocommit = True
 
     ensure_schema(
         database_connection,

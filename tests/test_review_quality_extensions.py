@@ -1,4 +1,5 @@
 from app.email.service import (
+    _find_claim_support_issues,
     _find_source_applicability_issues,
     _find_topic_coverage_issues,
 )
@@ -156,3 +157,35 @@ def test_campus_location_plus_online_component_still_does_not_answer_delivery_mo
         issue.startswith("topic_not_answered: study_format")
         for issue in issues
     )
+
+def test_online_application_wording_is_not_a_study_format_claim() -> None:
+    draft = (
+        "You can apply for a higher subject semester if this option "
+        "is offered for the specific study programme in the online "
+        "application [Doc 1]."
+    )
+
+    documents = [
+        {
+            "title": "Changing study programme or university",
+            "url": (
+                "https://www.htw-berlin.de/en/studies/applications/"
+                "special-cases/changing-study-programme-or-university/"
+            ),
+            "content": (
+                "Applicants may apply for a higher subject semester "
+                "where this option is available in the online application."
+            ),
+        }
+    ]
+
+    issues = _find_claim_support_issues(
+        draft,
+        documents,
+    )
+
+    assert not any(
+        issue.startswith("study_format:")
+        for issue in issues
+    )
+

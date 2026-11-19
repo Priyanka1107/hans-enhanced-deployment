@@ -1883,6 +1883,44 @@ def _find_claim_support_issues(
             # "on-campus", "online" or "hybrid" and incorrectly marks the
             # sentence as an unsupported factual claim.
             if rule["claim_name"] == "study_format":
+                # "Online" can describe the application process rather
+                # than the programme delivery mode. For example,
+                # "offered ... in the online application" must not be
+                # interpreted as "the programme is offered online".
+                online_application_phrases = (
+                    "online application",
+                    "online application portal",
+                )
+
+                delivery_mode_terms = (
+                    "on-campus",
+                    "on campus",
+                    "hybrid",
+                    "distance learning",
+                    "online programme",
+                    "online program",
+                    "programme is online",
+                    "program is online",
+                    "programme offered online",
+                    "program offered online",
+                    "programme delivered online",
+                    "program delivered online",
+                )
+
+                refers_only_to_online_application = (
+                    any(
+                        phrase in lower_paragraph
+                        for phrase in online_application_phrases
+                    )
+                    and not any(
+                        phrase in lower_paragraph
+                        for phrase in delivery_mode_terms
+                    )
+                )
+
+                if refers_only_to_online_application:
+                    continue
+
                 uncertainty_phrases = (
                     "does not explicitly confirm whether",
                     "does not confirm whether",

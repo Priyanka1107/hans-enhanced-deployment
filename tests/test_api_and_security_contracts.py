@@ -15,6 +15,41 @@ def run(coro):
     return asyncio.run(coro)
 
 
+def test_api_lifespan_uses_configured_hans_database_connection(monkeypatch):
+    connection = Mock()
+    connection.autocommit = False
+
+    monkeypatch.setattr(
+        api,
+        "get_db_connection",
+        Mock(return_value=connection),
+    )
+    monkeypatch.setattr(
+        api,
+        "ensure_schema",
+        Mock(),
+    )
+    monkeypatch.setattr(
+        api,
+        "EmailAssistantService",
+        Mock(),
+    )
+
+    async def exercise_lifespan():
+        async with api.lifespan(api.app):
+            assert api.database_connection is connection
+            assert connection.autocommit is True
+
+    run(exercise_lifespan())
+
+    api.get_db_connection.assert_called_once_with()
+    api.ensure_schema.assert_called_once_with(
+        connection,
+        required_version=1,
+    )
+    connection.close.assert_called_once()
+
+
 def test_api_key_rejects_request_when_server_key_is_not_configured(monkeypatch):
     monkeypatch.setattr(
         api,
