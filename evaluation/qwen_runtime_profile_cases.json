@@ -1,0 +1,82 @@
+{
+  "description": "Qwen runtime/token profiling corpus. Diagnostic only; does not replace acceptance cases.",
+  "execution_order": "Historical controls first, then four new realistic scenarios.",
+  "cases": [
+    {
+      "test_case_id": "PROFILE-CONTROL-MM003-GERMAN",
+      "group": "historical_control",
+      "name": "Historical German MPMD control",
+      "subject": "Fragen zur Bewerbung",
+      "student_email": "profile.mm003@example.com",
+      "language": "de",
+      "top_k": 6,
+      "email_text": "Guten Tag,\\n\\nich interessiere mich für den Masterstudiengang Project Management and Data Science. Welche Bewerbungsfrist gilt und welche Unterlagen muss ich einreichen?\\n\\nMit freundlichen Grüßen\\nLena",
+      "historical_reference": {
+        "provider": "htw_ollama",
+        "model": "llama3.1:8b",
+        "prompt_tokens": 2334,
+        "completion_tokens": 486,
+        "total_tokens": 2820,
+        "generation_total_seconds": 58.193
+      }
+    },
+    {
+      "test_case_id": "PROFILE-CONTROL-MM008-DUAL-CITIZEN",
+      "group": "historical_control",
+      "name": "Historical dual-citizen route control",
+      "subject": "Business Bachelor application route and diploma recognition",
+      "student_email": "profile.mm008@example.com",
+      "language": "en",
+      "top_k": 6,
+      "email_text": "Dear Admissions Team, I am a dual citizen (French and Moroccan), currently residing in Morocco and holding a French Baccalauréat diploma. I want to apply for the English-taught Bachelor’s in Business but am unsure whether I should apply as an EU applicant or international. Also, would my French diploma fulfill the general university entrance requirements, or would I need to obtain a VPD from Uni-Assist?",
+      "historical_reference": {
+        "provider": "htw_ollama",
+        "model": "llama3.1:8b",
+        "prompt_tokens": 3005,
+        "completion_tokens": 379,
+        "total_tokens": 3384,
+        "generation_total_seconds": 55.257
+      }
+    },
+    {
+      "test_case_id": "PROFILE-NEW-001-ANANYA-PENDING-TRANSCRIPT",
+      "group": "new_scenario",
+      "name": "Ananya pending final transcript",
+      "subject": "International Business application with pending final results",
+      "student_email": "profile.ananya@example.com",
+      "language": "en",
+      "top_k": 6,
+      "email_text": "My name is Ananya and I’m currently completing my final year in BBA at the University of Delhi. I would like to apply for the Master’s in International Business starting next fall. Given that I will only receive my final semester results in mid-July, would I still be eligible to apply within the regular deadlines? Could you please let me know how pending transcripts are handled during the application review?"
+    },
+    {
+      "test_case_id": "PROFILE-NEW-002-DUAL-CITIZEN",
+      "group": "new_scenario",
+      "name": "Dual-citizen route and French Baccalauréat",
+      "subject": "EU or international application route",
+      "student_email": "profile.dualcitizen@example.com",
+      "language": "en",
+      "top_k": 6,
+      "email_text": "Dear Admissions Team, I am a dual citizen (French and Moroccan), currently residing in Morocco and holding a French Baccalauréat diploma. I want to apply for the English-taught Bachelor’s in Business but am unsure whether I should apply as an EU applicant or international. Also, would my French diploma fulfill the general university entrance requirements, or would I need to obtain a VPD from Uni-Assist?"
+    },
+    {
+      "test_case_id": "PROFILE-NEW-003-AMY-LANGUAGE-PROOF",
+      "group": "new_scenario",
+      "name": "IB/SAT/Duolingo English proof and late certificate",
+      "subject": "English language proof for Business Administration",
+      "student_email": "profile.amy@example.com",
+      "language": "en",
+      "top_k": 6,
+      "email_text": "Dear Admissions Office,\\n\\nI am an international applicant interested in applying for the Bachelor's program in Business Administration (Betriebswirtschaftslehre) for the Winter Semester 2026/2027 at HTW Berlin.\\nI would like to kindly inquire whether my application can be considered under the current language requirements. I have completed the full International Baccalaureate (IB) Diploma Programme entirely in English, and I also hold a Duolingo English Test result (C1). In addition, I have achieved a total score of 1320 on the SAT.\\nCould you please confirm whether my IB studies or SAT score can serve as proof of English proficiency, or if an additional recognized test such as TOEFL or IELTS is still required?\\nIn case neither of these is acceptable, I would like to kindly ask whether I may be allowed to submit an approved language certificate at a later date—either after the application deadline or upon conditional acceptance.\\nThank you very much for your time and consideration. I look forward to your response.\\n\\nKind regards,\\nAmy."
+    },
+    {
+      "test_case_id": "PROFILE-NEW-004-DAAD-EPOS-RESUBMISSION",
+      "group": "new_scenario",
+      "name": "DAAD EPOS application resubmission with attachments",
+      "subject": "Resubmission of DAAD EPOS scholarship application",
+      "student_email": "profile.epos@example.com",
+      "language": "en",
+      "top_k": 6,
+      "email_text": "I hope this message finds you well.\\n\\nFollowing a delivery failure to the previously indicated address, I am hereby resubmitting my complete application for the DAAD EPOS scholarship for the MBA in International Management at HTW Berlin (2025 intake) via this official applicant mailbox.\\n\\nPlease find attached the following documents for your kind consideration:\\n\\nCompleted and signed DAAD application form (PDF)\\n\\nMotivation letter (PDF)\\n\\nCurriculum Vitae (PDF)\\n\\nDegree certificate and academic transcripts (PDF)\\n\\nEnglish translation of academic transcript (PDF)\\n\\nProof of employment at Trankyl Togo (PDF)\\n\\nCopy of my passport (PDF)\\n\\nShould you require any additional information or clarification, I remain at your full disposal.\\n\\nThank you very much for your time and kind consideration.\\n\\nBest regards,"
+    }
+  ]
+}

@@ -158,6 +158,65 @@ def _response_error_text(
         return response.text[:500]
 
 
+def _completion_shape_metrics(
+    *,
+    message: Dict[str, Any],
+    usage: Dict[str, Any],
+    raw_completion: str,
+    visible_completion: str,
+    system_prompt: str,
+    user_prompt: str,
+) -> Dict[str, Any]:
+    """Return size/token diagnostics without changing generation behavior."""
+    completion_details = usage.get("completion_tokens_details")
+    if not isinstance(completion_details, dict):
+        completion_details = None
+
+    prompt_details = usage.get("prompt_tokens_details")
+    if not isinstance(prompt_details, dict):
+        prompt_details = None
+
+    reasoning_tokens = (
+        completion_details.get("reasoning_tokens")
+        if completion_details
+        else None
+    )
+
+    reasoning_content = (
+        message.get("reasoning_content")
+        or message.get("reasoning")
+        or ""
+    )
+    if isinstance(reasoning_content, list):
+        reasoning_content = "\n".join(
+            str(item.get("text") or item)
+            if isinstance(item, dict)
+            else str(item)
+            for item in reasoning_content
+        )
+    else:
+        reasoning_content = str(reasoning_content)
+
+    return {
+        "prompt_tokens_details": prompt_details,
+        "completion_tokens_details": completion_details,
+        "reasoning_tokens": reasoning_tokens,
+        "reasoning_content_chars": len(reasoning_content),
+        "system_prompt_chars": len(system_prompt),
+        "user_prompt_chars": len(user_prompt),
+        "prompt_chars_total": (
+            len(system_prompt)
+            + len(user_prompt)
+        ),
+        "raw_completion_chars": len(raw_completion),
+        "visible_completion_chars": len(visible_completion),
+        "removed_thinking_chars": max(
+            0,
+            len(raw_completion) - len(visible_completion),
+        ),
+    }
+
+
 class HTWLiteLLMClient:
     """
     Async generation client for the HTW OpenAI-compatible LiteLLM endpoint.
@@ -500,6 +559,10 @@ class HTWLiteLLMClient:
                 "HTW LiteLLM returned an empty completion."
             )
 
+        visible_text = _remove_thinking_block(
+            generated_text
+        )
+
         usage = data.get("usage") or {}
 
         prompt_tokens = usage.get("prompt_tokens")
@@ -526,6 +589,14 @@ class HTWLiteLLMClient:
             "completion_tokens": completion_tokens,
             "total_tokens": total_tokens,
             "enable_thinking": self.enable_thinking,
+            **_completion_shape_metrics(
+                message=message,
+                usage=usage,
+                raw_completion=generated_text,
+                visible_completion=visible_text,
+                system_prompt=system_prompt,
+                user_prompt=user_prompt,
+            ),
 
             # The OpenAI-compatible response does not expose Ollama-style
             # native model timing. HANS records end-to-end generation time
@@ -536,6 +607,4 @@ class HTWLiteLLMClient:
             "completion_eval_seconds": None,
         }
 
-        return _remove_thinking_block(
-            generated_text
-        )
+        return visible_text

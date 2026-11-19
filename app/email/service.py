@@ -3241,6 +3241,27 @@ class EmailAssistantService:
             generation_metrics[
                 "generation_total_seconds"
             ] = generation_total_seconds
+            generation_metrics[
+                "final_document_count"
+            ] = len(final_documents)
+            generation_metrics[
+                "topic_evidence_group_count"
+            ] = len(topic_evidence)
+            generation_metrics[
+                "selected_document_content_chars_capped"
+            ] = sum(
+                min(
+                    len(
+                        str(
+                            document.get("content")
+                            or document.get("chunk_text")
+                            or ""
+                        )
+                    ),
+                    settings.evidence_chars_per_document,
+                )
+                for document in final_documents
+            )
         else:
             draft = (
                 "Dear applicant,\n\n"
