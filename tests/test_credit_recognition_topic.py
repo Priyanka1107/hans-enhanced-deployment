@@ -168,4 +168,35 @@ def test_credit_recognition_prefers_changing_university_evidence() -> None:
     )
 
     assert ranked[0]["title"] == "Required documents"
-    assert ranked[1]["title"] == "Second degree programme"
+    assert all(
+        document["title"] != "Second degree programme"
+        for document in ranked
+    )
+
+
+def test_credit_recognition_keeps_second_degree_as_safe_fallback() -> None:
+    documents = [
+        {
+            "title": "Second degree programme",
+            "url": (
+                "https://www.htw-berlin.de/en/studies/applications/"
+                "special-cases/second-degree-programme/"
+            ),
+            "content": (
+                "Previous modules from your first degree can be accredited "
+                "and you may be placed in a certain subject semester."
+            ),
+        },
+    ]
+
+    ranked = filter_docs_for_programme(
+        documents,
+        {
+            "target_program": "Computer Engineering",
+        },
+        topic_id="credit_recognition",
+        min_keep=1,
+    )
+
+    assert len(ranked) == 1
+    assert ranked[0]["title"] == "Second degree programme"
