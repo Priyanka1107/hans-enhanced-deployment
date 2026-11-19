@@ -3,7 +3,10 @@ from app.email.multitopic import (
     detect_topics,
     filter_docs_for_programme,
 )
-from app.email.service import _find_topic_coverage_issues
+from app.email.service import (
+    _build_credit_geographic_scope_guidance,
+    _find_topic_coverage_issues,
+)
 
 
 INTERNATIONAL_BUSINESS_TRANSFER_EMAIL = """
@@ -200,3 +203,78 @@ def test_credit_recognition_keeps_second_degree_as_safe_fallback() -> None:
 
     assert len(ranked) == 1
     assert ranked[0]["title"] == "Second degree programme"
+
+def test_credit_scope_guidance_protects_international_applicant() -> None:
+    guidance = _build_credit_geographic_scope_guidance(
+        topics=[
+            {
+                "topic_id": "credit_recognition",
+            }
+        ],
+        email_context={
+            "country": "Morocco",
+        },
+        documents=[
+            {
+                "title": "Changing study programme or university",
+                "content": (
+                    "If you have previously been or are currently "
+                    "enrolled at another German university, HTW Berlin "
+                    "will assess previous modules and examinations."
+                ),
+            }
+        ],
+    )
+
+    assert "outside Germany (Morocco)" in guidance
+    assert "another German university" in guidance
+    assert "Do not state" in guidance
+    assert "applicability cannot be confirmed" in guidance
+
+
+def test_credit_scope_guidance_not_needed_for_german_previous_study() -> None:
+    guidance = _build_credit_geographic_scope_guidance(
+        topics=[
+            {
+                "topic_id": "credit_recognition",
+            }
+        ],
+        email_context={
+            "country": "Germany",
+        },
+        documents=[
+            {
+                "title": "Changing study programme or university",
+                "content": (
+                    "Applicants from another German university may "
+                    "apply for recognition of previous modules."
+                ),
+            }
+        ],
+    )
+
+    assert guidance == ""
+
+
+def test_credit_scope_guidance_not_added_without_german_only_source() -> None:
+    guidance = _build_credit_geographic_scope_guidance(
+        topics=[
+            {
+                "topic_id": "credit_recognition",
+            }
+        ],
+        email_context={
+            "country": "Morocco",
+        },
+        documents=[
+            {
+                "title": "Recognition of credits",
+                "content": (
+                    "Previous modules may be assessed individually."
+                ),
+            }
+        ],
+    )
+
+    assert guidance == ""
+

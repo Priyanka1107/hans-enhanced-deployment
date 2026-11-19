@@ -2275,6 +2275,70 @@ def _apply_unsupported_vpd_evidence_guard(
     ).strip()
 
 
+def _build_credit_geographic_scope_guidance(
+    *,
+    topics: List[Dict[str, Any]],
+    email_context: Dict[str, Any],
+    documents: List[Dict[str, Any]],
+) -> str:
+    """
+    Prevent German-university-specific credit guidance from being
+    generalised to applicants whose previous studies were outside Germany.
+    """
+    topic_ids = {
+        str(topic.get("topic_id") or "").strip()
+        for topic in topics or []
+    }
+
+    if "credit_recognition" not in topic_ids:
+        return ""
+
+    country = str(
+        email_context.get("country") or ""
+    ).strip()
+
+    if not country or country.lower() == "germany":
+        return ""
+
+    german_university_source = False
+
+    for document in documents or []:
+        document_text = " ".join(
+            [
+                str(document.get("title") or ""),
+                str(document.get("content") or ""),
+                str(document.get("chunk_text") or ""),
+            ]
+        ).lower()
+
+        if (
+            "german university" in document_text
+            or "german higher education institution" in document_text
+        ):
+            german_university_source = True
+            break
+
+    if not german_university_source:
+        return ""
+
+    return (
+        "CREDIT-RECOGNITION GEOGRAPHIC SCOPE:\n"
+        f"- The applicant's previous studies were outside Germany "
+        f"({country}).\n"
+        "- At least one retrieved HTW source describes the procedure "
+        "specifically for previous study at another German university.\n"
+        "- Preserve that geographic limitation exactly. Do not rewrite "
+        "'another German university' as 'another university'.\n"
+        "- Do not state that the German-university procedure automatically "
+        "applies to this applicant.\n"
+        "- If the available official evidence does not explicitly confirm "
+        "the procedure for previous study outside Germany, state that this "
+        "applicability cannot be confirmed from the available sources and "
+        "recommend individual verification by the responsible HTW office "
+        "or study programme advisor."
+    )
+
+
 def _find_audience_issues(draft: str) -> List[str]:
     """
     Detect drafts that are incorrectly addressed to HTW staff instead
@@ -3292,6 +3356,21 @@ class EmailAssistantService:
                     user_prompt
                     + "\n\n"
                     + temporal_guidance
+                )
+
+            credit_scope_guidance = (
+                _build_credit_geographic_scope_guidance(
+                    topics=topic_results,
+                    email_context=email_context,
+                    documents=final_documents,
+                )
+            )
+
+            if credit_scope_guidance:
+                user_prompt = (
+                    user_prompt
+                    + "\n\n"
+                    + credit_scope_guidance
                 )
 
             generation_start = time.perf_counter()
