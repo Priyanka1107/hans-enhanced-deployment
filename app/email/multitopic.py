@@ -1333,6 +1333,12 @@ def build_evidence_query(topic_id: str, base_query: str, context: Dict[str, Opti
         parts.append("Include application route, Hochschulstart, DoSV, HTW application portal, EU/EEA and uni-assist rules.")
     elif topic_id == "qualification_recognition":
         parts.append("Use official HTW guidance on recognition of the applicant\'s stated foreign school qualification, higher education entrance qualification, anabin, DAAD admission database, and any assessment process relevant to the applicant\'s actual question.")
+    elif topic_id == "credit_recognition":
+        parts.append(
+            "Focus on recognition of previous modules or credits for entry into a higher subject semester, "
+            "including HTW guidance for changing university or changing study programme. "
+            "Treat second-degree programme guidance only as backup unless the applicant explicitly asks about a second degree."
+        )
     elif topic_id == "motivation_letter":
         parts.append("Check whether motivation letter is listed as a programme-specific required document.")
     elif topic_id == "english_language_requirements":
@@ -2812,6 +2818,63 @@ def _topic_relevance_score(
         if "refugee" in text:
             score -= 25
 
+    elif topic_id == "credit_recognition":
+        credit_signals = (
+            "credit recognition",
+            "credit transfer",
+            "recognition of modules",
+            "recognition of credits",
+            "accreditation of modules",
+            "previous modules",
+            "completed modules",
+            "higher semester",
+            "higher subject semester",
+            "subject semester",
+            "changing study programme",
+            "changing university",
+        )
+
+        credit_score = sum(
+            10
+            for signal in credit_signals
+            if signal in text
+        )
+
+        score += min(credit_score, 50)
+
+        source_identity = (
+            title
+            + " "
+            + url
+        )
+
+        # For transfer/higher-semester questions, HTW's changing-university
+        # guidance is a better-scoped source than the special-case page for
+        # applicants pursuing a second degree.
+        if any(
+            marker in source_identity
+            for marker in (
+                "changing-study-programme-or-university",
+                "changing study programme",
+                "changing university",
+                "higher semester",
+                "higher-subject-semester",
+            )
+        ):
+            score += 35
+
+        # Keep second-degree evidence available as backup, but do not let it
+        # outrank directly applicable higher-semester/transfer guidance merely
+        # because both pages mention recognition of modules.
+        if any(
+            marker in source_identity
+            for marker in (
+                "second degree programme",
+                "second-degree-programme",
+            )
+        ):
+            score -= 35
+
     elif topic_id == "application_deadline":
         if any(
             phrase in text
@@ -2971,6 +3034,7 @@ def filter_docs_for_programme(
     ranked_general_topics = {
         "application_route",
         "qualification_recognition",
+        "credit_recognition",
     }
 
     # Most general topics preserve retrieval order. Application route and
