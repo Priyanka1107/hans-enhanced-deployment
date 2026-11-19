@@ -1505,6 +1505,14 @@ def _find_topic_coverage_issues(
                 answer,
                 flags=re.IGNORECASE,
             )
+            or re.search(
+                r"\bstudy\s+classification\b"
+                r"[^.!?\n]{0,100}"
+                r"\b(?:pr[aä]senzstudium|praesenzstudium|"
+                r"presence\s+study|presence[- ]based|campus[- ]based)\b",
+                answer,
+                flags=re.IGNORECASE,
+            )
         )
 
         time_mode_answer = bool(
