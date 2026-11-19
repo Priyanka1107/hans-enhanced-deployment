@@ -118,6 +118,9 @@ TOPIC_KEYWORDS: Dict[str, List[str]] = {
         "cambridge",
         "cefr",
         "language proof",
+        "teaching language",
+        "language of instruction",
+        "unterrichtssprache",
     ],
     "german_language_requirements": [
         "proof of german",
@@ -581,21 +584,41 @@ def _page_degrees(
     )
 
     try:
-        path = urlparse(
+        parsed_url = urlparse(
             page_url
-        ).path.lower()
+        )
+        path = parsed_url.path.lower()
+        host = parsed_url.netloc.lower()
     except Exception:
         path = ""
+        host = ""
 
-    if re.search(
-        r"(?:^|/)master(?:/|$)",
-        path,
+    # Degree-specific HTW programme sites often encode the degree
+    # in the subdomain rather than the URL path, e.g.
+    # ce-bachelor.htw-berlin.de and ce-master.htw-berlin.de.
+    # Treat either form as authoritative over legacy metadata that
+    # may incorrectly associate a page with both degree levels.
+    if (
+        re.search(
+            r"(?:^|/)master(?:/|$)",
+            path,
+        )
+        or re.search(
+            r"(?:^|[-.])master(?:[-.]|$)",
+            host,
+        )
     ):
         return {"Master"}
 
-    if re.search(
-        r"(?:^|/)bachelor(?:/|$)",
-        path,
+    if (
+        re.search(
+            r"(?:^|/)bachelor(?:/|$)",
+            path,
+        )
+        or re.search(
+            r"(?:^|[-.])bachelor(?:[-.]|$)",
+            host,
+        )
     ):
         return {"Bachelor"}
 
@@ -682,7 +705,72 @@ def _deduplicate_pages(pages: Iterable[Dict[str, Any]]) -> List[Dict[str, Any]]:
     return list(by_url.values())
 
 
+def _page_declares_different_programme(
+    context: Dict[str, Any],
+    page: Dict[str, Any],
+) -> bool:
+    """
+    Detect a cached subpage that explicitly identifies itself as a
+    different Bachelor/Master programme.
+
+    This protects against legacy cache associations where a page from the
+    same programme host was attached to the parent programme even though
+    the page itself describes a distinct or discontinued study programme.
+    """
+    target_program = _normalise(
+        context.get("target_program")
+        or context.get("matched_programme")
+        or context.get("target_programme")
+        or ""
+    )
+
+    page_title = _normalise(
+        page.get("title")
+        or ""
+    )
+
+    if not target_program or not page_title:
+        return False
+
+    # The actual programme landing page remains valid.
+    if (
+        target_program == page_title
+        or target_program in page_title
+        or page_title in target_program
+    ):
+        return False
+
+    # Avoid treating short/generic section headings as programme names.
+    if len(page_title.split()) < 2:
+        return False
+
+    page_text = _normalise(
+        page.get("text")
+        or ""
+    )
+
+    explicit_programme_markers = (
+        f"masterstudiengang {page_title}",
+        f"bachelorstudiengang {page_title}",
+        f"master programme {page_title}",
+        f"bachelor programme {page_title}",
+        f"master program {page_title}",
+        f"bachelor program {page_title}",
+    )
+
+    return any(
+        marker in page_text
+        for marker in explicit_programme_markers
+    )
+
+
 def _programme_matches_page(context: Dict[str, Any], page: Dict[str, Any]) -> bool:
+    if _page_declares_different_programme(
+        context,
+        page,
+    ):
+        return False
+
     target_program = _normalise(
         context.get("target_program")
         or context.get("matched_programme")
@@ -971,6 +1059,18 @@ def _page_score(page: Dict[str, Any], topic_id: str, context: Optional[Dict[str,
             score += 25
         if re.search(r"\b(b2|c1|c2)\b", text):
             score += 15
+
+        # The programme's teaching language directly determines whether
+        # English-language admission proof is relevant at all. A statement
+        # that the programme is taught in German must therefore count as
+        # strong programme-specific evidence for an English-requirements
+        # enquiry.
+        if (
+            "unterrichtssprache deutsch" in text
+            or "teaching language german" in text
+            or "language of instruction german" in text
+        ):
+            score += 40
     elif topic_id == "application_before_graduation":
         if "final semester" in text or "before graduation" in text:
             score += 20
