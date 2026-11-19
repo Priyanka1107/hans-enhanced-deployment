@@ -46,3 +46,21 @@ The probe sends only:
 - user: `Reply with exactly: OK`
 
 By default it runs provider-default thinking and thinking-disabled back to back and reports elapsed seconds plus provider token/reasoning counts. This script does not change HANS runtime configuration.
+
+
+## Confirmed thinking-control behavior on HTW Qwen
+
+A three-way tiny probe on 19 November 2026 showed:
+
+- provider default: 65 prompt / 28 completion / 24 reasoning tokens, 1.127 s;
+- top-level enable_thinking=false: identical token counts, 0.919 s;
+- chat_template_kwargs enable_thinking=false: 29 prompt / 2 completion / 0 reasoning tokens, 0.441 s.
+
+Therefore the current HTW OpenAI-compatible Qwen endpoint honors the chat-template thinking control, while the top-level field is ineffective for this deployment.
+
+For full HANS A/B testing, keep retrieval/evidence settings frozen and set:
+
+LITELLM_ENABLE_THINKING=false
+LITELLM_THINKING_CONTROL=chat_template_kwargs
+
+This change is experimental only and does not alter the frozen test-server candidate branch.

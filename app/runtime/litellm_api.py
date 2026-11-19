@@ -291,6 +291,11 @@ class HTWLiteLLMClient:
         else:
             self.enable_thinking = None
 
+        self.thinking_control = os.getenv(
+            "LITELLM_THINKING_CONTROL",
+            "top_level",
+        ).strip().lower() or "top_level"
+
         self.backoff_seconds = (
             5.0,
             10.0,
@@ -488,7 +493,13 @@ class HTWLiteLLMClient:
         }
 
         if self.enable_thinking is not None:
-            payload["enable_thinking"] = self.enable_thinking
+            if self.thinking_control == "chat_template_kwargs":
+                payload["chat_template_kwargs"] = {
+                    "enable_thinking": self.enable_thinking,
+            "thinking_control": self.thinking_control,
+                }
+            else:
+                payload["enable_thinking"] = self.enable_thinking
 
         timeout = httpx.Timeout(
             connect=30.0,

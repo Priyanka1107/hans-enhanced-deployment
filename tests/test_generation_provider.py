@@ -77,3 +77,34 @@ def test_unsupported_provider_fails_explicitly() -> None:
             raise AssertionError(
                 "Unsupported provider did not raise RuntimeError."
             )
+
+
+def test_litellm_chat_template_thinking_control_selection() -> None:
+    with patch.dict(
+        "os.environ",
+        {
+            "LITELLM_ENABLE_THINKING": "false",
+            "LITELLM_THINKING_CONTROL": "chat_template_kwargs",
+        },
+        clear=False,
+    ):
+        client = HTWLiteLLMClient()
+        assert client.enable_thinking is False
+        assert client.thinking_control == "chat_template_kwargs"
+
+
+def test_litellm_default_thinking_control_remains_top_level() -> None:
+    with patch.dict(
+        "os.environ",
+        {
+            "LITELLM_ENABLE_THINKING": "false",
+        },
+        clear=False,
+    ):
+        with patch.dict(
+            "os.environ",
+            {"LITELLM_THINKING_CONTROL": ""},
+            clear=False,
+        ):
+            client = HTWLiteLLMClient()
+            assert client.thinking_control == "top_level"
