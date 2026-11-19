@@ -34,3 +34,15 @@ The profiling runner records:
 - final staff-draft length and quality/validation output.
 
 No prompt text or model behavior is altered by these measurements.
+
+
+## Direct tiny-prompt probe
+
+Use `scripts/probe_qwen_runtime.py` to separate HANS prompt/retrieval cost from the Qwen inference runtime.
+
+The probe sends only:
+
+- system: `You are a concise diagnostic assistant.`
+- user: `Reply with exactly: OK`
+
+By default it runs provider-default thinking and thinking-disabled back to back and reports elapsed seconds plus provider token/reasoning counts. This script does not change HANS runtime configuration.
