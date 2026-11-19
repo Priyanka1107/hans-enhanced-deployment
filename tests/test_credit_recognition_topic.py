@@ -1,4 +1,8 @@
-from app.email.multitopic import detect_topics
+from app.email.multitopic import (
+    build_evidence_query,
+    detect_topics,
+    filter_docs_for_programme,
+)
 from app.email.service import _find_topic_coverage_issues
 
 
@@ -111,3 +115,57 @@ def test_credit_recognition_coverage_flags_missing_answer() -> None:
             "but credit transfer/recognition was not directly answered"
         )
     ]
+
+
+def test_credit_recognition_query_targets_higher_semester_transfer() -> None:
+    query = build_evidence_query(
+        "credit_recognition",
+        "Can previous university credits be recognised or transferred?",
+        {
+            "target_program": "Computer Engineering",
+        },
+    )
+
+    assert "higher subject semester" in query
+    assert "changing university" in query
+    assert "second-degree programme guidance only as backup" in query
+
+
+def test_credit_recognition_prefers_changing_university_evidence() -> None:
+    documents = [
+        {
+            "title": "Second degree programme",
+            "url": (
+                "https://www.htw-berlin.de/en/studies/applications/"
+                "special-cases/second-degree-programme/"
+            ),
+            "content": (
+                "Previous modules from your first degree can be accredited "
+                "and you may be placed in a certain subject semester."
+            ),
+        },
+        {
+            "title": "Required documents",
+            "url": (
+                "https://www.htw-berlin.de/en/studies/applications/"
+                "special-cases/changing-study-programme-or-university/"
+                "required-documents/"
+            ),
+            "content": (
+                "When changing university, previous subject semesters and "
+                "completed modules are considered for a higher semester."
+            ),
+        },
+    ]
+
+    ranked = filter_docs_for_programme(
+        documents,
+        {
+            "target_program": "Computer Engineering",
+        },
+        topic_id="credit_recognition",
+        min_keep=2,
+    )
+
+    assert ranked[0]["title"] == "Required documents"
+    assert ranked[1]["title"] == "Second degree programme"
