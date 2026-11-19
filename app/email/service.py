@@ -2999,6 +2999,38 @@ class EmailAssistantService:
                         ),
                     )
 
+            # Credit-recognition enquiries about transfer into a higher
+            # semester need a second retrieval view focused on HTW's
+            # changing-university / changing-study-programme guidance.
+            # This expands the candidate pool only; final ranking and
+            # applicability filtering still decide which evidence is used.
+            if topic_id == "credit_recognition":
+                transfer_seed = (
+                    "Recognition of previous modules or credits when "
+                    "changing university or study programme and applying "
+                    "to a higher subject semester"
+                )
+
+                transfer_query = build_evidence_query(
+                    topic_id,
+                    transfer_seed,
+                    email_context,
+                )
+
+                transfer_documents = retrieve_for_topic(
+                    connection=self.connection,
+                    query=transfer_query,
+                    top_k=retrieval_top_k,
+                )
+
+                retrieved_documents = deduplicate_documents(
+                    transfer_documents + retrieved_documents,
+                    limit=max(
+                        retrieval_top_k * 2,
+                        16,
+                    ),
+                )
+
             # The actual function signature is:
             # get_official_programme_docs(context, topic_id, limit=3)
             official_documents = get_official_programme_docs(
