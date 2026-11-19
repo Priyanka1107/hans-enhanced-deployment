@@ -24,7 +24,12 @@ VERIFY_TLS = os.getenv("LITELLM_VERIFY_TLS", "true").strip().lower() not in {
 }
 
 
-def _run_probe(label: str, enable_thinking):
+def _run_probe(
+    label: str,
+    enable_thinking,
+    *,
+    use_chat_template_kwargs: bool = False,
+):
     payload = {
         "model": MODEL,
         "stream": False,
@@ -41,7 +46,12 @@ def _run_probe(label: str, enable_thinking):
         ],
     }
     if enable_thinking is not None:
-        payload["enable_thinking"] = enable_thinking
+        if use_chat_template_kwargs:
+            payload["chat_template_kwargs"] = {
+                "enable_thinking": enable_thinking,
+            }
+        else:
+            payload["enable_thinking"] = enable_thinking
 
     started = time.perf_counter()
     with httpx.Client(
@@ -68,6 +78,15 @@ def _run_probe(label: str, enable_thinking):
     result = {
         "label": label,
         "enable_thinking_sent": enable_thinking,
+        "thinking_control": (
+            "chat_template_kwargs"
+            if use_chat_template_kwargs
+            else (
+                "top_level"
+                if enable_thinking is not None
+                else "provider_default"
+            )
+        ),
         "elapsed_seconds": elapsed,
         "model": data.get("model") or MODEL,
         "prompt_tokens": usage.get("prompt_tokens"),
@@ -96,14 +115,20 @@ def main() -> int:
 
     mode = os.getenv("HANS_QWEN_PROBE_MODE", "both").strip().lower()
     probes = []
-    if mode in {"default", "both"}:
-        probes.append(("provider-default", None))
-    if mode in {"thinking-off", "both"}:
-        probes.append(("thinking-off", False))
+    if mode in {"default", "both", "all"}:
+        probes.append(("provider-default", None, False))
+    if mode in {"thinking-off", "both", "all"}:
+        probes.append(("thinking-off-top-level", False, False))
+    if mode in {"chat-template-off", "all"}:
+        probes.append(("thinking-off-chat-template", False, True))
 
-    for label, enable_thinking in probes:
+    for label, enable_thinking, use_chat_template_kwargs in probes:
         print(f"\n=== Qwen tiny probe: {label} ===")
-        _run_probe(label, enable_thinking)
+        _run_probe(
+            label,
+            enable_thinking,
+            use_chat_template_kwargs=use_chat_template_kwargs,
+        )
 
     return 0
 
