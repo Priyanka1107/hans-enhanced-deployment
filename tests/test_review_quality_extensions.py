@@ -189,3 +189,59 @@ def test_online_application_wording_is_not_a_study_format_claim() -> None:
         for issue in issues
     )
 
+
+
+def test_before_graduation_without_official_programme_evidence_is_flagged() -> None:
+    topics = [
+        {
+            "topic_id": "application_before_graduation",
+            "label": "Application before graduation",
+            "official_source_count": 0,
+            "retrieved_source_count": 6,
+            "source_count": 1,
+        }
+    ]
+
+    issues = _find_source_applicability_issues(
+        topics
+    )
+
+    assert len(issues) == 1
+    assert issues[0].startswith(
+        "source_applicability_review:"
+    )
+
+
+def test_unresolved_before_graduation_answer_requires_review() -> None:
+    email = (
+        "I am still completing my Bachelor's degree. "
+        "Can I apply before receiving my final degree certificate?"
+    )
+
+    topics = [
+        {
+            "topic_id": "application_before_graduation",
+            "label": "Application before graduation",
+        }
+    ]
+
+    draft = (
+        "The provided evidence does not explicitly state whether "
+        "applicants may submit their application before receiving "
+        "their final degree certificate. Therefore, I cannot confirm "
+        "from the available official sources whether provisional "
+        "transcripts are accepted."
+    )
+
+    issues = _find_topic_coverage_issues(
+        draft,
+        topics,
+        email,
+    )
+
+    assert any(
+        issue.startswith(
+            "topic_unresolved: application_before_graduation"
+        )
+        for issue in issues
+    )

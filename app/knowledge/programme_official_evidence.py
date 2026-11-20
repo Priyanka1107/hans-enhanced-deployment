@@ -332,6 +332,14 @@ TOPIC_STRONG_KEYWORDS: Dict[str, List[str]] = {
         "final transcript",
         "final degree certificate",
         "submit later",
+        # Programme-specific eligibility can answer a before-graduation
+        # question without using explicit "final semester" wording.
+        # A required completed degree / degree certificate or a prerequisite
+        # that starts only after the first degree is directly relevant.
+        "bachelor degree",
+        "degree certificate",
+        "after acquiring",
+        "after the first university degree",
     ],
     "final_certificate_submission": [
         "final degree certificate",

@@ -2590,9 +2590,43 @@ def _is_wrong_document_for_topic(
             "submit the final degree certificate later",
         )
 
-        if not any(
-            signal in focused_text
+        # Some programme-specific pages answer the before-graduation question
+        # indirectly through prerequisites that can only be satisfied after the
+        # first degree has already been obtained. These are decisive eligibility
+        # constraints and must not be discarded merely because the page does not
+        # use explicit "final semester" wording.
+        normalised_focused_text = (
+            focused_text
+            .replace("’", "'")
+            .replace("`", "'")
+        )
+
+        post_degree_prerequisite_signals = (
+            "after acquiring your bachelor's degree",
+            "after acquiring the bachelor's degree",
+            "after acquiring your bachelor degree",
+            "after acquiring the bachelor degree",
+            "after the first university degree",
+            "after your first university degree",
+            "after obtaining your bachelor's degree",
+            "after obtaining the bachelor's degree",
+            "after completing your bachelor's degree",
+            "after completing the bachelor's degree",
+        )
+
+        has_before_graduation_signal = any(
+            signal in normalised_focused_text
             for signal in before_graduation_signals
+        )
+
+        has_post_degree_prerequisite = any(
+            signal in normalised_focused_text
+            for signal in post_degree_prerequisite_signals
+        )
+
+        if not (
+            has_before_graduation_signal
+            or has_post_degree_prerequisite
         ):
             return True
 
@@ -3608,6 +3642,11 @@ def assess_email_quality(
     unresolved_markers = [
         "evidence documents provided do not contain specific information",
         "evidence documents do not contain specific information",
+        "available official sources do not provide specific information",
+        "available sources do not provide specific information",
+        "specific policy is not detailed",
+        "not detailed in the provided evidence",
+        "not detailed in the available evidence",
         "available information does not specify",
         "available sources do not specify",
         "not available in our current documentation",

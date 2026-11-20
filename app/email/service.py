@@ -81,6 +81,8 @@ PROGRAMME_DIRECT_SOURCE_TOPICS = {
     "language_of_instruction",
     "study_format",
     "motivation_letter",
+    "application_before_graduation",
+    "final_certificate_submission",
 }
 
 
@@ -339,6 +341,244 @@ def _build_programme_deadline_temporal_guidance(
         return "\n".join(lines)
 
     return ""
+
+
+def _apply_before_graduation_post_degree_safeguard(
+    draft: str,
+    topics: List[Dict[str, Any]],
+    email_context: Dict[str, Any],
+    documents: List[Dict[str, Any]],
+    original_email: str,
+) -> str:
+    """
+    Deterministically add a programme-specific post-degree prerequisite
+    when the applicant is still completing the Bachelor degree.
+
+    This safeguard is deliberately narrow. It only activates when an
+    official programme-specific source explicitly requires at least one
+    year of qualified professional experience after the first/Bachelor
+    degree has been obtained.
+    """
+    original = str(draft or "").strip()
+
+    if not original:
+        return original
+
+    topic_ids = {
+        str(topic.get("topic_id") or "").strip()
+        for topic in (topics or [])
+    }
+
+    if "application_before_graduation" not in topic_ids:
+        return original
+
+    programme_status = str(
+        email_context.get("programme_status")
+        or ""
+    ).strip().lower()
+
+    if programme_status != "confirmed":
+        return original
+
+    applicant_text = str(
+        original_email or ""
+    ).lower()
+
+    applicant_still_finishing = bool(
+        re.search(
+            r"\b(?:"
+            r"currently\s+(?:completing|finishing)|"
+            r"still\s+(?:completing|finishing|studying)|"
+            r"final\s+year|"
+            r"final\s+semester|"
+            r"before\s+(?:graduation|graduating)|"
+            r"receive\s+(?:my\s+)?final\s+(?:results|transcript|certificate)"
+            r")\b",
+            applicant_text,
+            flags=re.IGNORECASE,
+        )
+    )
+
+    if not applicant_still_finishing:
+        return original
+
+    official_types = {
+        "official_programme_page_cache",
+        "programme_official_page",
+    }
+
+    post_degree_signals = (
+        "after acquiring your bachelor's degree",
+        "after acquiring the bachelor's degree",
+        "after acquiring your bachelor degree",
+        "after acquiring the bachelor degree",
+        "after the first university degree",
+        "after your first university degree",
+        "after obtaining your bachelor's degree",
+        "after obtaining the bachelor's degree",
+        "after completing your bachelor's degree",
+        "after completing the bachelor's degree",
+    )
+
+    supporting_document_number = None
+
+    for document_number, document in enumerate(
+        documents or [],
+        start=1,
+    ):
+        object_type = str(
+            document.get("object_type")
+            or document.get("type")
+            or ""
+        ).strip().lower()
+
+        if object_type not in official_types:
+            continue
+
+        content = str(
+            document.get("content")
+            or document.get("chunk_text")
+            or ""
+        )
+
+        normalised_content = (
+            content
+            .lower()
+            .replace("’", "'")
+            .replace("`", "'")
+        )
+
+        has_experience_requirement = bool(
+            re.search(
+                r"at\s+least\s+(?:1|one)\s+year\s+of\s+"
+                r"qualified\s+professional\s+experience",
+                normalised_content,
+                flags=re.IGNORECASE,
+            )
+        )
+
+        has_post_degree_timing = any(
+            signal in normalised_content
+            for signal in post_degree_signals
+        )
+
+        if (
+            has_experience_requirement
+            and has_post_degree_timing
+        ):
+            supporting_document_number = document_number
+            break
+
+    if supporting_document_number is None:
+        return original
+
+    lower_draft = original.lower()
+
+    already_explains_requirement = bool(
+        re.search(
+            r"qualified\s+professional\s+experience",
+            lower_draft,
+            flags=re.IGNORECASE,
+        )
+        and re.search(
+            r"after\s+(?:acquiring|obtaining|completing)",
+            lower_draft,
+            flags=re.IGNORECASE,
+        )
+    )
+
+    already_explains_timing_consequence = bool(
+        re.search(
+            r"(?:cannot|could\s+not|has\s+not|hasn't)\s+"
+            r"(?:yet\s+)?(?:have\s+)?started",
+            lower_draft,
+            flags=re.IGNORECASE,
+        )
+        or (
+            "post-degree period" in lower_draft
+            and "not yet" in lower_draft
+        )
+    )
+
+    already_preserves_review_boundary = (
+        "official application review" in lower_draft
+    )
+
+    if (
+        already_explains_requirement
+        and already_explains_timing_consequence
+        and already_preserves_review_boundary
+    ):
+        return original
+
+    citation = f"[Doc {supporting_document_number}]"
+
+    if already_explains_requirement:
+        safeguard_paragraph = (
+            "Application before graduation\n"
+            "Because you are still completing your Bachelor's degree, "
+            "the required post-degree period cannot yet have started. "
+            "The official application review determines whether all "
+            "admission requirements are met."
+        )
+    else:
+        safeguard_paragraph = (
+            "Application before graduation\n"
+            "The programme-specific requirements state that you need at least "
+            "one year of qualified professional experience after acquiring your "
+            f"Bachelor's degree {citation}. Because you are still completing your "
+            "Bachelor's degree, this required post-degree period cannot yet have "
+            "started. The official application review determines whether all "
+            "admission requirements are met. If the programme evidence does not "
+            "specify how provisional transcripts, pending final results, or the "
+            "final degree certificate are handled administratively, that narrower "
+            "procedural point should be confirmed with the programme admissions "
+            "team."
+        )
+
+    deadline_heading = re.search(
+        r"(?im)^Application deadline\s*$",
+        original,
+    )
+
+    if deadline_heading:
+        insertion_point = deadline_heading.start()
+
+        before = original[:insertion_point].rstrip()
+        after = original[insertion_point:].lstrip()
+
+        return (
+            before
+            + "\n\n"
+            + safeguard_paragraph
+            + "\n\n"
+            + after
+        ).strip()
+
+    signoff = re.search(
+        r"(?im)^Kind regards,\s*$",
+        original,
+    )
+
+    if signoff:
+        insertion_point = signoff.start()
+
+        before = original[:insertion_point].rstrip()
+        after = original[insertion_point:].lstrip()
+
+        return (
+            before
+            + "\n\n"
+            + safeguard_paragraph
+            + "\n\n"
+            + after
+        ).strip()
+
+    return (
+        original
+        + "\n\n"
+        + safeguard_paragraph
+    ).strip()
 
 
 def _apply_programme_deadline_temporal_safeguard(
@@ -1618,6 +1858,45 @@ def _find_topic_coverage_issues(
                 "but credit transfer/recognition was not directly answered"
             )
 
+    if "application_before_graduation" in topic_ids:
+        asks_before_graduation = bool(
+            re.search(
+                r"\b(?:before\s+(?:graduation|graduating|receiving)|"
+                r"final\s+(?:year|semester)|"
+                r"pending\s+(?:transcript|results)|"
+                r"provisional\s+transcript|"
+                r"final\s+(?:degree\s+)?certificate)\b",
+                question,
+                flags=re.IGNORECASE,
+            )
+        )
+
+        before_graduation_uncertainty = bool(
+            any(
+                phrase in answer
+                for phrase in uncertainty_phrases
+            )
+            and re.search(
+                r"\b(?:graduat|final\s+(?:degree\s+)?certificate|"
+                r"final\s+transcript|provisional\s+transcript|"
+                r"pending\s+(?:transcript|results)|"
+                r"conditional\s+admission)\b",
+                answer,
+                flags=re.IGNORECASE,
+            )
+        )
+
+        if (
+            asks_before_graduation
+            and before_graduation_uncertainty
+        ):
+            issues.append(
+                "topic_unresolved: application_before_graduation "
+                "was detected but the draft explicitly states that "
+                "the requested eligibility or document-handling rule "
+                "could not be confirmed from the available evidence"
+            )
+
     # A common language-proof follow-up asks whether a certificate may be
     # submitted after the application deadline or after conditional admission.
     # The general language requirement alone is not a direct answer to that
@@ -1687,6 +1966,7 @@ def _find_source_applicability_issues(
     sensitive_topics = {
         "application_route",
         "application_deadline",
+        "application_before_graduation",
         "admission_requirements",
         "required_documents",
         "qualification_recognition",
@@ -3469,6 +3749,14 @@ class EmailAssistantService:
             topics=topic_results,
             email_context=email_context,
             documents=final_documents,
+        )
+
+        draft = _apply_before_graduation_post_degree_safeguard(
+            draft=draft,
+            topics=topic_results,
+            email_context=email_context,
+            documents=final_documents,
+            original_email=email_text,
         )
 
         draft, display_documents = prepare_docs_for_staff_ui(
