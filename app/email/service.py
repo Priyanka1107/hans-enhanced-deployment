@@ -513,28 +513,107 @@ def _apply_before_graduation_post_degree_safeguard(
 
     citation = f"[Doc {supporting_document_number}]"
 
-    if already_explains_requirement:
-        safeguard_paragraph = (
-            "Application before graduation\n"
+    safeguard_sentences = []
+
+    if not already_explains_requirement:
+        safeguard_sentences.append(
+            "The programme-specific requirements state that you need at least "
+            "one year of qualified professional experience after acquiring your "
+            f"Bachelor's degree {citation}."
+        )
+
+    if not already_explains_timing_consequence:
+        safeguard_sentences.append(
             "Because you are still completing your Bachelor's degree, "
-            "the required post-degree period cannot yet have started. "
+            "the required post-degree period cannot yet have started."
+        )
+
+    if not already_preserves_review_boundary:
+        safeguard_sentences.append(
             "The official application review determines whether all "
             "admission requirements are met."
         )
-    else:
-        safeguard_paragraph = (
-            "Application before graduation\n"
-            "The programme-specific requirements state that you need at least "
-            "one year of qualified professional experience after acquiring your "
-            f"Bachelor's degree {citation}. Because you are still completing your "
-            "Bachelor's degree, this required post-degree period cannot yet have "
-            "started. The official application review determines whether all "
-            "admission requirements are met. If the programme evidence does not "
-            "specify how provisional transcripts, pending final results, or the "
-            "final degree certificate are handled administratively, that narrower "
-            "procedural point should be confirmed with the programme admissions "
-            "team."
+
+    procedural_document_mentioned = any(
+        signal in lower_draft
+        for signal in (
+            "provisional transcript",
+            "pending final result",
+            "final degree certificate",
+            "final transcript",
         )
+    )
+
+    procedural_handling_addressed = (
+        procedural_document_mentioned
+        and any(
+            signal in lower_draft
+            for signal in (
+                "does not explicitly state",
+                "does not state",
+                "does not specify",
+                "not specified",
+                "cannot confirm",
+                "accepted",
+                "handled",
+                "conditional admission",
+                "should be confirmed",
+                "contact the",
+            )
+        )
+    )
+
+    if (
+        not already_explains_requirement
+        and not procedural_handling_addressed
+    ):
+        safeguard_sentences.append(
+            "If the programme evidence does not specify how provisional "
+            "transcripts, pending final results, or the final degree "
+            "certificate are handled administratively, that narrower "
+            "procedural point should be confirmed with the programme "
+            "admissions team."
+        )
+
+    if not safeguard_sentences:
+        return original
+
+    safeguard_body = " ".join(
+        safeguard_sentences
+    )
+
+    paragraphs = re.split(
+        r"\n\s*\n",
+        original,
+    )
+
+    before_graduation_heading = re.compile(
+        r"(?is)^\s*(?:"
+        r"Application before graduation|"
+        r"Regarding (?:applying|application) before graduation"
+        r")\b"
+    )
+
+    for index, paragraph in enumerate(
+        paragraphs
+    ):
+        if before_graduation_heading.search(
+            paragraph
+        ):
+            paragraphs[index] = (
+                paragraph.rstrip()
+                + "\n"
+                + safeguard_body
+            )
+
+            return "\n\n".join(
+                paragraphs
+            ).strip()
+
+    safeguard_paragraph = (
+        "Application before graduation\n"
+        + safeguard_body
+    )
 
     deadline_heading = re.search(
         r"(?im)^Application deadline\s*$",
@@ -879,6 +958,13 @@ def _apply_programme_deadline_temporal_safeguard(
         "next application",
     )
 
+    explicit_deadline_section = re.compile(
+        r"(?is)^\s*(?:"
+        r"Application deadline(?:\s*$|\s*\n)|"
+        r"Regarding the application deadline\b"
+        r")"
+    )
+
     for index, paragraph in enumerate(
         paragraphs
     ):
@@ -888,10 +974,31 @@ def _apply_programme_deadline_temporal_safeguard(
             marker in lower
             for marker in deadline_markers
         ):
-            paragraphs[index] = replacement
+            cleaned_paragraphs = []
+
+            for paragraph_index, candidate in enumerate(
+                paragraphs
+            ):
+                if paragraph_index == index:
+                    cleaned_paragraphs.append(
+                        replacement
+                    )
+                    continue
+
+                if (
+                    paragraph_index > index
+                    and explicit_deadline_section.search(
+                        candidate
+                    )
+                ):
+                    continue
+
+                cleaned_paragraphs.append(
+                    candidate
+                )
 
             return "\n\n".join(
-                paragraphs
+                cleaned_paragraphs
             ).strip()
 
     return original

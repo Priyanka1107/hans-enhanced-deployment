@@ -170,3 +170,196 @@ def test_post_degree_safeguard_adds_timing_consequence_when_requirement_alone_ex
 
     assert "cannot yet have started" in lower_result
     assert "official application review" in lower_result
+
+
+def test_before_graduation_safeguard_does_not_duplicate_existing_section() -> None:
+    safeguard = service._apply_before_graduation_post_degree_safeguard
+
+    draft = (
+        "Dear applicant,\n\n"
+        "Application before graduation\n"
+        "The programme page lists a copy of the degree certificate and "
+        "grade transcript as required documents [Doc 2]. The available "
+        "official evidence does not state whether provisional transcripts "
+        "or pending final results are accepted.\n\n"
+        "Application deadline\n"
+        "The regular application period is currently open [Doc 1].\n\n"
+        "Kind regards,\n"
+        "HTW Berlin Student Services"
+    )
+
+    result = safeguard(
+        draft=draft,
+        topics=[
+            {
+                "topic_id": "application_before_graduation",
+                "label": "Application before graduation",
+            },
+            {
+                "topic_id": "application_deadline",
+                "label": "Application deadline",
+            },
+        ],
+        email_context={
+            "target_program": "Project Management and Data Science",
+            "target_degree": "Master",
+            "previous_degree": "Bachelor",
+            "programme_status": "confirmed",
+        },
+        documents=[
+            {
+                "title": "Deadline",
+                "object_type": "official_programme_page_cache",
+                "content": "Application deadline information.",
+            },
+            {
+                "title": "Applying",
+                "object_type": "official_programme_page_cache",
+                "content": (
+                    "To be considered for the programme you need "
+                    "a bachelor degree with at least 180 ECTS. "
+                    "At least one year of qualified professional experience "
+                    "after acquiring your bachelor's degree is required."
+                ),
+            },
+        ],
+        original_email=(
+            "I am currently completing my final year in BBA. "
+            "I will receive my final semester results later."
+        ),
+    )
+
+    lower_result = result.lower()
+
+    assert lower_result.count("application before graduation") == 1
+    assert "qualified professional experience" in lower_result
+    assert "after acquiring" in lower_result
+    assert "cannot yet have started" in lower_result
+    assert "provisional transcripts" in lower_result
+    assert "official application review" in lower_result
+
+
+def test_deadline_safeguard_removes_duplicate_deadline_sections(
+    monkeypatch,
+) -> None:
+    from datetime import date
+
+    safeguard = service._apply_programme_deadline_temporal_safeguard
+
+    monkeypatch.setattr(
+        service,
+        "determine_application_timeline",
+        lambda content, as_of_date=None: {
+            "periods": [
+                {
+                    "label": "Winter Semester 27/28",
+                    "status": "current",
+                    "date_kind": "period",
+                    "application_start": date(2026, 11, 1),
+                    "application_end": date(2027, 2, 28),
+                }
+            ],
+            "current_period": {
+                "label": "Winter Semester 27/28",
+                "status": "current",
+                "date_kind": "period",
+                "application_start": date(2026, 11, 1),
+                "application_end": date(2027, 2, 28),
+            },
+            "next_period": None,
+        },
+    )
+
+    draft = (
+        "Dear applicant,\n\n"
+        "Regarding the application deadline, applications are currently "
+        "open until February [Doc 1].\n\n"
+        "Application before graduation\n"
+        "The final-document procedure is not confirmed [Doc 2].\n\n"
+        "Application deadline\n"
+        "The current application period runs until February [Doc 1].\n\n"
+        "Kind regards,\n"
+        "HTW Berlin Student Services"
+    )
+
+    result = safeguard(
+        draft=draft,
+        topics=[
+            {
+                "topic_id": "application_deadline",
+                "label": "Application deadline",
+            }
+        ],
+        email_context={
+            "target_program": "Project Management and Data Science",
+            "programme_status": "confirmed",
+        },
+        documents=[
+            {
+                "title": "Applying",
+                "object_type": "official_programme_page_cache",
+                "content": "Official application period information.",
+                "metadata": {
+                    "topic_id": "application_deadline",
+                },
+            }
+        ],
+    )
+
+    lower_result = result.lower()
+
+    assert lower_result.count("application deadline") == 1
+    assert "1 november 2026" in lower_result
+    assert "28 february 2027" in lower_result
+    assert "application before graduation" in lower_result
+
+
+def test_before_graduation_required_certificate_mention_does_not_hide_procedural_boundary() -> None:
+    safeguard = service._apply_before_graduation_post_degree_safeguard
+
+    draft = (
+        "Dear applicant,\n\n"
+        "Application before graduation\n"
+        "The programme lists the final degree certificate and transcript "
+        "as required application documents [Doc 2].\n\n"
+        "Kind regards,\n"
+        "HTW Berlin Student Services"
+    )
+
+    result = safeguard(
+        draft=draft,
+        topics=[
+            {
+                "topic_id": "application_before_graduation",
+                "label": "Application before graduation",
+            }
+        ],
+        email_context={
+            "target_program": "Project Management and Data Science",
+            "target_degree": "Master",
+            "previous_degree": "Bachelor",
+            "programme_status": "confirmed",
+        },
+        documents=[
+            {
+                "title": "Applying",
+                "object_type": "official_programme_page_cache",
+                "content": (
+                    "A bachelor degree with at least 180 ECTS is required. "
+                    "At least one year of qualified professional experience "
+                    "after acquiring your bachelor's degree is required."
+                ),
+            }
+        ],
+        original_email=(
+            "I am currently completing my final year. "
+            "Can I apply while my final results are pending?"
+        ),
+    )
+
+    lower_result = result.lower()
+
+    assert lower_result.count("application before graduation") == 1
+    assert "qualified professional experience" in lower_result
+    assert "cannot yet have started" in lower_result
+    assert "should be confirmed with the programme admissions team" in lower_result
