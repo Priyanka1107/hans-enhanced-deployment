@@ -42,3 +42,16 @@ A private .env is intentionally NOT included.
 Create .env from .env.example and add the required private credentials before running.
 
 HTW VPN/network access is required for the HTW LiteLLM endpoint when outside the HTW network.
+
+FINAL RELEASE STATUS
+--------------------
+Status: FINAL package prepared for HANS TEST SERVER testing
+Validated UI version: v13
+Validated on: 2026-11-23
+Target: HTW HANS test server / staff browser testing
+Git branch: feature/2026-11-web-ui
+Package name: HANS_Web_TestServer_FINAL_TESTING_20261123.tar
+
+This is the final browser-based HANS version prepared for test-server testing.
+Mailbox direct integration and automatic sending remain disabled.
+Staff review is required before sending any generated reply.
