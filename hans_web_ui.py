@@ -77,6 +77,7 @@ def _init_state() -> None:
         'last_result': None,
         'draft_text': '',
         'last_log_path': None,
+        'export_confirmation_pending': False,
         'status_message': (
             'Staff review required before sending. '
             'Mailbox integration is disabled during testing.'
@@ -379,6 +380,149 @@ def _apply_desktop_style() -> None:
             font-weight: 600 !important;
         }
 
+
+        /* v9: compact, scrollable mailbox with true full-row hover. */
+        div[class*="st-key-mailbox_rows_scroll"] {
+            max-height: 220px;
+        }
+
+        div[class*="st-key-mailbox_rows_scroll"] [data-testid="stVerticalBlock"] {
+            gap: 0.12rem !important;
+        }
+
+        div[class*="st-key-mailbox_rows_scroll"] [data-testid="stHorizontalBlock"] {
+            gap: 0 !important;
+        }
+
+        div[class*="st-key-mailbox_rows_scroll"]
+        div[class*="st-key-mail_sender_"] button,
+        div[class*="st-key-mailbox_rows_scroll"]
+        div[class*="st-key-mail_subject_"] button,
+        div[class*="st-key-mailbox_rows_scroll"]
+        div[class*="st-key-mail_received_"] button,
+        div[class*="st-key-mailbox_rows_scroll"]
+        div[class*="st-key-mail_attach_"] button {
+            min-height: 1.72rem !important;
+            height: 1.72rem !important;
+            padding: 0.05rem 0.38rem !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+        }
+
+        div[class*="st-key-mailbox_rows_scroll"]
+        [data-testid="stHorizontalBlock"]:has(
+            div[class*="st-key-mail_"] button:hover
+        ) div[class*="st-key-mail_"] button {
+            background: #cfe4f1 !important;
+            border-color: #6f9db8 !important;
+            color: #173e56 !important;
+        }
+
+        div[class*="st-key-mailbox_rows_scroll"]
+        [data-testid="stHorizontalBlock"]:has(
+            div[class*="st-key-mail_"] button[kind="primary"]
+        ) div[class*="st-key-mail_"] button {
+            background: #176b9c !important;
+            border-color: #125b86 !important;
+            color: #ffffff !important;
+            font-weight: 600 !important;
+        }
+
+        div[class*="st-key-mailbox_rows_scroll"]
+        [data-testid="stHorizontalBlock"]:has(
+            div[class*="st-key-mail_"] button[kind="primary"]:hover
+        ) div[class*="st-key-mail_"] button {
+            background: #0f5a86 !important;
+            border-color: #0c496e !important;
+            color: #ffffff !important;
+        }
+
+
+        /* v10: clear blue hover feedback for the staff action row. */
+        div[class*="st-key-action_clear"] button:not(:disabled):hover,
+        div[class*="st-key-action_copy"] button:not(:disabled):hover,
+        div[class*="st-key-action_full"] button:not(:disabled):hover,
+        div[class*="st-key-action_export"] button:not(:disabled):hover {
+            background: #cfe4f1 !important;
+            border-color: #6f9db8 !important;
+            color: #173e56 !important;
+        }
+
+        div[class*="st-key-action_generate"] button:not(:disabled):hover {
+            background: #0f5a86 !important;
+            border-color: #0c496e !important;
+            color: #ffffff !important;
+        }
+
+        /* Keep disabled mailbox-draft/send controls visibly disabled. */
+        div[class*="st-key-action_save_draft"] button:disabled,
+        div[class*="st-key-action_send"] button:disabled {
+            background: #f7f8f9 !important;
+            color: #8a939a !important;
+            border-color: #d2d7db !important;
+            opacity: 1 !important;
+        }
+
+        .hans-generation-indicator {
+            height: 1.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0 0.65rem;
+            border: 1px solid #93c5a1;
+            border-radius: 3px;
+            background: #eef9f0;
+            color: #23783a;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 0.76rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .hans-generation-dots {
+            display: inline-flex;
+            gap: 0.18rem;
+            align-items: center;
+        }
+
+        .hans-generation-dots span {
+            width: 0.42rem;
+            height: 0.42rem;
+            border-radius: 50%;
+            background: #2f9e44;
+            display: inline-block;
+            animation: hansGenerationPulse 1.05s infinite ease-in-out;
+        }
+
+        .hans-generation-dots span:nth-child(2) { animation-delay: 0.15s; }
+        .hans-generation-dots span:nth-child(3) { animation-delay: 0.30s; }
+
+        @keyframes hansGenerationPulse {
+            0%, 70%, 100% {
+                transform: scale(0.72);
+                opacity: 0.42;
+            }
+            35% {
+                transform: scale(1.15);
+                opacity: 1;
+            }
+        }
+
+        .hans-generation-complete {
+            height: 1.9rem;
+            display: flex;
+            align-items: center;
+            padding: 0 0.65rem;
+            border: 1px solid #93c5a1;
+            border-radius: 3px;
+            background: #eef9f0;
+            color: #23783a;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 0.74rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
         .draft-source-links {
             margin-top: 0.35rem;
             padding: 0.45rem 0.55rem;
@@ -451,7 +595,6 @@ def _add_uploaded_emails(uploaded_files: list[Any]) -> None:
             'parsed': parsed,
         })
         st.session_state.seen_upload_hashes.add(digest)
-        st.session_state.selected_pending_id = item_id
         added += 1
     parts: list[str] = []
     if added:
@@ -473,10 +616,7 @@ def _remove_pending(item_id: str | None) -> bool:
     ]
     removed = len(st.session_state.pending_emails) < before
     if removed and st.session_state.selected_pending_id == item_id:
-        st.session_state.selected_pending_id = (
-            st.session_state.pending_emails[0]['id']
-            if st.session_state.pending_emails else None
-        )
+        st.session_state.selected_pending_id = None
     return removed
 
 
@@ -490,6 +630,7 @@ def _clear_editor() -> None:
     st.session_state.last_result = None
     st.session_state.draft_text = ''
     st.session_state.last_log_path = None
+    st.session_state.export_confirmation_pending = False
 
 
 def _load_selected() -> None:
@@ -508,6 +649,7 @@ def _load_selected() -> None:
     st.session_state.last_result = None
     st.session_state.draft_text = ''
     st.session_state.last_log_path = None
+    st.session_state.export_confirmation_pending = False
     st.session_state.status_message = (
         'Selected email loaded. No draft has been generated yet.'
     )
@@ -579,14 +721,58 @@ def _generate() -> None:
         st.error(f'HANS draft generation failed: {exc}')
 
 
-def _mark_exported() -> None:
+def _clear_editor_action() -> None:
+    _clear_editor()
+    st.session_state.status_message = (
+        'Input and generated result cleared.'
+    )
+
+
+def _keep_export_pending() -> None:
+    st.session_state.export_confirmation_pending = False
+    st.session_state.status_message = (
+        'Export was not confirmed. The incoming email '
+        'remains in the pending list.'
+    )
+
+
+def _mark_export_requested() -> None:
+    st.session_state.export_confirmation_pending = True
+    st.session_state.status_message = (
+        'Download started. After the browser finishes saving the .eml, '
+        'click "File saved — remove processed email". '
+        'If you cancelled the save dialog, click "Keep pending".'
+    )
+
+
+def _confirm_exported_action() -> None:
     loaded_id = st.session_state.loaded_email_id
-    if loaded_id and _remove_pending(loaded_id):
-        _clear_editor()
+
+    if not loaded_id:
+        st.session_state.export_confirmation_pending = False
         st.session_state.status_message = (
-            'Reply exported successfully. The processed incoming .eml '
-            'was removed from the pending list.'
+            'Export could not be confirmed because no loaded incoming email '
+            'is associated with this draft.'
         )
+        return
+
+    removed = _remove_pending(loaded_id)
+
+    if not removed:
+        st.session_state.export_confirmation_pending = False
+        st.session_state.status_message = (
+            'The exported email was not found in the pending list. '
+            'No other email was removed.'
+        )
+        return
+
+    _clear_editor()
+    st.session_state.selected_pending_id = None
+    st.session_state.export_confirmation_pending = False
+    st.session_state.status_message = (
+        'Reply export confirmed. The processed incoming .eml was removed '
+        'from the pending list.'
+    )
 
 
 def _health_status() -> tuple[bool, str]:
@@ -1019,10 +1205,12 @@ def _render_mailbox() -> None:
         )
         pending = st.session_state.pending_emails
         selected_item = _pending_by_id(st.session_state.selected_pending_id)
+
         info_col, view_col, load_col, remove_col, add_col, refresh_col = st.columns(
             [5.5, 1.15, 1.25, 1.55, 1.1, 1.1],
             gap='small',
         )
+
         with info_col:
             st.markdown(
                 '<div class="selected-line">'
@@ -1030,9 +1218,11 @@ def _render_mailbox() -> None:
                 + '</div>',
                 unsafe_allow_html=True,
             )
+
         attachments_available = bool(
             selected_item and selected_item['parsed']['attachments']
         )
+
         with view_col:
             if st.button(
                 'View attachment',
@@ -1040,6 +1230,7 @@ def _render_mailbox() -> None:
                 use_container_width=True,
             ):
                 _attachment_dialog(st.session_state.selected_pending_id)
+
         with load_col:
             if st.button(
                 'Load selected email',
@@ -1048,6 +1239,7 @@ def _render_mailbox() -> None:
             ):
                 _load_selected()
                 st.rerun()
+
         with remove_col:
             if st.button(
                 'Remove selected .eml',
@@ -1064,6 +1256,7 @@ def _render_mailbox() -> None:
                         'The original file was not deleted.'
                     )
                 st.rerun()
+
         with add_col:
             with st.popover('Add .eml files', use_container_width=True):
                 uploaded = st.file_uploader(
@@ -1075,8 +1268,13 @@ def _render_mailbox() -> None:
                 )
                 if uploaded:
                     _add_uploaded_emails(uploaded)
+
         with refresh_col:
-            st.button('Refresh inbox', disabled=True, use_container_width=True)
+            st.button(
+                'Refresh inbox',
+                disabled=True,
+                use_container_width=True,
+            )
 
         if pending:
             st.markdown(
@@ -1091,92 +1289,62 @@ def _render_mailbox() -> None:
                 unsafe_allow_html=True,
             )
 
-            for item in pending:
-                parsed = item[
-                    "parsed"
-                ]
-
-                selected = (
-                    item["id"]
-                    == st.session_state.selected_pending_id
-                )
-
-                row_class = (
-                    "mailbox-row-wrap mailbox-row-selected"
-                    if selected
-                    else "mailbox-row-wrap"
-                )
-
-                st.markdown(
-                    f'<div class="{row_class}">',
-                    unsafe_allow_html=True,
-                )
-
-                sender_col, subject_col, received_col, attachment_col = (
-                    st.columns(
-                        [1.25, 2.2, 1.55, 0.55],
-                        gap="small",
+            with st.container(
+                height=220,
+                border=False,
+                key='mailbox_rows_scroll',
+            ):
+                for item in pending:
+                    parsed = item['parsed']
+                    selected = (
+                        item['id']
+                        == st.session_state.selected_pending_id
                     )
-                )
 
-                with sender_col:
-                    if st.button(
-                        parsed["sender_email"] or "",
-                        key=f"mail_sender_{item['id']}",
-                        type=("primary" if selected else "secondary"),
-                        use_container_width=True,
-                    ):
-                        st.session_state.selected_pending_id = (
-                            item["id"]
-                        )
+                    sender_col, subject_col, received_col, attachment_col = st.columns(
+                        [1.25, 2.2, 1.55, 0.55],
+                        gap='small',
+                    )
+
+                    def select_row() -> None:
+                        st.session_state.selected_pending_id = item['id']
                         st.rerun()
 
-                with subject_col:
-                    if st.button(
-                        parsed["subject"] or "",
-                        key=f"mail_subject_{item['id']}",
-                        type=("primary" if selected else "secondary"),
-                        use_container_width=True,
-                    ):
-                        st.session_state.selected_pending_id = (
-                            item["id"]
-                        )
-                        st.rerun()
+                    with sender_col:
+                        if st.button(
+                            parsed['sender_email'] or '',
+                            key=f"mail_sender_{item['id']}",
+                            type=('primary' if selected else 'secondary'),
+                            use_container_width=True,
+                        ):
+                            select_row()
 
-                with received_col:
-                    if st.button(
-                        parsed["received_at"] or "",
-                        key=f"mail_received_{item['id']}",
-                        type=("primary" if selected else "secondary"),
-                        use_container_width=True,
-                    ):
-                        st.session_state.selected_pending_id = (
-                            item["id"]
-                        )
-                        st.rerun()
+                    with subject_col:
+                        if st.button(
+                            parsed['subject'] or '',
+                            key=f"mail_subject_{item['id']}",
+                            type=('primary' if selected else 'secondary'),
+                            use_container_width=True,
+                        ):
+                            select_row()
 
-                with attachment_col:
-                    if st.button(
-                        str(
-                            len(
-                                parsed[
-                                    "attachments"
-                                ]
-                            )
-                        ),
-                        key=f"mail_attach_{item['id']}",
-                        type=("primary" if selected else "secondary"),
-                        use_container_width=True,
-                    ):
-                        st.session_state.selected_pending_id = (
-                            item["id"]
-                        )
-                        st.rerun()
+                    with received_col:
+                        if st.button(
+                            parsed['received_at'] or '',
+                            key=f"mail_received_{item['id']}",
+                            type=('primary' if selected else 'secondary'),
+                            use_container_width=True,
+                        ):
+                            select_row()
 
-                st.markdown(
-                    "</div>",
-                    unsafe_allow_html=True,
-                )
+                    with attachment_col:
+                        if st.button(
+                            str(len(parsed['attachments'])),
+                            key=f"mail_attach_{item['id']}",
+                            type=('primary' if selected else 'secondary'),
+                            use_container_width=True,
+                        ):
+                            select_row()
 
         else:
             st.caption('No local .eml files are currently pending.')
@@ -1217,6 +1385,7 @@ def _render_action_row() -> None:
     draft = st.session_state.draft_text.strip()
     eml_bytes: bytes | None = None
     export_name = 'HANS_Draft.eml'
+
     if draft:
         try:
             eml_bytes = build_reply_eml_bytes(
@@ -1232,24 +1401,58 @@ def _render_action_row() -> None:
         [1.35, 0.7, 0.95, 1.05, 1.45, 1.55, 0.95, 4.0],
         gap='small',
     )
+
+    generation_slot = columns[7].empty()
+
     with columns[0]:
-        if st.button('Generate staff draft', type='primary', use_container_width=True):
-            with st.spinner('Generating staff draft...'):
-                _generate()
+        if st.button(
+            'Generate staff draft',
+            type='primary',
+            use_container_width=True,
+            key='action_generate',
+        ):
+            generation_slot.markdown(
+                (
+                    '<div class="hans-generation-indicator">'
+                    '<span class="hans-generation-dots">'
+                    '<span></span><span></span><span></span>'
+                    '</span>'
+                    '<span>HANS is generating the staff draft…</span>'
+                    '</div>'
+                ),
+                unsafe_allow_html=True,
+            )
+            _generate()
             st.rerun()
+
     with columns[1]:
-        if st.button('Clear', use_container_width=True):
-            _clear_editor()
-            st.session_state.status_message = 'Input and generated result cleared.'
-            st.rerun()
+        st.button(
+            'Clear',
+            use_container_width=True,
+            key='action_clear',
+            on_click=_clear_editor_action,
+        )
+
     with columns[2]:
-        if st.button('Copy draft', disabled=not draft, use_container_width=True):
+        if st.button(
+            'Copy draft',
+            disabled=not draft,
+            use_container_width=True,
+            key='action_copy',
+        ):
             st.session_state.status_message = (
                 'Draft is ready to copy from the Staff draft field.'
             )
+
     with columns[3]:
-        if st.button('Open full draft', disabled=not draft, use_container_width=True):
+        if st.button(
+            'Open full draft',
+            disabled=not draft,
+            use_container_width=True,
+            key='action_full',
+        ):
             _full_draft_dialog()
+
     with columns[4]:
         st.download_button(
             'Export reply as .eml',
@@ -1258,22 +1461,63 @@ def _render_action_row() -> None:
             mime='message/rfc822',
             disabled=eml_bytes is None,
             use_container_width=True,
-            on_click=_mark_exported if eml_bytes else None,
+            on_click=_mark_export_requested if eml_bytes else None,
+            key='action_export',
         )
+
     with columns[5]:
-        st.button('Save to mailbox drafts', disabled=True, use_container_width=True)
+        st.button(
+            'Save to mailbox drafts',
+            disabled=True,
+            use_container_width=True,
+            key='action_save_draft',
+        )
+
     with columns[6]:
-        st.button('Send email', disabled=True, use_container_width=True)
-    with columns[7]:
-        if result:
-            timing = result.get('timing') or {}
-            generation = (
-                (result.get('observability') or {}).get('generation') or {}
-            )
-            st.caption(
-                f"Generation {generation.get('generation_total_seconds', '—')} s"
-                f" · Total {timing.get('total', '—')} s"
-            )
+        st.button(
+            'Send email',
+            disabled=True,
+            use_container_width=True,
+            key='action_send',
+        )
+
+    if st.session_state.export_confirmation_pending and eml_bytes is not None:
+        with columns[7]:
+            confirm_col, cancel_col = st.columns([1.8, 0.9], gap='small')
+
+            with confirm_col:
+                st.button(
+                    '✓ File saved — remove processed email',
+                    type='primary',
+                    use_container_width=True,
+                    key='action_confirm_export',
+                    on_click=_confirm_exported_action,
+                )
+
+            with cancel_col:
+                st.button(
+                    'Keep pending',
+                    use_container_width=True,
+                    key='action_keep_pending',
+                    on_click=_keep_export_pending,
+                )
+
+    elif result:
+        timing = result.get('timing') or {}
+        generation = (
+            (result.get('observability') or {}).get('generation')
+            or {}
+        )
+        generation_slot.markdown(
+            (
+                '<div class="hans-generation-complete">'
+                '✓ Draft ready'
+                f" · Generation {html.escape(str(generation.get('generation_total_seconds', '—')))} s"
+                f" · Total {html.escape(str(timing.get('total', '—')))} s"
+                '</div>'
+            ),
+            unsafe_allow_html=True,
+        )
 
 
 def _render_results() -> None:
