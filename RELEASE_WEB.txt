@@ -1,0 +1,44 @@
+﻿HANS Web Test Server Release
+
+Release date: 2026-11-23
+Release name: HANS_Web_TestServer_20261123
+
+Base frozen release:
+HANS_TestServer_6df5eb6.tar
+
+Base commit:
+6df5eb6482df63dc4088f6cff93d47fed0d486d7
+
+Frontend:
+Streamlit 1.67.0
+PyArrow 25.0.1
+NumPy 1.26.4
+
+Backend:
+FastAPI
+Generation provider: htw_litellm
+Generation model: qwen3.8-27b
+Embedding model: BAAI/bge-base-en-v1.5
+
+Validated runtime:
+LITELLM_ENABLE_THINKING=false
+Reasoning tokens expected: 0
+Mailbox integration: disabled
+Automatic sending: disabled
+
+Web UI:
+hans_web_ui.py
+
+Backend:
+enhanced_api_server.py
+
+Web UI port:
+8501
+
+Backend API port:
+8009
+
+A private .env is intentionally NOT included.
+Create .env from .env.example and add the required private credentials before running.
+
+HTW VPN/network access is required for the HTW LiteLLM endpoint when outside the HTW network.
