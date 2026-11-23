@@ -13,7 +13,6 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 OUTPUT_DIR = (
     PROJECT_ROOT
-    / "runtime_data"
     / "evaluation"
     / "ui_runs"
 )

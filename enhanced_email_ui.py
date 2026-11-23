@@ -16,8 +16,13 @@ from typing import Any, Dict
 import requests
 import tkinter as tk
 from dotenv import load_dotenv
-from tkinter import messagebox, scrolledtext, ttk
+from tkinter import filedialog, messagebox, scrolledtext, ttk
 
+from app.ui.eml_file import (
+    build_reply_eml_bytes,
+    extract_eml_attachment,
+    parse_eml_bytes,
+)
 from app.ui.mailbox_client import (
     MailboxUIError,
     attachment_summary,
@@ -67,6 +72,11 @@ TEST_CASES_PATH = (
 )
 
 CUSTOM_CASE_ID = "CUSTOM-MANUAL"
+
+# During the current ASS testing phase, HANS does not connect
+# directly to a staff mailbox. Incoming .eml files are handled
+# locally and reviewed replies are exported for manual sending.
+MAILBOX_TESTING_MODE = True
 
 VIEWABLE_ATTACHMENT_EXTENSIONS = {
     ".pdf",
@@ -142,6 +152,7 @@ class EnhancedHANSEmailUI:
         self.last_result: Dict[str, Any] | None = None
         self.test_cases = _load_test_cases()
         self.mailbox_messages: list[Dict[str, Any]] = []
+        self.loaded_local_eml_path: str | None = None
 
         self._build_ui()
         self._load_default_case()
@@ -243,8 +254,9 @@ class EnhancedHANSEmailUI:
 
         self.mailbox_info_var = tk.StringVar(
             value=(
-                "Mailbox not loaded. Refreshing the inbox "
-                "does not call Qwen."
+                "Mailbox integration is disabled for this testing "
+                "phase. Add local .eml files or paste an inquiry "
+                "manually."
             )
         )
 
@@ -261,9 +273,31 @@ class EnhancedHANSEmailUI:
             mailbox_toolbar,
             text="Refresh inbox",
             command=self._refresh_mailbox_async,
+            state="disabled",
         )
         self.mailbox_refresh_button.pack(
             side=tk.RIGHT,
+        )
+
+        self.add_eml_button = ttk.Button(
+            mailbox_toolbar,
+            text="Add .eml files",
+            command=self._add_local_eml_files,
+        )
+        self.add_eml_button.pack(
+            side=tk.RIGHT,
+            padx=(0, 8),
+        )
+
+        self.remove_eml_button = ttk.Button(
+            mailbox_toolbar,
+            text="Remove selected .eml",
+            command=self._remove_selected_local_eml,
+            state="disabled",
+        )
+        self.remove_eml_button.pack(
+            side=tk.RIGHT,
+            padx=(0, 8),
         )
 
         self.mailbox_load_button = ttk.Button(
@@ -561,6 +595,16 @@ class EnhancedHANSEmailUI:
             padx=(8, 0),
         )
 
+        self.export_eml_button = ttk.Button(
+            button_row,
+            text="Export reply as .eml",
+            command=self._export_reply_eml,
+        )
+        self.export_eml_button.pack(
+            side=tk.LEFT,
+            padx=(8, 0),
+        )
+
         self.save_draft_button = ttk.Button(
             button_row,
             text="Save to mailbox drafts",
@@ -657,7 +701,7 @@ class EnhancedHANSEmailUI:
         self.footer_var = tk.StringVar(
             value=(
                 "Staff review required before sending. "
-                "Automatic sending is disabled."
+                "Mailbox integration is disabled during testing."
             )
         )
 
@@ -707,6 +751,7 @@ class EnhancedHANSEmailUI:
         self._load_custom_case()
 
     def _load_custom_case(self) -> None:
+        self.loaded_local_eml_path = None
         self.test_case_var.set(CUSTOM_CASE_ID)
         self.student_email_var.set("")
         self.subject_var.set("")
@@ -809,6 +854,383 @@ class EnhancedHANSEmailUI:
         self.details_text.delete(
             "1.0",
             tk.END,
+        )
+
+
+    def _add_local_eml_files(self) -> None:
+        paths = filedialog.askopenfilenames(
+            title="Add incoming email files (.eml)",
+            filetypes=[
+                ("Email message", "*.eml"),
+                ("All files", "*.*"),
+            ],
+        )
+
+        if not paths:
+            return
+
+        existing_paths = {
+            str(
+                Path(
+                    message.get("local_eml_path")
+                    or ""
+                ).resolve()
+            ).lower()
+            for message in self.mailbox_messages
+            if (
+                message.get("source_type")
+                == "local_eml"
+                and message.get("local_eml_path")
+            )
+        }
+
+        added = 0
+        duplicate_count = 0
+        errors: list[str] = []
+
+        for path_value in paths:
+            path = Path(path_value)
+
+            try:
+                resolved_path = str(
+                    path.resolve()
+                )
+
+                if resolved_path.lower() in existing_paths:
+                    duplicate_count += 1
+                    continue
+
+                parsed = parse_eml_bytes(
+                    path.read_bytes()
+                )
+
+            except Exception as exc:
+                errors.append(
+                    f"{path.name}: {exc}"
+                )
+                continue
+
+            identifier = uuid.uuid4().hex[:8]
+
+            self.mailbox_messages.append(
+                {
+                    "source_type": "local_eml",
+                    "local_eml_path": resolved_path,
+                    "student_email": parsed[
+                        "sender_email"
+                    ],
+                    "subject": parsed[
+                        "subject"
+                    ],
+                    "received_at": parsed[
+                        "received_at"
+                    ],
+                    "email_text": parsed[
+                        "body"
+                    ],
+                    "thread_id": (
+                        f"ui-thread-{identifier}"
+                    ),
+                    "email_id": (
+                        f"ui-email-{identifier}"
+                    ),
+                    "attachments": parsed[
+                        "attachments"
+                    ],
+                    "attachment_count": len(
+                        parsed["attachments"]
+                    ),
+                }
+            )
+
+            existing_paths.add(
+                resolved_path.lower()
+            )
+            added += 1
+
+        if added:
+            self._display_mailbox_messages(
+                self.mailbox_messages
+            )
+
+            last_iid = str(
+                len(self.mailbox_messages)
+                - 1
+            )
+
+            if self.mailbox_tree.exists(
+                last_iid
+            ):
+                self.mailbox_tree.selection_set(
+                    last_iid
+                )
+                self.mailbox_tree.focus(
+                    last_iid
+                )
+                self.mailbox_tree.see(
+                    last_iid
+                )
+                self._on_mailbox_selection()
+
+            self.mailbox_info_var.set(
+                f"{len(self.mailbox_messages)} local .eml "
+                "file(s) loaded. Select one and choose "
+                "'Load selected email'."
+            )
+
+            self.footer_var.set(
+                f"Added {added} local .eml file(s)."
+            )
+
+        elif duplicate_count and not errors:
+            self.footer_var.set(
+                "The selected .eml file(s) were already loaded."
+            )
+
+        if errors:
+            messagebox.showwarning(
+                "Some .eml files could not be loaded",
+                "\n".join(errors),
+            )
+
+
+    def _remove_local_eml_by_path(
+        self,
+        eml_path: str,
+    ) -> bool:
+        target_path = str(
+            Path(eml_path).resolve()
+        ).lower()
+
+        original_count = len(
+            self.mailbox_messages
+        )
+
+        self.mailbox_messages = [
+            message
+            for message in self.mailbox_messages
+            if not (
+                message.get("source_type")
+                == "local_eml"
+                and str(
+                    Path(
+                        message.get("local_eml_path")
+                        or ""
+                    ).resolve()
+                ).lower()
+                == target_path
+            )
+        ]
+
+        removed = (
+            len(self.mailbox_messages)
+            < original_count
+        )
+
+        if removed:
+            self._display_mailbox_messages(
+                self.mailbox_messages
+            )
+
+        return removed
+
+    def _remove_selected_local_eml(self) -> None:
+        selection = (
+            self.mailbox_tree.selection()
+        )
+
+        if not selection:
+            messagebox.showinfo(
+                "No email selected",
+                "Select a local .eml file first.",
+            )
+            return
+
+        try:
+            index = int(
+                selection[0]
+            )
+            message = (
+                self.mailbox_messages[
+                    index
+                ]
+            )
+        except (
+            ValueError,
+            IndexError,
+        ):
+            messagebox.showerror(
+                "Selection error",
+                "The selected email is no longer available.",
+            )
+            return
+
+        if (
+            message.get("source_type")
+            != "local_eml"
+        ):
+            messagebox.showinfo(
+                "Cannot remove this email",
+                (
+                    "Only locally added .eml files can be "
+                    "removed from this testing list."
+                ),
+            )
+            return
+
+        eml_path = str(
+            message.get(
+                "local_eml_path"
+            )
+            or ""
+        )
+
+        if not eml_path:
+            return
+
+        was_loaded = (
+            self.loaded_local_eml_path
+            is not None
+            and str(
+                Path(
+                    self.loaded_local_eml_path
+                ).resolve()
+            ).lower()
+            == str(
+                Path(
+                    eml_path
+                ).resolve()
+            ).lower()
+        )
+
+        removed = (
+            self._remove_local_eml_by_path(
+                eml_path
+            )
+        )
+
+        if not removed:
+            return
+
+        if was_loaded:
+            self._load_custom_case()
+            self.last_result = None
+
+        self.footer_var.set(
+            "Selected local .eml removed from the pending "
+            "list. The original file was not deleted."
+        )
+
+    def _export_reply_eml(self) -> None:
+        draft = self.draft_text.get(
+            "1.0",
+            tk.END,
+        ).strip()
+
+        try:
+            eml_bytes = build_reply_eml_bytes(
+                recipient=(
+                    self.student_email_var.get()
+                ),
+                subject=(
+                    self.subject_var.get()
+                ),
+                body=draft,
+            )
+        except Exception as exc:
+            messagebox.showerror(
+                "Cannot export .eml file",
+                str(exc),
+            )
+            return
+
+        subject_for_filename = (
+            self.subject_var.get().strip()
+            or "HANS_Draft"
+        )
+
+        invalid_filename_chars = '<>:"/\\|?*'
+
+        clean_subject = "".join(
+            "_"
+            if (
+                character in invalid_filename_chars
+                or ord(character) < 32
+            )
+            else character
+            for character in subject_for_filename
+        )
+
+        clean_subject = " ".join(
+            clean_subject.split()
+        ).strip(" .")
+
+        if not clean_subject:
+            clean_subject = "HANS_Draft"
+
+        clean_subject = (
+            clean_subject[:100].rstrip(" .")
+        )
+
+        suggested_filename = (
+            f"{clean_subject}_"
+            f"{time.strftime('%Y%m%d_%H%M%S')}"
+            ".eml"
+        )
+
+        path = filedialog.asksaveasfilename(
+            title="Export reviewed reply as .eml",
+            defaultextension=".eml",
+            initialfile=suggested_filename,
+            filetypes=[
+                ("Email message", "*.eml"),
+                ("All files", "*.*"),
+            ],
+        )
+
+        if not path:
+            return
+
+        try:
+            Path(path).write_bytes(
+                eml_bytes
+            )
+        except Exception as exc:
+            messagebox.showerror(
+                "Cannot save .eml file",
+                str(exc),
+            )
+            return
+
+        processed_removed = False
+
+        if self.loaded_local_eml_path:
+            processed_removed = (
+                self._remove_local_eml_by_path(
+                    self.loaded_local_eml_path
+                )
+            )
+
+        if processed_removed:
+            self._load_custom_case()
+            self.last_result = None
+            self.footer_var.set(
+                "Reply exported successfully. The processed "
+                "incoming .eml was removed from the pending list."
+            )
+        else:
+            self.footer_var.set(
+                "Reviewed reply exported as .eml: "
+                f"{Path(path).name}"
+            )
+
+        messagebox.showinfo(
+            "EML file created",
+            (
+                "The reviewed reply was saved as an .eml file.\n\n"
+                "Open it with the configured mail client, review it "
+                "once more, and send it manually."
+            ),
         )
 
     def _check_api_async(self) -> None:
@@ -956,11 +1378,13 @@ class EnhancedHANSEmailUI:
         self,
         status: Dict[str, Any],
     ) -> None:
-        write_enabled = bool(
-            status.get("write_enabled")
+        write_enabled = (
+            not MAILBOX_TESTING_MODE
+            and bool(status.get("write_enabled"))
         )
-        send_enabled = bool(
-            status.get("send_enabled")
+        send_enabled = (
+            not MAILBOX_TESTING_MODE
+            and bool(status.get("send_enabled"))
         )
 
         self.save_draft_button.configure(
@@ -1013,10 +1437,17 @@ class EnhancedHANSEmailUI:
             )
 
         self.mailbox_refresh_button.configure(
-            state="normal",
+            state=(
+                "disabled"
+                if MAILBOX_TESTING_MODE
+                else "normal"
+            ),
             text="Refresh inbox",
         )
         self.mailbox_load_button.configure(
+            state="disabled",
+        )
+        self.remove_eml_button.configure(
             state="disabled",
         )
         self.view_attachment_button.configure(
@@ -1025,12 +1456,12 @@ class EnhancedHANSEmailUI:
 
         if messages:
             self.mailbox_info_var.set(
-                f"{len(messages)} unread message(s) loaded. "
+                f"{len(messages)} email(s) loaded. "
                 "Select an email to inspect it."
             )
         else:
             self.mailbox_info_var.set(
-                "No unread messages found."
+                "No email files loaded."
             )
 
     def _display_mailbox_error(
@@ -1038,10 +1469,17 @@ class EnhancedHANSEmailUI:
         error: str,
     ) -> None:
         self.mailbox_refresh_button.configure(
-            state="normal",
+            state=(
+                "disabled"
+                if MAILBOX_TESTING_MODE
+                else "normal"
+            ),
             text="Refresh inbox",
         )
         self.mailbox_load_button.configure(
+            state="disabled",
+        )
+        self.remove_eml_button.configure(
             state="disabled",
         )
         self.view_attachment_button.configure(
@@ -1070,6 +1508,10 @@ class EnhancedHANSEmailUI:
             )
         )
 
+        self.remove_eml_button.configure(
+            state="disabled",
+        )
+
         if not selection:
             self.view_attachment_button.configure(
                 state="disabled",
@@ -1084,6 +1526,11 @@ class EnhancedHANSEmailUI:
                 state="disabled",
             )
             return
+
+        if message.get("source_type") == "local_eml":
+            self.remove_eml_button.configure(
+                state="normal",
+            )
 
         supported_attachments = self._supported_attachments(
             message
@@ -1201,14 +1648,27 @@ class EnhancedHANSEmailUI:
             "HANS is not analysing its contents."
         )
 
-        threading.Thread(
-            target=self._view_attachment,
-            args=(
-                str(message.get("email_id") or ""),
-                attachment_index,
-            ),
-            daemon=True,
-        ).start()
+        if message.get("source_type") == "local_eml":
+            threading.Thread(
+                target=self._view_local_eml_attachment,
+                args=(
+                    str(
+                        message.get("local_eml_path")
+                        or ""
+                    ),
+                    attachment_index,
+                ),
+                daemon=True,
+            ).start()
+        else:
+            threading.Thread(
+                target=self._view_attachment,
+                args=(
+                    str(message.get("email_id") or ""),
+                    attachment_index,
+                ),
+                daemon=True,
+            ).start()
 
     def _choose_attachment(
         self,
@@ -1341,6 +1801,118 @@ class EnhancedHANSEmailUI:
 
         return result["index"]
 
+
+    def _view_local_eml_attachment(
+        self,
+        eml_path: str,
+        attachment_index: int,
+    ) -> None:
+        try:
+            path = Path(
+                eml_path
+            )
+
+            if not path.is_file():
+                raise FileNotFoundError(
+                    "The original local .eml file is no longer available."
+                )
+
+            content, filename, _content_type = (
+                extract_eml_attachment(
+                    path.read_bytes(),
+                    attachment_index,
+                )
+            )
+
+            suffix = Path(
+                filename
+            ).suffix.lower()
+
+            if (
+                suffix
+                not in VIEWABLE_ATTACHMENT_EXTENSIONS
+            ):
+                raise MailboxUIError(
+                    "This attachment type is not allowed for viewing."
+                )
+
+            safe_name = Path(
+                filename
+            ).name
+
+            safe_name = re.sub(
+                r'[<>:"/\\|?*\x00-\x1F]',
+                "_",
+                safe_name,
+            )
+
+            if not safe_name:
+                safe_name = (
+                    f"attachment{suffix}"
+                )
+
+            target = (
+                Path(
+                    tempfile.gettempdir()
+                )
+                / (
+                    "hans-view-"
+                    f"{uuid.uuid4().hex[:8]}-"
+                    f"{safe_name}"
+                )
+            )
+
+            target.write_bytes(
+                content
+            )
+
+            if os.name == "nt":
+                os.startfile(  # type: ignore[attr-defined]
+                    str(target)
+                )
+            elif sys.platform == "darwin":
+                subprocess.Popen(
+                    [
+                        "open",
+                        str(target),
+                    ]
+                )
+            else:
+                subprocess.Popen(
+                    [
+                        "xdg-open",
+                        str(target),
+                    ]
+                )
+
+            self.root.after(
+                0,
+                self.footer_var.set,
+                (
+                    "Attachment opened from local .eml for staff "
+                    "viewing. HANS has not analysed its contents."
+                ),
+            )
+
+        except Exception as exc:
+            self.root.after(
+                0,
+                messagebox.showerror,
+                "Attachment could not be opened",
+                str(exc),
+            )
+            self.root.after(
+                0,
+                self.footer_var.set,
+                "Attachment viewing failed.",
+            )
+
+        finally:
+            self.root.after(
+                0,
+                self._on_mailbox_selection,
+            )
+
     def _view_attachment(
         self,
         email_id: str,
@@ -1444,6 +2016,15 @@ class EnhancedHANSEmailUI:
             )
             return
 
+        self.loaded_local_eml_path = (
+            str(
+                message.get("local_eml_path")
+                or ""
+            )
+            if message.get("source_type") == "local_eml"
+            else None
+        )
+
         self.test_case_var.set(
             CUSTOM_CASE_ID
         )
@@ -1499,7 +2080,7 @@ class EnhancedHANSEmailUI:
         )
 
         details = [
-            "MAILBOX MESSAGE",
+            "INCOMING EMAIL",
             f"Received: {message.get('received_at') or 'n/a'}",
             f"Attachments: {attachment_summary(message)}",
             "",
@@ -1538,7 +2119,7 @@ class EnhancedHANSEmailUI:
 
         self.last_result = None
         self.footer_var.set(
-            "Mailbox email loaded. "
+            "Selected email loaded. "
             "No draft has been generated yet."
         )
 
@@ -2225,7 +2806,11 @@ class EnhancedHANSEmailUI:
                 0,
                 self.save_draft_button.configure,
                 {
-                    "state": "normal",
+                    "state": (
+                        "disabled"
+                        if MAILBOX_TESTING_MODE
+                        else "normal"
+                    ),
                     "text": "Save to mailbox drafts",
                 },
             )
@@ -2304,7 +2889,11 @@ class EnhancedHANSEmailUI:
                 0,
                 self.send_button.configure,
                 {
-                    "state": "normal",
+                    "state": (
+                        "disabled"
+                        if MAILBOX_TESTING_MODE
+                        else "normal"
+                    ),
                     "text": "Send email",
                 },
             )
