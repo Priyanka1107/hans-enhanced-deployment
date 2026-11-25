@@ -47,6 +47,156 @@ VIEWABLE_IMAGE_TYPES = {
 TEXT_ATTACHMENT_TYPES = {'text/plain', 'text/csv'}
 
 
+
+UI_TEXT: dict[str, dict[str, str]] = {
+    "de": {
+        "app_title": "HANS E-Mail-Assistent",
+        "incoming_mailbox": "Eingehende E-Mails",
+        "view_attachment": "Anhang anzeigen",
+        "load_selected_email": "E-Mail laden",
+        "remove_selected_eml": "E-Mail entfernen",
+        "add_eml_files": "Hinzufügen",
+        "select_eml_files": "Lokale .eml-Dateien auswählen",
+        "refresh_inbox": "Aktualisieren",
+        "sender": "Absender",
+        "subject": "Betreff",
+        "received": "Empfangen",
+        "attachments": "Anhänge",
+        "no_pending": "Derzeit sind keine lokalen .eml-Dateien ausstehend.",
+        "incoming_metadata": "E-Mail-Metadaten",
+        "student_email": "E-Mail-Adresse des Studierenden",
+        "incoming_student_email": "Eingehende Studierenden-E-Mail",
+        "generate_staff_draft": "Entwurf erstellen",
+        "generating": "HANS erstellt den Antwortentwurf…",
+        "clear": "Leeren",
+        "copy_draft": "Kopieren",
+        "open_full_draft": "Vollansicht",
+        "export_reply": "Als .eml exportieren",
+        "save_to_mailbox_drafts": "In Entwürfen speichern",
+        "send_email": "E-Mail senden",
+        "file_saved_remove": "✓ Datei gespeichert — verarbeitete E-Mail entfernen",
+        "keep_pending": "Ausstehend lassen",
+        "draft_ready": "✓ Entwurf bereit",
+        "generation": "Generierung",
+        "total": "Gesamt",
+        "staff_draft": "Antwortentwurf",
+        "validation_quality_sources": "Validierung, Qualität und Quellen",
+        "reference_links": "Quellen zur Prüfung",
+        "source": "Quelle",
+        "attachment_dialog_title": "Anhang auswählen",
+        "choose_attachment": "Anhang zum Anzeigen auswählen:",
+        "preview": "Vorschau",
+        "document_preview": "Dokumentvorschau",
+        "download_attachment": "Anhang herunterladen",
+        "attachment_unavailable": "Die ausgewählte E-Mail ist nicht mehr verfügbar.",
+        "no_attachments": "Die ausgewählte E-Mail enthält keine Anhänge.",
+        "open_attachment_error": "Anhang konnte nicht geöffnet werden",
+        "inline_preview_unavailable": "Für diesen Anhangstyp ist keine Inline-Vorschau verfügbar.",
+        "full_draft_title": "Vollständiger Antwortentwurf",
+        "review_summary": "PRÜFÜBERSICHT FÜR MITARBEITENDE",
+        "no_draft": "Es wurde noch kein Entwurf erstellt.",
+        "programme": "Studiengang",
+        "topics_detected": "Erkannte Themen",
+        "none_detected": "Keine erkannt",
+        "grounded": "Quellenbasiert",
+        "citations_valid": "Quellenangaben gültig",
+        "hallucinations": "Halluzinationen erkannt",
+        "review_required": "Prüfung erforderlich",
+        "confidence": "Konfidenz",
+        "failure_type": "Fehlertyp",
+        "review_reason": "Prüfgrund",
+        "yes": "Ja",
+        "no": "Nein",
+        "not_available": "Nicht verfügbar",
+        "selected": "Ausgewählt",
+        "no_subject": "(kein Betreff)",
+        "mailbox_disabled": (
+            "Die Postfachintegration ist in dieser Testphase deaktiviert. "
+            "Fügen Sie lokale .eml-Dateien hinzu oder fügen Sie eine Anfrage manuell ein."
+        ),
+        "attachment": "Anhang",
+        "online": "Online",
+        "offline": "Offline",
+        "unavailable": "Nicht verfügbar",
+    },
+    "en": {
+        "app_title": "HANS Email Assistant",
+        "incoming_mailbox": "Incoming mailbox",
+        "view_attachment": "View attachment",
+        "load_selected_email": "Load email",
+        "remove_selected_eml": "Remove email",
+        "add_eml_files": "Add .eml",
+        "select_eml_files": "Select local .eml files",
+        "refresh_inbox": "Refresh",
+        "sender": "Sender",
+        "subject": "Subject",
+        "received": "Received",
+        "attachments": "Attachments",
+        "no_pending": "No local .eml files are currently pending.",
+        "incoming_metadata": "Incoming email metadata",
+        "student_email": "Student email",
+        "incoming_student_email": "Incoming student email",
+        "generate_staff_draft": "Generate draft",
+        "generating": "HANS is generating the staff draft…",
+        "clear": "Clear",
+        "copy_draft": "Copy",
+        "open_full_draft": "Full view",
+        "export_reply": "Export .eml",
+        "save_to_mailbox_drafts": "Save draft",
+        "send_email": "Send email",
+        "file_saved_remove": "✓ File saved — remove processed email",
+        "keep_pending": "Keep pending",
+        "draft_ready": "✓ Draft ready",
+        "generation": "Generation",
+        "total": "Total",
+        "staff_draft": "Staff draft",
+        "validation_quality_sources": "Validation, quality and sources",
+        "reference_links": "Sources for staff verification",
+        "source": "Source",
+        "attachment_dialog_title": "Select attachment",
+        "choose_attachment": "Choose the attachment to view:",
+        "preview": "Preview",
+        "document_preview": "Document preview",
+        "download_attachment": "Download attachment",
+        "attachment_unavailable": "The selected email is no longer available.",
+        "no_attachments": "The selected email has no attachments.",
+        "open_attachment_error": "Could not open attachment",
+        "inline_preview_unavailable": "Inline preview is not available for this attachment type.",
+        "full_draft_title": "Full staff draft",
+        "review_summary": "STAFF REVIEW SUMMARY",
+        "no_draft": "No draft has been generated yet.",
+        "programme": "Programme",
+        "topics_detected": "Topics detected",
+        "none_detected": "None detected",
+        "grounded": "Grounded",
+        "citations_valid": "Citations valid",
+        "hallucinations": "Hallucinations detected",
+        "review_required": "Review required",
+        "confidence": "Confidence",
+        "failure_type": "Failure type",
+        "review_reason": "Review reason",
+        "yes": "Yes",
+        "no": "No",
+        "not_available": "Not available",
+        "selected": "Selected",
+        "no_subject": "(no subject)",
+        "mailbox_disabled": (
+            "Mailbox integration is disabled for this testing phase. "
+            "Add local .eml files or paste an inquiry manually."
+        ),
+        "attachment": "attachment",
+        "online": "Online",
+        "offline": "Offline",
+        "unavailable": "Unavailable",
+    },
+}
+
+
+def _t(key: str) -> str:
+    language = st.session_state.get("ui_language", "en")
+    return UI_TEXT.get(language, UI_TEXT["en"]).get(key, key)
+
+
 def _request_headers() -> dict[str, str]:
     if not INTERNAL_API_KEY:
         raise RuntimeError('HANS_INTERNAL_API_KEY is not configured in .env.')
@@ -61,15 +211,61 @@ def _safe_download_name(subject: str) -> str:
     return f"Draft_{value}_{time.strftime('%Y%m%d_%H%M%S')}.eml"
 
 
+def _staff_draft_without_reference_list(draft: str) -> str:
+    """Remove only HANS's staff-reference list from the editable/exported draft.
+
+    English and German HANS reference headings are supported. Structured
+    sources remain available separately in result["sources"]. If a known
+    heading or the section boundary cannot be found, the draft is returned
+    unchanged.
+    """
+    headings = (
+        "Reference links for staff verification:",
+        "Referenzlinks zur Prüfung durch Mitarbeitende:",
+    )
+
+    heading_index = -1
+    heading = ""
+    for candidate in headings:
+        candidate_index = draft.find(candidate)
+        if candidate_index != -1 and (
+            heading_index == -1 or candidate_index < heading_index
+        ):
+            heading_index = candidate_index
+            heading = candidate
+
+    if heading_index == -1:
+        return draft
+
+    separator_match = re.search(
+        r"(?m)^\\?---\s*$",
+        draft[heading_index + len(heading):],
+    )
+    if separator_match is None:
+        return draft
+
+    separator_index = (
+        heading_index
+        + len(heading)
+        + separator_match.start()
+    )
+
+    before = draft[:heading_index].rstrip()
+    after = draft[separator_index:].lstrip("\n")
+    return f"{before}\n\n{after}".strip()
+
+
 def _init_state() -> None:
     defaults: dict[str, Any] = {
         'pending_emails': [],
         'seen_upload_hashes': set(),
+        'mailbox_uploader_version': 0,
         'selected_pending_id': None,
         'loaded_email_id': None,
         'student_email': '',
         'subject': '',
         'incoming_text': '',
+        'ui_language': 'en',
         'language': 'en',
         'top_k': 6,
         'thread_id': '',
@@ -101,8 +297,64 @@ def _apply_desktop_style() -> None:
             display: none !important;
         }
         .block-container {
+            width: 100% !important;
             max-width: 1700px !important;
-            padding: 0.35rem 0.75rem 0.45rem !important;
+            padding: clamp(0.3rem, 0.7vw, 0.7rem)
+                     clamp(0.45rem, 1vw, 0.95rem)
+                     0.45rem !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Responsive sizing only; workflow and component structure stay unchanged. */
+        .hans-title {
+            font-size: clamp(1.05rem, 1.35vw, 1.35rem) !important;
+        }
+
+        [data-testid="stButton"] button,
+        [data-testid="stDownloadButton"] button,
+        [data-baseweb="select"] > div {
+            font-size: clamp(0.68rem, 0.72vw, 0.78rem) !important;
+        }
+
+        textarea,
+        input {
+            font-size: clamp(0.78rem, 0.82vw, 0.9rem) !important;
+        }
+
+        @media (max-width: 1100px) {
+            .block-container {
+                padding-left: 0.4rem !important;
+                padding-right: 0.4rem !important;
+            }
+
+            [data-testid="stButton"] button,
+            [data-testid="stDownloadButton"] button {
+                white-space: normal !important;
+                line-height: 1.15 !important;
+                min-height: 2rem !important;
+            }
+
+            .hans-status {
+                font-size: 0.68rem !important;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .section-title {
+                font-size: 0.76rem !important;
+            }
+
+            .selected-line {
+                font-size: 0.7rem !important;
+            }
+
+            .mailbox-header {
+                font-size: 0.68rem !important;
+            }
+
+            .review-summary {
+                font-size: 0.76rem !important;
+            }
         }
         .hans-title {
             text-align: center;
@@ -383,7 +635,7 @@ def _apply_desktop_style() -> None:
 
         /* v9: compact, scrollable mailbox with true full-row hover. */
         div[class*="st-key-mailbox_rows_scroll"] {
-            max-height: 220px;
+            max-height: 120px;
         }
 
         div[class*="st-key-mailbox_rows_scroll"] [data-testid="stVerticalBlock"] {
@@ -452,6 +704,41 @@ def _apply_desktop_style() -> None:
             background: #0f5a86 !important;
             border-color: #0c496e !important;
             color: #ffffff !important;
+        }
+
+        /* Main workflow actions: Add, Load, Export. */
+        div[class*="st-key-mailbox_primary_add"] [data-testid="stPopover"] > button,
+        div[class*="st-key-mailbox_load_selected"] button:not(:disabled),
+        div[class*="st-key-action_export"] button:not(:disabled) {
+            background: #176b9c !important;
+            border-color: #125b86 !important;
+            color: #ffffff !important;
+            font-weight: 600 !important;
+        }
+
+        div[class*="st-key-mailbox_primary_add"] [data-testid="stPopover"] > button:hover,
+        div[class*="st-key-mailbox_load_selected"] button:not(:disabled):hover,
+        div[class*="st-key-action_export"] button:not(:disabled):hover {
+            background: #0f5a86 !important;
+            border-color: #0c496e !important;
+            color: #ffffff !important;
+        }
+
+        div[class*="st-key-mailbox_primary_add"] [data-testid="stPopover"] > button {
+            min-height: 1.9rem !important;
+            height: 1.9rem !important;
+            padding: 0.12rem 0.45rem !important;
+            white-space: nowrap !important;
+        }
+
+        div[class*="st-key-mailbox_view_attachment"] button:not(:disabled):hover,
+        div[class*="st-key-mailbox_remove_selected"] button:not(:disabled):hover,
+        div[class*="st-key-action_clear"] button:not(:disabled):hover,
+        div[class*="st-key-action_copy"] button:not(:disabled):hover,
+        div[class*="st-key-action_full"] button:not(:disabled):hover {
+            background: #cfe4f1 !important;
+            border-color: #6f9db8 !important;
+            color: #173e56 !important;
         }
 
         /* Keep disabled mailbox-draft/send controls visibly disabled. */
@@ -610,13 +897,27 @@ def _add_uploaded_emails(uploaded_files: list[Any]) -> None:
 def _remove_pending(item_id: str | None) -> bool:
     if not item_id:
         return False
+
+    item = _pending_by_id(item_id)
+    if item is None:
+        return False
+
     before = len(st.session_state.pending_emails)
     st.session_state.pending_emails = [
-        item for item in st.session_state.pending_emails if item['id'] != item_id
+        pending_item
+        for pending_item in st.session_state.pending_emails
+        if pending_item['id'] != item_id
     ]
     removed = len(st.session_state.pending_emails) < before
-    if removed and st.session_state.selected_pending_id == item_id:
-        st.session_state.selected_pending_id = None
+
+    if removed:
+        digest = item.get('sha256')
+        if digest:
+            st.session_state.seen_upload_hashes.discard(digest)
+
+        if st.session_state.selected_pending_id == item_id:
+            st.session_state.selected_pending_id = None
+
     return removed
 
 
@@ -701,7 +1002,9 @@ def _generate() -> None:
                 response_payload=result,
             )
         st.session_state.last_result = result
-        st.session_state.draft_text = str(result.get('staff_draft') or '')
+        st.session_state.draft_text = _staff_draft_without_reference_list(
+            str(result.get('staff_draft') or '')
+        )
         st.session_state.last_log_path = (
             str(saved_path) if saved_path is not None else None
         )
@@ -789,16 +1092,13 @@ def _health_status() -> tuple[bool, str]:
 
 def _selected_label(item: dict[str, Any] | None) -> str:
     if item is None:
-        return (
-            'Mailbox integration is disabled for this testing phase. '
-            'Add local .eml files or paste an inquiry manually.'
-        )
+        return _t("mailbox_disabled")
     parsed = item['parsed']
     attachment_names = [
-        str(value.get('filename') or 'attachment')
+        str(value.get('filename') or _t("attachment"))
         for value in parsed['attachments']
     ]
-    label = f"Selected: {parsed['subject'] or '(no subject)'}"
+    label = f"{_t('selected')}: {parsed['subject'] or _t('no_subject')}"
     if attachment_names:
         label += ' | ' + ', '.join(attachment_names)
     return label
@@ -806,11 +1106,11 @@ def _selected_label(item: dict[str, Any] | None) -> str:
 
 def _review_value(value: Any) -> str:
     if value is True:
-        return "Yes"
+        return _t("yes")
     if value is False:
-        return "No"
+        return _t("no")
     if value is None:
-        return "Not available"
+        return _t("not_available")
     return str(value)
 
 
@@ -820,8 +1120,8 @@ def _staff_review_summary_html(
     if not result:
         return (
             '<div class="review-summary">'
-            '<div class="review-summary-title">STAFF REVIEW SUMMARY</div>'
-            '<div>No draft has been generated yet.</div>'
+            f'<div class="review-summary-title">{html.escape(_t("review_summary"))}</div>'
+            f'<div>{html.escape(_t("no_draft"))}</div>'
             '</div>'
         )
 
@@ -829,7 +1129,6 @@ def _staff_review_summary_html(
     quality = result.get("quality") or {}
     email_context = result.get("email_context") or {}
     topics = result.get("detected_topics") or []
-    sources = result.get("sources") or []
 
     programme = (
         email_context.get("target_program")
@@ -866,30 +1165,41 @@ def _staff_review_summary_html(
         positive = (not value) if positive_when_false else bool(value)
         return "review-ok" if positive else "review-warning"
 
+    topics_value = ", ".join(topic_labels) if topic_labels else _t("none_detected")
+
     parts = [
         '<div class="review-summary">',
-        '<div class="review-summary-title">STAFF REVIEW SUMMARY</div>',
-        '<div class="review-row"><span class="review-label">Programme:</span> '
+        f'<div class="review-summary-title">{html.escape(_t("review_summary"))}</div>',
+        '<div class="review-row"><span class="review-label">'
+        f'{html.escape(_t("programme"))}:</span> '
         f'{html.escape(str(programme))}</div>',
-        '<div class="review-row"><span class="review-label">Topics detected:</span> '
-        f'{html.escape(", ".join(topic_labels) if topic_labels else "None detected")}</div>',
-        '<div class="review-row"><span class="review-label">Grounded:</span> '
+        '<div class="review-row"><span class="review-label">'
+        f'{html.escape(_t("topics_detected"))}:</span> '
+        f'{html.escape(topics_value)}</div>',
+        '<div class="review-row"><span class="review-label">'
+        f'{html.escape(_t("grounded"))}:</span> '
         f'<span class="{status_class(grounded)}">'
         f'{html.escape(_review_value(grounded))}</span></div>',
-        '<div class="review-row"><span class="review-label">Citations valid:</span> '
+        '<div class="review-row"><span class="review-label">'
+        f'{html.escape(_t("citations_valid"))}:</span> '
         f'<span class="{status_class(citations_valid)}">'
         f'{html.escape(_review_value(citations_valid))}</span></div>',
-        '<div class="review-row"><span class="review-label">Hallucinations detected:</span> '
+        '<div class="review-row"><span class="review-label">'
+        f'{html.escape(_t("hallucinations"))}:</span> '
         f'<span class="{status_class(hallucinations, positive_when_false=True)}">'
         f'{html.escape(_review_value(hallucinations))}</span></div>',
-        '<div class="review-row"><span class="review-label">Review required:</span> '
+        '<div class="review-row"><span class="review-label">'
+        f'{html.escape(_t("review_required"))}:</span> '
         f'<span class="{status_class(review_required, positive_when_false=True)}">'
         f'{html.escape(_review_value(review_required))}</span></div>',
-        '<div class="review-row"><span class="review-label">Confidence:</span> '
+        '<div class="review-row"><span class="review-label">'
+        f'{html.escape(_t("confidence"))}:</span> '
         f'{html.escape(_review_value(confidence))}</div>',
-        '<div class="review-row"><span class="review-label">Failure type:</span> '
+        '<div class="review-row"><span class="review-label">'
+        f'{html.escape(_t("failure_type"))}:</span> '
         f'{html.escape(_review_value(failure_type))}</div>',
-        '<div class="review-reason"><span class="review-label">Review reason:</span> '
+        '<div class="review-reason"><span class="review-label">'
+        f'{html.escape(_t("review_reason"))}:</span> '
         f'{html.escape(str(review_reason))}</div>',
     ]
 
@@ -979,7 +1289,7 @@ def _render_attachment_preview(
         }
     ):
         st.text_area(
-            "Preview",
+            _t("preview"),
             value=content.decode(
                 "utf-8",
                 errors="replace",
@@ -1012,7 +1322,7 @@ def _render_attachment_preview(
 
     if suffix == ".docx":
         st.text_area(
-            "Document preview",
+            _t("document_preview"),
             value=_docx_text_preview(
                 content
             ),
@@ -1039,36 +1349,20 @@ def _render_attachment_preview(
 
             return
 
-    st.info(
-        "Inline preview is not available for this attachment type."
-    )
+    st.info(_t("inline_preview_unavailable"))
 
 
-@st.dialog(
-    "Select attachment",
-    width="large",
-)
-def _attachment_dialog(
-    item_id: str,
-) -> None:
-    item = _pending_by_id(
-        item_id
-    )
+def _attachment_dialog_body(item_id: str) -> None:
+    item = _pending_by_id(item_id)
 
     if item is None:
-        st.warning(
-            "The selected email is no longer available."
-        )
+        st.warning(_t("attachment_unavailable"))
         return
 
-    attachments = (
-        item["parsed"]["attachments"]
-    )
+    attachments = item["parsed"]["attachments"]
 
     if not attachments:
-        st.info(
-            "The selected email has no attachments."
-        )
+        st.info(_t("no_attachments"))
         return
 
     names = [
@@ -1077,14 +1371,12 @@ def _attachment_dialog(
     ]
 
     selected_name = st.selectbox(
-        "Choose the attachment to view:",
+        _t("choose_attachment"),
         names,
         key=f"attachment_choice_{item_id}",
     )
 
-    index = names.index(
-        selected_name
-    )
+    index = names.index(selected_name)
 
     try:
         (
@@ -1098,15 +1390,13 @@ def _attachment_dialog(
 
     except Exception as exc:
         st.error(
-            f"Could not open attachment: {exc}"
+            f'{_t("open_attachment_error")}: {exc}'
         )
         return
 
     if not actual_type:
         actual_type = (
-            mimetypes.guess_type(
-                actual_name
-            )[0]
+            mimetypes.guess_type(actual_name)[0]
             or "application/octet-stream"
         )
 
@@ -1117,7 +1407,7 @@ def _attachment_dialog(
     )
 
     st.download_button(
-        "Download attachment",
+        _t("download_attachment"),
         data=content,
         file_name=actual_name,
         mime=actual_type,
@@ -1125,14 +1415,47 @@ def _attachment_dialog(
     )
 
 
-@st.dialog('Full staff draft', width='large')
-def _full_draft_dialog() -> None:
+@st.dialog("Anhang auswählen", width="large")
+def _attachment_dialog_de(item_id: str) -> None:
+    _attachment_dialog_body(item_id)
+
+
+@st.dialog("Select attachment", width="large")
+def _attachment_dialog_en(item_id: str) -> None:
+    _attachment_dialog_body(item_id)
+
+
+def _attachment_dialog(item_id: str) -> None:
+    if st.session_state.get("ui_language", "en") == "de":
+        _attachment_dialog_de(item_id)
+    else:
+        _attachment_dialog_en(item_id)
+
+
+def _full_draft_dialog_body() -> None:
     st.text_area(
-        'Staff draft',
+        _t("staff_draft"),
         value=st.session_state.draft_text,
         height=520,
         key='full_draft_preview',
     )
+
+
+@st.dialog("Vollständiger Antwortentwurf", width="large")
+def _full_draft_dialog_de() -> None:
+    _full_draft_dialog_body()
+
+
+@st.dialog("Full staff draft", width="large")
+def _full_draft_dialog_en() -> None:
+    _full_draft_dialog_body()
+
+
+def _full_draft_dialog() -> None:
+    if st.session_state.get("ui_language", "en") == "de":
+        _full_draft_dialog_de()
+    else:
+        _full_draft_dialog_en()
 
 
 def _draft_source_links_html(
@@ -1152,8 +1475,8 @@ def _draft_source_links_html(
     parts = [
         '<div class="draft-source-links">',
         '<div class="draft-source-links-title">'
-        'Reference links for staff verification'
-        '</div>',
+        + html.escape(_t("reference_links"))
+        + '</div>',
     ]
 
     for index, source in enumerate(
@@ -1162,7 +1485,7 @@ def _draft_source_links_html(
     ):
         title = str(
             source.get("title")
-            or f"Source {index}"
+            or f"{_t('source')} {index}"
         )
 
         url = str(
@@ -1200,14 +1523,14 @@ def _draft_source_links_html(
 def _render_mailbox() -> None:
     with st.container(border=True):
         st.markdown(
-            '<div class="section-title">Incoming mailbox</div>',
+            f'<div class="section-title">{html.escape(_t("incoming_mailbox"))}</div>',
             unsafe_allow_html=True,
         )
         pending = st.session_state.pending_emails
         selected_item = _pending_by_id(st.session_state.selected_pending_id)
 
-        info_col, view_col, load_col, remove_col, add_col, refresh_col = st.columns(
-            [5.5, 1.15, 1.25, 1.55, 1.1, 1.1],
+        info_col, view_col, load_col, remove_col, add_col = st.columns(
+            [5.8, 1.2, 1.3, 1.4, 1.35],
             gap='small',
         )
 
@@ -1225,26 +1548,29 @@ def _render_mailbox() -> None:
 
         with view_col:
             if st.button(
-                'View attachment',
+                _t("view_attachment"),
                 disabled=not attachments_available,
                 use_container_width=True,
+                key="mailbox_view_attachment",
             ):
                 _attachment_dialog(st.session_state.selected_pending_id)
 
         with load_col:
             if st.button(
-                'Load selected email',
+                _t("load_selected_email"),
                 disabled=selected_item is None,
                 use_container_width=True,
+                key="mailbox_load_selected",
             ):
                 _load_selected()
                 st.rerun()
 
         with remove_col:
             if st.button(
-                'Remove selected .eml',
+                _t("remove_selected_eml"),
                 disabled=selected_item is None,
                 use_container_width=True,
+                key="mailbox_remove_selected",
             ):
                 selected_id = st.session_state.selected_pending_id
                 was_loaded = st.session_state.loaded_email_id == selected_id
@@ -1258,39 +1584,35 @@ def _render_mailbox() -> None:
                 st.rerun()
 
         with add_col:
-            with st.popover('Add .eml files', use_container_width=True):
-                uploaded = st.file_uploader(
-                    'Select local .eml files',
-                    type=['eml'],
-                    accept_multiple_files=True,
-                    label_visibility='collapsed',
-                    key='mailbox_uploader',
-                )
-                if uploaded:
-                    _add_uploaded_emails(uploaded)
-
-        with refresh_col:
-            st.button(
-                'Refresh inbox',
-                disabled=True,
-                use_container_width=True,
-            )
+            with st.container(key="mailbox_primary_add"):
+                with st.popover(_t("add_eml_files"), use_container_width=True):
+                    uploaded = st.file_uploader(
+                        _t("select_eml_files"),
+                        type=['eml'],
+                        accept_multiple_files=True,
+                        label_visibility='collapsed',
+                        key=f"mailbox_uploader_{st.session_state.mailbox_uploader_version}",
+                    )
+                    if uploaded:
+                        _add_uploaded_emails(uploaded)
+                        st.session_state.mailbox_uploader_version += 1
+                        st.rerun()
 
         if pending:
             st.markdown(
                 (
                     '<div class="mailbox-header">'
-                    '<div>Sender</div>'
-                    '<div>Subject</div>'
-                    '<div>Received</div>'
-                    '<div>Attachments</div>'
+                    f'<div>{html.escape(_t("sender"))}</div>'
+                    f'<div>{html.escape(_t("subject"))}</div>'
+                    f'<div>{html.escape(_t("received"))}</div>'
+                    f'<div>{html.escape(_t("attachments"))}</div>'
                     '</div>'
                 ),
                 unsafe_allow_html=True,
             )
 
             with st.container(
-                height=220,
+                height=120,
                 border=False,
                 key='mailbox_rows_scroll',
             ):
@@ -1347,35 +1669,34 @@ def _render_mailbox() -> None:
                             select_row()
 
         else:
-            st.caption('No local .eml files are currently pending.')
+            st.caption(_t("no_pending"))
 
 
 def _render_metadata_and_input() -> None:
     with st.container(border=True):
         st.markdown(
-            '<div class="section-title">Incoming email metadata</div>',
+            f'<div class="section-title">{html.escape(_t("incoming_metadata"))}</div>',
             unsafe_allow_html=True,
         )
         left, right = st.columns([1, 2], gap='small')
         with left:
-            st.text_input('Student email', key='student_email')
+            st.text_input(_t("student_email"), key='student_email')
         with right:
-            st.text_input('Subject', key='subject')
+            st.text_input(_t("subject"), key='subject')
 
     with st.container(border=True):
         st.markdown(
-            '<div class="section-title">Incoming student email</div>',
+            f'<div class="section-title">{html.escape(_t("incoming_student_email"))}</div>',
             unsafe_allow_html=True,
         )
         st.text_area(
-            'Incoming student email',
+            _t("incoming_student_email"),
             key='incoming_text',
             height=145,
             label_visibility='collapsed',
         )
 
-    # Match the desktop staff UI: language and retrieval top-k remain
-    # internal request values and are not exposed as staff controls.
+    # UI language is independent from the backend request language.
     st.session_state.language = 'en'
     st.session_state.top_k = 6
 
@@ -1398,15 +1719,14 @@ def _render_action_row() -> None:
             eml_bytes = None
 
     columns = st.columns(
-        [1.35, 0.7, 0.95, 1.05, 1.45, 1.55, 0.95, 4.0],
+        [1.35, 0.7, 0.95, 1.05, 1.45, 4.0],
         gap='small',
     )
-
-    generation_slot = columns[7].empty()
+    generation_slot = columns[5].empty()
 
     with columns[0]:
         if st.button(
-            'Generate staff draft',
+            _t("generate_staff_draft"),
             type='primary',
             use_container_width=True,
             key='action_generate',
@@ -1417,7 +1737,7 @@ def _render_action_row() -> None:
                     '<span class="hans-generation-dots">'
                     '<span></span><span></span><span></span>'
                     '</span>'
-                    '<span>HANS is generating the staff draft…</span>'
+                    f'<span>{html.escape(_t("generating"))}</span>'
                     '</div>'
                 ),
                 unsafe_allow_html=True,
@@ -1427,7 +1747,7 @@ def _render_action_row() -> None:
 
     with columns[1]:
         st.button(
-            'Clear',
+            _t("clear"),
             use_container_width=True,
             key='action_clear',
             on_click=_clear_editor_action,
@@ -1435,7 +1755,7 @@ def _render_action_row() -> None:
 
     with columns[2]:
         if st.button(
-            'Copy draft',
+            _t("copy_draft"),
             disabled=not draft,
             use_container_width=True,
             key='action_copy',
@@ -1446,7 +1766,7 @@ def _render_action_row() -> None:
 
     with columns[3]:
         if st.button(
-            'Open full draft',
+            _t("open_full_draft"),
             disabled=not draft,
             use_container_width=True,
             key='action_full',
@@ -1455,7 +1775,7 @@ def _render_action_row() -> None:
 
     with columns[4]:
         st.download_button(
-            'Export reply as .eml',
+            _t("export_reply"),
             data=eml_bytes or b'',
             file_name=export_name,
             mime='message/rfc822',
@@ -1465,29 +1785,13 @@ def _render_action_row() -> None:
             key='action_export',
         )
 
-    with columns[5]:
-        st.button(
-            'Save to mailbox drafts',
-            disabled=True,
-            use_container_width=True,
-            key='action_save_draft',
-        )
-
-    with columns[6]:
-        st.button(
-            'Send email',
-            disabled=True,
-            use_container_width=True,
-            key='action_send',
-        )
-
     if st.session_state.export_confirmation_pending and eml_bytes is not None:
-        with columns[7]:
+        with columns[5]:
             confirm_col, cancel_col = st.columns([1.8, 0.9], gap='small')
 
             with confirm_col:
                 st.button(
-                    '✓ File saved — remove processed email',
+                    _t("file_saved_remove"),
                     type='primary',
                     use_container_width=True,
                     key='action_confirm_export',
@@ -1496,7 +1800,7 @@ def _render_action_row() -> None:
 
             with cancel_col:
                 st.button(
-                    'Keep pending',
+                    _t("keep_pending"),
                     use_container_width=True,
                     key='action_keep_pending',
                     on_click=_keep_export_pending,
@@ -1511,9 +1815,11 @@ def _render_action_row() -> None:
         generation_slot.markdown(
             (
                 '<div class="hans-generation-complete">'
-                '✓ Draft ready'
-                f" · Generation {html.escape(str(generation.get('generation_total_seconds', '—')))} s"
-                f" · Total {html.escape(str(timing.get('total', '—')))} s"
+                f'{html.escape(_t("draft_ready"))}'
+                f' · {html.escape(_t("generation"))} '
+                f'{html.escape(str(generation.get("generation_total_seconds", "—")))} s'
+                f' · {html.escape(_t("total"))} '
+                f'{html.escape(str(timing.get("total", "—")))} s'
                 '</div>'
             ),
             unsafe_allow_html=True,
@@ -1526,37 +1832,30 @@ def _render_results() -> None:
     with left:
         with st.container(border=True):
             st.markdown(
-                '<div class="section-title">Staff draft</div>',
+                f'<div class="section-title">{html.escape(_t("staff_draft"))}</div>',
                 unsafe_allow_html=True,
             )
             st.text_area(
-                'Staff draft',
+                _t("staff_draft"),
                 key='draft_text',
                 height=285,
                 label_visibility='collapsed',
             )
 
-            draft_links = (
-                _draft_source_links_html(
-                    result
-                )
-            )
-
-            if draft_links:
+            source_links = _draft_source_links_html(result)
+            if source_links:
                 st.markdown(
-                    draft_links,
+                    source_links,
                     unsafe_allow_html=True,
                 )
     with right:
         with st.container(border=True):
             st.markdown(
-                '<div class="section-title">Validation, quality and sources</div>',
+                f'<div class="section-title">{html.escape(_t("validation_quality_sources"))}</div>',
                 unsafe_allow_html=True,
             )
             st.markdown(
-                _staff_review_summary_html(
-                    result
-                ),
+                _staff_review_summary_html(result),
                 unsafe_allow_html=True,
             )
     if result:
@@ -1566,11 +1865,7 @@ def _render_results() -> None:
                 'Unexpected reasoning tokens detected. '
                 'Do not use this run for validation.'
             )
-        if st.session_state.last_log_path:
-            st.caption(
-                'Evaluation result saved: '
-                f"{st.session_state.last_log_path}"
-            )
+        # Evaluation logging remains enabled but its filesystem path is hidden from staff.
 
 
 def main() -> None:
@@ -1582,15 +1877,36 @@ def main() -> None:
     )
     _init_state()
     _apply_desktop_style()
-    st.markdown(
-        '<div class="hans-title">HANS Email Assistant</div>',
-        unsafe_allow_html=True,
-    )
+
+    title_col, language_col = st.columns([8.5, 1.5], gap='small')
+    with title_col:
+        st.markdown(
+            f'<div class="hans-title">{html.escape(_t("app_title"))}</div>',
+            unsafe_allow_html=True,
+        )
+    with language_col:
+        st.selectbox(
+            'Sprache / Language',
+            options=['en', 'de'],
+            format_func=lambda value: 'Deutsch' if value == 'de' else 'English',
+            key='ui_language',
+            label_visibility='collapsed',
+        )
+
     online, status = _health_status()
     status_class = 'hans-online' if online else 'hans-offline'
+    if online:
+        display_status = _t("online")
+    elif status == 'Offline':
+        display_status = _t("offline")
+    elif status == 'Unavailable':
+        display_status = _t("unavailable")
+    else:
+        display_status = status
+
     st.markdown(
         '<div class="hans-status">'
-        f'<span class="{status_class}">{html.escape(status)}</span>'
+        f'<span class="{status_class}">{html.escape(display_status)}</span>'
         f'{html.escape(API_BASE)}'
         '</div>',
         unsafe_allow_html=True,
@@ -1599,12 +1915,7 @@ def main() -> None:
     _render_metadata_and_input()
     _render_action_row()
     _render_results()
-    st.markdown(
-        '<div class="footer-line">'
-        + html.escape(st.session_state.status_message)
-        + '</div>',
-        unsafe_allow_html=True,
-    )
+    # Persistent footer/status text is intentionally hidden in the staff UI.
 
 
 if __name__ == '__main__':
